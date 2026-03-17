@@ -289,7 +289,47 @@ Create a code-based migration that:
 
 ## Project Structure
 
-Follow Orchard Core module conventions. The module should be named `Ignite.AutoBlog` and live alongside any other custom modules in the solution. It should be a self-contained, cleanly organized module that can be enabled/disabled through the Orchard admin features screen.
+The repo is `ignite-autoblog`. The solution is `Ignite.OrchardCore`. The module project is `Ignite.OrchardCore.MspMarketingEdge`.
+
+Follow Orchard Core module conventions. The module should be a self-contained, cleanly organized project that can be enabled/disabled through the Orchard admin features screen.
+
+Expected layout:
+
+```
+ignite-autoblog/
+├── README.md
+├── LICENSE (MIT)
+├── .gitignore (VisualStudio template + ref/)
+├── docs/
+│   └── ignite-autoblog-module-brief.md
+├── ref/                                        ← gitignored, local only
+│   └── msp_marketing_edge_autoblog/
+│       ├── meta_data.php
+│       ├── meta_data_options.php
+│       ├── meta_data_updater.php
+│       └── readme.txt
+└── src/
+    ├── Ignite.OrchardCore.sln
+    └── Ignite.OrchardCore.MspMarketingEdge/
+        ├── Ignite.OrchardCore.MspMarketingEdge.csproj
+        ├── Manifest.cs
+        ├── Startup.cs
+        └── ...
+```
+
+## README
+
+Generate a `README.md` for the repo root that includes:
+
+- **Project title**: Ignite.OrchardCore.MspMarketingEdge
+- **One-liner**: An Orchard Core module that automatically imports weekly blog posts from MSP Marketing Edge into your Orchard CMS site.
+- **What it does**: Brief description of the autoblog functionality — scheduled import, deduplication, featured images, draft/publish/scheduled publishing, full SEO metadata via SeoMetaPart.
+- **Requirements**: Orchard Core 2.2.x, .NET 8, `OrchardCore.Seo` and `OrchardCore.PublishLater` features enabled.
+- **Configuration**: Summary of the admin settings (licensed email, feed selection, directly publish toggle, notification email, Twitter handle, publisher name, structured data toggle).
+- **How it works**: Brief explanation of the background task, API polling, content creation, and scheduled publishing for future-dated posts.
+- **Installation**: Standard Orchard Core module installation steps (add project reference, enable feature in admin).
+- **Disclaimer**: "This is an independent community project. It is not affiliated with or endorsed by MSP Marketing Edge. MSP Marketing Edge is a trademark of its respective owner."
+- **License**: MIT
 
 ## Testing Considerations
 
@@ -299,4 +339,11 @@ Follow Orchard Core module conventions. The module should be named `Ignite.AutoB
 
 ## Reference
 
-The original WordPress plugin source files are available for detailed reference on field mappings, edge cases, and API response shapes. The three relevant files are `meta_data.php` (core logic), `meta_data_options.php` (settings UI), and `meta_data_updater.php` (self-updater, ignore this one).
+The original WordPress plugin source files are available locally in `ref/msp_marketing_edge_autoblog/` (the `ref/` directory is gitignored — local development reference only, not distributed with the repo). The relevant files are:
+
+- `meta_data.php` — core logic: API calls, content creation, image handling, scheduling
+- `meta_data_options.php` — settings UI: feed selection, license email, post status, notifications
+- `meta_data_updater.php` — self-updater for the WordPress plugin (ignore this one)
+- `readme.txt` — WordPress plugin metadata and changelog
+
+These files are GPL-licensed and are not part of this project — they are kept locally as API contract reference during development only.
