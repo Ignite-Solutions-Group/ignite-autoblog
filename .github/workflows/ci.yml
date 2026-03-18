@@ -1,4 +1,4 @@
-name: CI
+name: Build
 
 on:
   push:
@@ -18,12 +18,23 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore dependencies
+      - name: Restore
         run: dotnet restore src/Ignite.OrchardCore.sln
 
       - name: Build
         run: dotnet build src/Ignite.OrchardCore.sln --configuration Release --no-restore
 
-      # Uncomment when you add tests
-      # - name: Test
-      #   run: dotnet test src/Ignite.OrchardCore.sln --configuration Release --no-restore --no-build
+      - name: Publish
+        run: >
+          dotnet publish
+          src/Ignite.OrchardCore.MspMarketingEdge/Ignite.OrchardCore.MspMarketingEdge.csproj
+          --configuration Release
+          --no-build
+          --output ./artifacts
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ignite.OrchardCore.MspMarketingEdge
+          path: ./artifacts/
+          retention-days: 90
