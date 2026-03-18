@@ -2,11 +2,12 @@ using Ignite.OrchardCore.MspMarketingEdge.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
+using OrchardCore.Admin;
 using OrchardCore.DisplayManagement.Notify;
 
 namespace Ignite.OrchardCore.MspMarketingEdge.Controllers;
 
-[Route("admin/autoblog")]
+[Admin("autoblog/{action=Index}", "AutoBlog.{action}")]
 public class AdminController : Controller
 {
     private readonly IAutoBlogImportService _importService;
@@ -43,8 +44,7 @@ public class AdminController : Controller
         }
         else if (result.ErrorCount > 0)
         {
-            var message = $"Import failed for {result.ErrorCount} article(s). See the error details in the Sync Status card below.";
-            await _notifier.ErrorAsync(H[message]);
+            await _notifier.ErrorAsync(H["Import failed for {0} article(s). See the error details in the Sync Status card below.", result.ErrorCount]);
         }
         else if (result.CreatedPosts.Count == 0 && result.UpdatedPosts.Count == 0)
         {
@@ -52,8 +52,7 @@ public class AdminController : Controller
         }
         else
         {
-            var message = $"Import complete: {result.CreatedPosts.Count} post(s) created, {result.UpdatedPosts.Count} post(s) updated.";
-            await _notifier.SuccessAsync(H[message]);
+            await _notifier.SuccessAsync(H["Import complete: {0} post(s) created, {1} post(s) updated.", result.CreatedPosts.Count, result.UpdatedPosts.Count]);
         }
 
         return RedirectToAction("Index", "Admin", new

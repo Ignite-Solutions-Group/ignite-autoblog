@@ -1,3 +1,4 @@
+using Ignite.OrchardCore.MspMarketingEdge.Indexes;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
@@ -73,5 +74,19 @@ public class AutoBlogMigrations : DataMigration
         );
 
         return 2;
+    }
+
+    public async Task<int> UpdateFrom2Async()
+    {
+        await SchemaBuilder.CreateMapIndexTableAsync(typeof(AutoBlogPostIndex), table => table
+            .Column<string>(nameof(AutoBlogPostIndex.EdgeGuid), col => col.WithLength(255))
+        , collection: null);
+
+        await SchemaBuilder.AlterIndexTableAsync(typeof(AutoBlogPostIndex), table => table
+            .CreateIndex("IDX_AutoBlogPostIndex_EdgeGuid",
+                nameof(AutoBlogPostIndex.EdgeGuid))
+        , collection: null);
+
+        return 3;
     }
 }

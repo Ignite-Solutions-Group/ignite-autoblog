@@ -30,6 +30,7 @@
     <PackageReference Include="OrchardCore.Html" Version="2.2.1" />
     <PackageReference Include="OrchardCore.Autoroute" Version="2.2.1" />
     <PackageReference Include="Cronos" Version="0.8.4" />
+    <PackageReference Include="OrchardCore.Infrastructure.Abstractions" Version="2.2.1" />
   </ItemGroup>
 
 </Project>

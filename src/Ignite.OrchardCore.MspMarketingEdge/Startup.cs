@@ -1,4 +1,5 @@
 using Ignite.OrchardCore.MspMarketingEdge.Drivers;
+using Ignite.OrchardCore.MspMarketingEdge.Indexes;
 using Ignite.OrchardCore.MspMarketingEdge.Migrations;
 using Ignite.OrchardCore.MspMarketingEdge.Models;
 using Ignite.OrchardCore.MspMarketingEdge.Services;
@@ -13,6 +14,7 @@ using OrchardCore.Modules;
 using OrchardCore.Navigation;
 using OrchardCore.Security.Permissions;
 using OrchardCore.Settings;
+using YesSql.Indexes;
 
 namespace Ignite.OrchardCore.MspMarketingEdge;
 
@@ -39,6 +41,9 @@ public class Startup : StartupBase
         services.AddScoped<IEdgeApiService, EdgeApiService>();
         services.AddScoped<IImageService, ImageService>();
         services.AddScoped<IAutoBlogImportService, AutoBlogImportService>();
+
+        // Indexes
+        services.AddSingleton<IIndexProvider, AutoBlogPostIndexProvider>();
 
         // HttpClient
         services.AddHttpClient("EdgeApi", client =>

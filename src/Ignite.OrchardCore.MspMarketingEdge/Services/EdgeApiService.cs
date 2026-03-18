@@ -23,7 +23,7 @@ public class EdgeApiService : IEdgeApiService
             var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             var url = $"{Constants.LicenseEndpoint}?email={Uri.EscapeDataString(email)}&tool=techupdatesplugin&time={timestamp}";
 
-            var response = await client.GetAsync(url);
+            using var response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
@@ -33,7 +33,7 @@ public class EdgeApiService : IEdgeApiService
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Failed to validate MSP Marketing Edge license for {Email}.", email);
+            _logger.LogWarning(ex, "Failed to validate MSP Marketing Edge license.");
             return false;
         }
     }
@@ -46,18 +46,18 @@ public class EdgeApiService : IEdgeApiService
             var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             var url = $"{Constants.FeedEndpoint}?categories={feedId}&uid={Uri.EscapeDataString(email)}&time={timestamp}";
 
-            var response = await client.GetAsync(url);
+            using var response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
             var articles = JsonSerializer.Deserialize<List<EdgeFeedArticle>>(json);
 
-            return articles ?? new List<EdgeFeedArticle>();
+            return articles ?? [];
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Failed to fetch feed articles from MSP Marketing Edge (FeedId={FeedId}).", feedId);
-            return new List<EdgeFeedArticle>();
+            return [];
         }
     }
 
@@ -68,7 +68,7 @@ public class EdgeApiService : IEdgeApiService
             var client = _httpClientFactory.CreateClient("EdgeApi");
             var url = $"{Constants.ParentPostEndpoint}{parentPostId}";
 
-            var response = await client.GetAsync(url);
+            using var response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();

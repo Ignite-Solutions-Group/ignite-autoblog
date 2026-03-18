@@ -1,10 +1,12 @@
+using System.Globalization;
 using System.Net;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Ignite.OrchardCore.MspMarketingEdge.Indexes;
 using Ignite.OrchardCore.MspMarketingEdge.Models;
 using Microsoft.Extensions.Logging;
 using OrchardCore.Media.Fields;
-using OrchardCore.ResourceManagement;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
@@ -16,6 +18,8 @@ using OrchardCore.Title.Models;
 using OrchardCore.Html.Models;
 using OrchardCore.Autoroute.Models;
 using OrchardCore.PublishLater.Models;
+using OrchardCore.Infrastructure.Html;
+using OrchardCore.ResourceManagement;
 using OrchardCore.Seo.Models;
 using YesSql;
 
@@ -30,6 +34,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
     private readonly IEdgeApiService _edgeApiService;
     private readonly IImageService _imageService;
     private readonly IEmailService _emailService;
+    private readonly IHtmlSanitizerService _htmlSanitizerService;
     private readonly ILogger<AutoBlogImportService> _logger;
 
     public AutoBlogImportService(
@@ -40,6 +45,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         IEdgeApiService edgeApiService,
         IImageService imageService,
         IEmailService emailService,
+        IHtmlSanitizerService htmlSanitizerService,
         ILogger<AutoBlogImportService> logger)
     {
         _siteService = siteService;
@@ -49,6 +55,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         _edgeApiService = edgeApiService;
         _imageService = imageService;
         _emailService = emailService;
+        _htmlSanitizerService = htmlSanitizerService;
         _logger = logger;
     }
 
@@ -66,7 +73,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         var licensed = await _edgeApiService.CheckLicenseAsync(settings.LicensedEmail);
         if (!licensed)
         {
-            _logger.LogWarning("AutoBlog import skipped: license not valid for {Email}.", settings.LicensedEmail);
+            _logger.LogWarning("AutoBlog import skipped: license not valid.");
             result.LicenseValid = false;
             await UpdateSyncStatusAsync(result);
             return result;
@@ -97,7 +104,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
                 result.ErrorCount++;
                 result.ErrorMessage ??= ex.Message;
                 _logger.LogError(ex, "AutoBlog import: error processing article '{Title}' (GUID: {Guid}).",
-                    article.Title.Rendered, article.Guid.Rendered);
+                    article.Title?.Rendered ?? "unknown", article.Guid?.Rendered ?? "unknown");
             }
         }
 
@@ -151,7 +158,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
 
     private async Task ProcessArticleAsync(EdgeFeedArticle article, AutoBlogSettings settings, ImportResult result)
     {
-        var guid = article.Guid.Rendered;
+        var guid = article.Guid?.Rendered;
         if (string.IsNullOrWhiteSpace(guid))
         {
             _logger.LogWarning("AutoBlog import: skipping article with empty GUID.");
@@ -195,8 +202,8 @@ public partial class AutoBlogImportService : IAutoBlogImportService
     {
         var contentItem = await _contentManager.NewAsync(Constants.ContentType);
 
-        var title = HtmlDecode(article.Title.Rendered);
-        var excerpt = StripHtml(article.Excerpt.Rendered);
+        var title = HtmlDecode(article.Title?.Rendered ?? string.Empty);
+        var excerpt = StripHtml(article.Excerpt?.Rendered ?? string.Empty);
         var canonicalUrl = await ResolveCanonicalUrlAsync(article);
         var isVideoFeed = Constants.VideoFeeds.Contains(settings.FeedId);
 
@@ -207,10 +214,10 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         });
         contentItem.DisplayText = title;
 
-        // HtmlBodyPart
+        // HtmlBodyPart — sanitize external HTML to prevent stored XSS
         contentItem.Alter<HtmlBodyPart>(part =>
         {
-            part.Html = article.Content.Rendered;
+            part.Html = _htmlSanitizerService.Sanitize(article.Content?.Rendered ?? string.Empty);
         });
 
         // AutoroutePart
@@ -222,7 +229,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         // AutoBlogPart
         contentItem.Alter<AutoBlogPart>(part =>
         {
-            part.EdgeGuid = article.Guid.Rendered;
+            part.EdgeGuid = article.Guid?.Rendered ?? string.Empty;
             part.EdgePostId = article.Id;
             part.EdgeUrl = canonicalUrl;
             part.EdgeUpdateVersion = article.Acf?.UpdateVersion ?? 0;
@@ -246,7 +253,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             if (isFutureDated)
             {
                 // Future-dated + DirectlyPublish: create as draft with scheduled publish date
-                if (DateTime.TryParse(article.Date, out var publishDate))
+                if (DateTime.TryParse(article.Date, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var publishDate))
                 {
                     contentItem.Alter<PublishLaterPart>(part =>
                     {
@@ -280,8 +287,8 @@ public partial class AutoBlogImportService : IAutoBlogImportService
 
     private async Task<ImportedPostInfo?> UpdatePostAsync(ContentItem contentItem, EdgeFeedArticle article, AutoBlogSettings settings)
     {
-        var title = HtmlDecode(article.Title.Rendered);
-        var excerpt = StripHtml(article.Excerpt.Rendered);
+        var title = HtmlDecode(article.Title?.Rendered ?? string.Empty);
+        var excerpt = StripHtml(article.Excerpt?.Rendered ?? string.Empty);
         var isVideoFeed = Constants.VideoFeeds.Contains(settings.FeedId);
 
         // Update title
@@ -291,10 +298,10 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         });
         contentItem.DisplayText = title;
 
-        // Update body
+        // Update body — sanitize external HTML to prevent stored XSS
         contentItem.Alter<HtmlBodyPart>(part =>
         {
-            part.Html = article.Content.Rendered;
+            part.Html = _htmlSanitizerService.Sanitize(article.Content?.Rendered ?? string.Empty);
         });
 
         // Update AutoBlogPart (keep existing EdgeGuid, EdgeUrl, don't change slug)
@@ -357,7 +364,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         string? googleSchema = null;
         if (settings.EnableGoogleStructuredData)
         {
-            googleSchema = await BuildGoogleSchemaAsync(contentItem, title, excerpt, mediaPath, settings);
+            googleSchema = BuildGoogleSchema(contentItem, title, excerpt, mediaPath, settings);
         }
 
         contentItem.Alter<SeoMetaPart>(seo =>
@@ -387,25 +394,25 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         });
     }
 
-    private async Task<string> BuildGoogleSchemaAsync(
+    private static string BuildGoogleSchema(
         ContentItem contentItem,
         string title,
         string excerpt,
         string? mediaPath,
         AutoBlogSettings settings)
     {
-        var publisherName = settings.PublisherName;
-        if (string.IsNullOrWhiteSpace(publisherName))
-        {
-            var site = await _siteService.GetSiteSettingsAsync();
-            publisherName = site.SiteName ?? "Organization";
-        }
+        var publisherName = !string.IsNullOrWhiteSpace(settings.PublisherName)
+            ? settings.PublisherName
+            : "Organization";
+
+        // Escape title to prevent JSON-LD script breakout
+        var safeTitle = title.Replace("</", "<\\/");
 
         var schema = new
         {
             @context = "https://schema.org",
             @type = "Article",
-            headline = title,
+            headline = safeTitle,
             description = Truncate(excerpt, 300),
             image = mediaPath != null ? "/" + mediaPath : (string?)null,
             datePublished = contentItem.CreatedUtc?.ToString("o"),
@@ -436,36 +443,12 @@ public partial class AutoBlogImportService : IAutoBlogImportService
 
     private async Task<ContentItem?> FindExistingPostByGuidAsync(string guid)
     {
-        var query = _session.Query<ContentItem, ContentItemIndex>(x =>
-            x.ContentType == Constants.ContentType && x.Published);
+        // Use the AutoBlogPostIndex for efficient lookup instead of loading all items
+        var item = await _session
+            .Query<ContentItem, AutoBlogPostIndex>(x => x.EdgeGuid == guid)
+            .FirstOrDefaultAsync();
 
-        var items = await query.ListAsync();
-
-        foreach (var item in items)
-        {
-            var part = item.As<AutoBlogPart>();
-            if (part != null && string.Equals(part.EdgeGuid, guid, StringComparison.OrdinalIgnoreCase))
-            {
-                return item;
-            }
-        }
-
-        // Also check drafts
-        var draftQuery = _session.Query<ContentItem, ContentItemIndex>(x =>
-            x.ContentType == Constants.ContentType && x.Latest && !x.Published);
-
-        var draftItems = await draftQuery.ListAsync();
-
-        foreach (var item in draftItems)
-        {
-            var part = item.As<AutoBlogPart>();
-            if (part != null && string.Equals(part.EdgeGuid, guid, StringComparison.OrdinalIgnoreCase))
-            {
-                return item;
-            }
-        }
-
-        return null;
+        return item;
     }
 
     private async Task SendNotificationEmailAsync(AutoBlogSettings settings, ImportResult result)
@@ -503,48 +486,50 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             var sendResult = await _emailService.SendAsync(message);
             if (!sendResult.Succeeded)
             {
-                _logger.LogWarning("Failed to send AutoBlog notification email to {Email}.", email);
+                _logger.LogWarning("Failed to send AutoBlog notification email.");
             }
         }
     }
 
     private static string BuildEmailBody(ImportResult result, bool isDraft)
     {
-        var body = "<p>This is an automatic notification from the MSP Marketing Edge AutoBlog module.</p>";
+        var body = new StringBuilder();
+
+        body.Append("<p>This is an automatic notification from the MSP Marketing Edge AutoBlog module.</p>");
 
         if (isDraft)
         {
-            body += "<p>You have the following new post(s) in DRAFT mode to review and publish.</p>";
+            body.Append("<p>You have the following new post(s) in DRAFT mode to review and publish.</p>");
         }
         else
         {
-            body += "<p>The following new post(s) have been published on your website.</p>";
+            body.Append("<p>The following new post(s) have been published on your website.</p>");
         }
 
         if (result.CreatedPosts.Count > 0)
         {
-            body += "<h3>New Posts</h3><ul>";
+            body.Append("<h3>New Posts</h3><ul>");
             foreach (var post in result.CreatedPosts)
             {
-                body += $"<li><strong>{WebUtility.HtmlEncode(post.Title)}</strong> — {post.Status}</li>";
+                body.Append($"<li><strong>{WebUtility.HtmlEncode(post.Title)}</strong> — {post.Status}</li>");
             }
-            body += "</ul>";
+            body.Append("</ul>");
         }
 
         if (result.UpdatedPosts.Count > 0)
         {
-            body += "<h3>Updated Posts</h3><ul>";
+            body.Append("<h3>Updated Posts</h3><ul>");
             foreach (var post in result.UpdatedPosts)
             {
-                body += $"<li><strong>{WebUtility.HtmlEncode(post.Title)}</strong> — {post.Status}</li>";
+                body.Append($"<li><strong>{WebUtility.HtmlEncode(post.Title)}</strong> — {post.Status}</li>");
             }
-            body += "</ul>";
+            body.Append("</ul>");
         }
 
-        body += "<p>You can manage your AutoBlog settings in the Orchard admin under Configuration &gt; MSP Marketing Edge AutoBlog.</p>";
-        body += "<p>The MSP Marketing Edge team.</p>";
+        body.Append("<p>You can manage your AutoBlog settings in the Orchard admin under Configuration &gt; MSP Marketing Edge AutoBlog.</p>");
+        body.Append("<p>The MSP Marketing Edge team.</p>");
 
-        return body;
+        return body.ToString();
     }
 
     private async Task EnsurePartDefinitionCleanAsync()

@@ -36,10 +36,18 @@ public class ImageService : IImageService
             return null;
         }
 
+        // Validate URL scheme to prevent SSRF
+        if (!Uri.TryCreate(imageUrl, UriKind.Absolute, out var uri)
+            || (uri.Scheme != "https" && uri.Scheme != "http"))
+        {
+            _logger.LogWarning("Rejected image URL with invalid scheme: {ImageUrl}", imageUrl);
+            return null;
+        }
+
         try
         {
             var client = _httpClientFactory.CreateClient("EdgeApi");
-            var response = await client.GetAsync(imageUrl);
+            using var response = await client.GetAsync(uri);
             response.EnsureSuccessStatusCode();
 
             var contentType = response.Content.Headers.ContentType?.MediaType ?? "image/jpeg";
@@ -64,7 +72,10 @@ public class ImageService : IImageService
     private static string SanitizeFileName(string fileName)
     {
         var invalid = Path.GetInvalidFileNameChars();
-        var sanitized = string.Join("", fileName.Select(c => invalid.Contains(c) ? '-' : c));
+        // Also strip directory separators and dot-dot sequences to prevent path traversal
+        var sanitized = string.Join("", fileName
+            .Replace("..", "")
+            .Select(c => invalid.Contains(c) || c == '/' || c == '\\' ? '-' : c));
         return sanitized.Trim('-');
     }
 }
