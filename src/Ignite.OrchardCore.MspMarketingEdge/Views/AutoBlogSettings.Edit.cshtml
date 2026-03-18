@@ -4,7 +4,8 @@
 @model AutoBlogSettingsViewModel
 
 @{
-    var culture = Context.Features.Get<IRequestCultureFeature>().RequestCulture.Culture;
+    var culture = Context.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture
+        ?? System.Globalization.CultureInfo.CurrentUICulture;
 }
 
 <h3>MSP Marketing Edge AutoBlog</h3>
