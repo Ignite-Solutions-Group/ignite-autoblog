@@ -1,0 +1,40 @@
+{% assign autoblogPart = Model.ContentItem.Content.AutoBlogPart %}
+{% assign seoMetaPart = Model.ContentItem.Content.SeoMetaPart %}
+{% assign publishDate = Model.ContentItem.PublishedUtc | default: Model.ContentItem.CreatedUtc %}
+
+<article class="autoblog-post">
+    <header class="mb-4">
+        <h1>{{ Model.ContentItem.DisplayText }}</h1>
+        <div class="text-muted mb-3">
+            <time datetime="{{ publishDate | date: '%Y-%m-%dT%H:%M:%S' }}">
+                {{ publishDate | date: '%d %B %Y' }}
+            </time>
+        </div>
+    </header>
+
+    {% if autoblogPart.EdgeHasVideo.Value != true %}
+        {% assign ogImage = seoMetaPart.OpenGraphImage %}
+        {% if ogImage.Paths.size > 0 %}
+            <div class="autoblog-featured-image mb-4">
+                <img src="{{ ogImage.Paths[0] | asset_url }}"
+                     alt="{{ ogImage.MediaTexts[0] | default: Model.ContentItem.DisplayText }}"
+                     class="img-fluid rounded" />
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <div class="autoblog-body">
+        {{ Model.Content.HtmlBodyPart | shape_render }}
+    </div>
+
+    {% if autoblogPart.EdgeUrl.Text != blank %}
+        <footer class="mt-4 pt-3 border-top">
+            <p class="text-muted small">
+                Originally published at
+                <a href="{{ autoblogPart.EdgeUrl.Text }}" target="_blank" rel="noopener noreferrer nofollow">
+                    {{ autoblogPart.EdgeUrl.Text | split: '//' | last | split: '/' | first }}
+                </a>
+            </p>
+        </footer>
+    {% endif %}
+</article>
