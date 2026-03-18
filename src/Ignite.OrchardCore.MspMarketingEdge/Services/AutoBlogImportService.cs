@@ -85,6 +85,8 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             }
             catch (Exception ex)
             {
+                result.ErrorCount++;
+                result.ErrorMessage ??= ex.Message;
                 _logger.LogError(ex, "AutoBlog import: error processing article '{Title}' (GUID: {Guid}).",
                     article.Title.Rendered, article.Guid.Rendered);
             }
@@ -112,8 +114,14 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             var settings = site.As<AutoBlogSettings>();
 
             settings.LastSyncUtc = DateTime.UtcNow;
-            settings.LastSyncSuccess = result.LicenseValid && result.ErrorMessage == null;
+            settings.LastSyncSuccess = result.LicenseValid && result.ErrorCount == 0;
             settings.LastSyncSummary = $"{result.CreatedPosts.Count} created, {result.UpdatedPosts.Count} updated, {result.SkippedCount} skipped";
+
+            if (result.ErrorCount > 0)
+            {
+                settings.LastSyncSummary += $", {result.ErrorCount} failed";
+                settings.LastSyncSuccess = false;
+            }
 
             if (!result.LicenseValid)
             {
