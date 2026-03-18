@@ -1,6 +1,11 @@
 @using Ignite.OrchardCore.MspMarketingEdge
 @using Ignite.OrchardCore.MspMarketingEdge.ViewModels
+@using Microsoft.AspNetCore.Localization
 @model AutoBlogSettingsViewModel
+
+@{
+    var culture = Context.Features.Get<IRequestCultureFeature>().RequestCulture.Culture;
+}
 
 <h3>MSP Marketing Edge AutoBlog</h3>
 <p>Configure the automatic import of weekly syndicated blog posts from MSP Marketing Edge.</p>
@@ -15,7 +20,7 @@
             <div class="row mb-2">
                 <div class="col-sm-3 fw-bold">Last sync</div>
                 <div class="col-sm-9">
-                    @Model.LastSyncLocal.Value.LocalDateTime.ToString("g")
+                    @Model.LastSyncLocal.Value.LocalDateTime.ToString("g", culture)
                     @if (Model.LastSyncSuccess)
                     {
                         <span class="badge bg-success ms-2">Success</span>
@@ -45,7 +50,7 @@
         {
             <div class="row mb-2">
                 <div class="col-sm-3 fw-bold">Next sync</div>
-                <div class="col-sm-9">@Model.NextSyncLocal.Value.LocalDateTime.ToString("g")</div>
+                <div class="col-sm-9">@Model.NextSyncLocal.Value.LocalDateTime.ToString("g", culture)</div>
             </div>
         }
         <div class="mt-3">
