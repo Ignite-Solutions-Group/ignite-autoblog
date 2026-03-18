@@ -1,4 +1,5 @@
 using Ignite.OrchardCore.MspMarketingEdge.Indexes;
+using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
@@ -10,10 +11,14 @@ namespace Ignite.OrchardCore.MspMarketingEdge.Migrations;
 public class AutoBlogMigrations : DataMigration
 {
     private readonly IContentDefinitionManager _contentDefinitionManager;
+    private readonly ILogger<AutoBlogMigrations> _logger;
 
-    public AutoBlogMigrations(IContentDefinitionManager contentDefinitionManager)
+    public AutoBlogMigrations(
+        IContentDefinitionManager contentDefinitionManager,
+        ILogger<AutoBlogMigrations> logger)
     {
         _contentDefinitionManager = contentDefinitionManager;
+        _logger = logger;
     }
 
     public async Task<int> CreateAsync()
@@ -73,15 +78,31 @@ public class AutoBlogMigrations : DataMigration
             )
         );
 
-        // YesSql index for efficient GUID lookups
-        await SchemaBuilder.CreateMapIndexTableAsync(typeof(AutoBlogPostIndex), table => table
-            .Column<string>(nameof(AutoBlogPostIndex.EdgeGuid), col => col.WithLength(255))
-        , collection: null);
+        // YesSql index for efficient GUID lookups.
+        // Wrapped in try-catch to handle feature disable/re-enable cycles where
+        // the table and index survive in the DB but the migration version is reset.
+        try
+        {
+            await SchemaBuilder.CreateMapIndexTableAsync(typeof(AutoBlogPostIndex), table => table
+                .Column<string>(nameof(AutoBlogPostIndex.EdgeGuid), col => col.WithLength(255))
+            , collection: null);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "AutoBlogPostIndex table may already exist — skipping creation.");
+        }
 
-        await SchemaBuilder.AlterIndexTableAsync(typeof(AutoBlogPostIndex), table => table
-            .CreateIndex("IDX_AutoBlogPostIndex_EdgeGuid",
-                nameof(AutoBlogPostIndex.EdgeGuid))
-        , collection: null);
+        try
+        {
+            await SchemaBuilder.AlterIndexTableAsync(typeof(AutoBlogPostIndex), table => table
+                .CreateIndex("IDX_AutoBlogPostIndex_EdgeGuid",
+                    nameof(AutoBlogPostIndex.EdgeGuid))
+            , collection: null);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "IDX_AutoBlogPostIndex_EdgeGuid index may already exist — skipping creation.");
+        }
 
         return 1;
     }
