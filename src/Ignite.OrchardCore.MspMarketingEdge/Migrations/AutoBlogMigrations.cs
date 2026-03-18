@@ -16,39 +16,10 @@ public class AutoBlogMigrations : DataMigration
 
     public async Task<int> CreateAsync()
     {
+        // AutoBlogPart uses code-only properties (not content fields),
+        // so the part definition should not declare fields.
         await _contentDefinitionManager.AlterPartDefinitionAsync(Constants.AutoBlogPartName, part => part
             .WithDescription("Stores MSP Marketing Edge metadata for imported blog posts.")
-            .WithField("EdgeGuid", field => field
-                .OfType("TextField")
-                .WithDisplayName("Edge GUID")
-                .WithDescription("Upstream GUID for deduplication.")
-                .WithSettings(new { Hint = "Do not modify. Used for deduplication." })
-            )
-            .WithField("EdgePostId", field => field
-                .OfType("NumericField")
-                .WithDisplayName("Edge Post ID")
-                .WithDescription("Upstream post ID.")
-            )
-            .WithField("EdgeUrl", field => field
-                .OfType("TextField")
-                .WithDisplayName("Edge URL")
-                .WithDescription("Canonical URL from the upstream source.")
-            )
-            .WithField("EdgeUpdateVersion", field => field
-                .OfType("NumericField")
-                .WithDisplayName("Edge Update Version")
-                .WithDescription("Version number for change detection.")
-            )
-            .WithField("EdgeWeekCommencing", field => field
-                .OfType("TextField")
-                .WithDisplayName("Week Commencing")
-                .WithDescription("Week commencing date from upstream.")
-            )
-            .WithField("EdgeHasVideo", field => field
-                .OfType("BooleanField")
-                .WithDisplayName("Has Video")
-                .WithDescription("Whether this post is from a Blog + Video feed.")
-            )
         );
 
         await _contentDefinitionManager.AlterTypeDefinitionAsync(Constants.ContentType, type => type
@@ -86,5 +57,21 @@ public class AutoBlogMigrations : DataMigration
         );
 
         return 1;
+    }
+
+    public async Task<int> UpdateFrom1Async()
+    {
+        // Remove content field definitions that conflict with the C# part properties.
+        // AutoBlogPart stores data via code properties, not content fields.
+        await _contentDefinitionManager.AlterPartDefinitionAsync(Constants.AutoBlogPartName, part => part
+            .RemoveField("EdgeGuid")
+            .RemoveField("EdgePostId")
+            .RemoveField("EdgeUrl")
+            .RemoveField("EdgeUpdateVersion")
+            .RemoveField("EdgeWeekCommencing")
+            .RemoveField("EdgeHasVideo")
+        );
+
+        return 2;
     }
 }
