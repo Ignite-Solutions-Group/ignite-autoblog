@@ -1,0 +1,99 @@
+@using Ignite.OrchardCore.MspMarketingEdge
+@using Ignite.OrchardCore.MspMarketingEdge.ViewModels
+@model AutoBlogSettingsViewModel
+
+<h3>MSP Marketing Edge AutoBlog</h3>
+<p>Configure the automatic import of weekly syndicated blog posts from MSP Marketing Edge.</p>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Sync Status</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.LastSyncUtc.HasValue)
+        {
+            <div class="row mb-2">
+                <div class="col-sm-3 fw-bold">Last sync</div>
+                <div class="col-sm-9">
+                    @Model.LastSyncUtc.Value.ToString("dd MMM yyyy 'at' HH:mm 'UTC'")
+                    @if (Model.LastSyncSuccess)
+                    {
+                        <span class="badge bg-success ms-2">Success</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger ms-2">Failed</span>
+                    }
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-3 fw-bold">Result</div>
+                <div class="col-sm-9">@Model.LastSyncSummary</div>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted mb-2">No import has run yet.</p>
+        }
+        @if (Model.NextSyncUtc.HasValue)
+        {
+            <div class="row mb-2">
+                <div class="col-sm-3 fw-bold">Next sync</div>
+                <div class="col-sm-9">@Model.NextSyncUtc.Value.ToString("dd MMM yyyy 'at' HH:mm 'UTC'")</div>
+            </div>
+        }
+        <div class="mt-3">
+            <form asp-controller="Admin" asp-action="ForceRefresh" asp-area="Ignite.OrchardCore.MspMarketingEdge" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-warning btn-sm">Run Import Now</button>
+            </form>
+            <span class="hint ms-2">Triggers an immediate import outside of the background schedule.</span>
+        </div>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label asp-for="LicensedEmail" class="form-label">Licensed Email</label>
+    <input asp-for="LicensedEmail" class="form-control" placeholder="your@email.com" />
+    <span class="hint">The email address used to register with MSP Marketing Edge.</span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="FeedId" class="form-label">Feed Selection</label>
+    <select asp-for="FeedId" class="form-select">
+        @foreach (var feed in Constants.FeedOptions)
+        {
+            <option value="@feed.Key">@feed.Value</option>
+        }
+    </select>
+</div>
+
+<div class="mb-3 form-check">
+    <input asp-for="DirectlyPublish" class="form-check-input" type="checkbox" />
+    <label asp-for="DirectlyPublish" class="form-check-label">Directly Publish</label>
+    <span class="hint d-block">When enabled, imported posts are published immediately. When disabled, they are created as drafts for manual review. Future-dated posts will be scheduled for automatic publishing.</span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="NotificationEmail" class="form-label">Notification Email</label>
+    <input asp-for="NotificationEmail" class="form-control" placeholder="admin@example.com, editor@example.com" />
+    <span class="hint">Comma-separated email addresses to notify when new posts are imported. Leave blank to disable.</span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="TwitterHandle" class="form-label">Twitter/X Handle</label>
+    <input asp-for="TwitterHandle" class="form-control" placeholder="@@yourcompany" />
+    <span class="hint">Used for Twitter Card metadata on imported posts. Leave blank to omit.</span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="PublisherName" class="form-label">Publisher Name</label>
+    <input asp-for="PublisherName" class="form-control" placeholder="Your Organization Name" />
+    <span class="hint">Used in Google structured data (JSON-LD). Falls back to the site name if left blank.</span>
+</div>
+
+<div class="mb-3 form-check">
+    <input asp-for="EnableGoogleStructuredData" class="form-check-input" type="checkbox" />
+    <label asp-for="EnableGoogleStructuredData" class="form-check-label">Enable Google Structured Data</label>
+    <span class="hint d-block">Generates a JSON-LD Article schema on each imported post.</span>
+</div>
