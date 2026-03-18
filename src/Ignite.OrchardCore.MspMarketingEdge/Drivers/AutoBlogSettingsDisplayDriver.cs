@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using OrchardCore.DisplayManagement.Entities;
 using OrchardCore.DisplayManagement.Handlers;
 using OrchardCore.DisplayManagement.Views;
+using OrchardCore.Modules;
 using OrchardCore.Settings;
 
 namespace Ignite.OrchardCore.MspMarketingEdge.Drivers;
@@ -17,13 +18,16 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
 
     private readonly IAuthorizationService _authorizationService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILocalClock _localClock;
 
     public AutoBlogSettingsDisplayDriver(
         IAuthorizationService authorizationService,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        ILocalClock localClock)
     {
         _authorizationService = authorizationService;
         _httpContextAccessor = httpContextAccessor;
+        _localClock = localClock;
     }
 
     protected override string SettingsGroupId => GroupId;
@@ -36,6 +40,16 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
             return null;
         }
 
+        // Convert UTC timestamps to the site's configured timezone
+        var lastSyncLocal = settings.LastSyncUtc.HasValue
+            ? await _localClock.ConvertToLocalAsync(new DateTimeOffset(DateTime.SpecifyKind(settings.LastSyncUtc.Value, DateTimeKind.Utc)))
+            : (DateTimeOffset?)null;
+
+        var nextSyncUtc = CalculateNextSync(settings.LastSyncUtc);
+        var nextSyncLocal = nextSyncUtc.HasValue
+            ? await _localClock.ConvertToLocalAsync(new DateTimeOffset(DateTime.SpecifyKind(nextSyncUtc.Value, DateTimeKind.Utc)))
+            : (DateTimeOffset?)null;
+
         return Initialize<AutoBlogSettingsViewModel>("AutoBlogSettings_Edit", model =>
         {
             model.LicensedEmail = settings.LicensedEmail;
@@ -46,11 +60,11 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
             model.PublisherName = settings.PublisherName;
             model.EnableGoogleStructuredData = settings.EnableGoogleStructuredData;
 
-            // Sync status
-            model.LastSyncUtc = settings.LastSyncUtc;
+            // Sync status (local times)
+            model.LastSyncLocal = lastSyncLocal;
             model.LastSyncSuccess = settings.LastSyncSuccess;
             model.LastSyncSummary = settings.LastSyncSummary;
-            model.NextSyncUtc = CalculateNextSync(settings.LastSyncUtc);
+            model.NextSyncLocal = nextSyncLocal;
         }).Location("Content:1")
           .OnGroup(SettingsGroupId);
     }

@@ -26,8 +26,8 @@ public class AutoBlogSettingsViewModel
     public bool EnableGoogleStructuredData { get; set; } = true;
 
     // Sync status (read-only, populated by the driver)
-    public DateTime? LastSyncUtc { get; set; }
+    public DateTimeOffset? LastSyncLocal { get; set; }
     public bool LastSyncSuccess { get; set; }
     public string LastSyncSummary { get; set; } = string.Empty;
-    public DateTime? NextSyncUtc { get; set; }
+    public DateTimeOffset? NextSyncLocal { get; set; }
 }

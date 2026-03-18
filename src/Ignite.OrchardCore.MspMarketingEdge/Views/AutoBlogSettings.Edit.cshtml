@@ -10,12 +10,12 @@
         <h5 class="card-title mb-0">Sync Status</h5>
     </div>
     <div class="card-body">
-        @if (Model.LastSyncUtc.HasValue)
+        @if (Model.LastSyncLocal.HasValue)
         {
             <div class="row mb-2">
                 <div class="col-sm-3 fw-bold">Last sync</div>
                 <div class="col-sm-9">
-                    @Model.LastSyncUtc.Value.ToString("dd MMM yyyy 'at' HH:mm 'UTC'")
+                    @Model.LastSyncLocal.Value.ToString("dd MMM yyyy 'at' HH:mm zzz")
                     @if (Model.LastSyncSuccess)
                     {
                         <span class="badge bg-success ms-2">Success</span>
@@ -35,20 +35,32 @@
         {
             <p class="text-muted mb-2">No import has run yet.</p>
         }
-        @if (Model.NextSyncUtc.HasValue)
+        @if (Model.NextSyncLocal.HasValue)
         {
             <div class="row mb-2">
                 <div class="col-sm-3 fw-bold">Next sync</div>
-                <div class="col-sm-9">@Model.NextSyncUtc.Value.ToString("dd MMM yyyy 'at' HH:mm 'UTC'")</div>
+                <div class="col-sm-9">@Model.NextSyncLocal.Value.ToString("dd MMM yyyy 'at' HH:mm zzz")</div>
             </div>
         }
         <div class="mt-3">
-            <form asp-controller="Admin" asp-action="ForceRefresh" asp-area="Ignite.OrchardCore.MspMarketingEdge" method="post" class="d-inline">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-warning btn-sm">Run Import Now</button>
-            </form>
+            <button type="button" class="btn btn-warning btn-sm" id="btn-run-import-now">Run Import Now</button>
             <span class="hint ms-2">Triggers an immediate import outside of the background schedule.</span>
         </div>
+        <script at="Foot">
+            document.getElementById('btn-run-import-now').addEventListener('click', function () {
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '@Url.Action("ForceRefresh", "Admin", new { area = "Ignite.OrchardCore.MspMarketingEdge" })';
+                var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = '__RequestVerificationToken';
+                input.value = token;
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            });
+        </script>
     </div>
 </div>
 
