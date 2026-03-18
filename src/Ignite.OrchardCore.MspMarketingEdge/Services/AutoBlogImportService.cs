@@ -59,9 +59,30 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         var result = new ImportResult();
 
         var settings = await GetSettingsAsync();
-        if (settings == null || settings.FeedId == 0 || string.IsNullOrWhiteSpace(settings.LicensedEmail))
+        if (string.IsNullOrWhiteSpace(settings?.LicensedEmail))
         {
-            _logger.LogInformation("AutoBlog import skipped: feed is off or license email is blank.");
+            _logger.LogInformation("AutoBlog import skipped: licensed email is blank.");
+            result.MissingEmail = true;
+            return result;
+        }
+
+        if (settings.FeedId == 0)
+        {
+            _logger.LogInformation("AutoBlog: feed is off — performing API test only.");
+            result.FeedDisabled = true;
+            result.LicenseValid = await _edgeApiService.CheckLicenseAsync(settings.LicensedEmail);
+            if (!result.LicenseValid)
+            {
+                _logger.LogWarning("AutoBlog API test: license not valid for '{Email}'.", settings.LicensedEmail);
+            }
+            else
+            {
+                _logger.LogInformation("AutoBlog API test: license valid for '{Email}'.", settings.LicensedEmail);
+
+                // Fetch articles to report count, using feed 8 (Blog Only — US) as a representative test feed
+                var testArticles = await _edgeApiService.GetFeedArticlesAsync(8, settings.LicensedEmail);
+                result.ApiArticleCount = testArticles.Count;
+            }
             return result;
         }
 
@@ -75,6 +96,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         }
 
         var articles = await _edgeApiService.GetFeedArticlesAsync(settings.FeedId, settings.LicensedEmail);
+        result.ApiArticleCount = articles.Count;
         if (articles.Count == 0)
         {
             _logger.LogInformation("AutoBlog import: no articles returned from feed.");

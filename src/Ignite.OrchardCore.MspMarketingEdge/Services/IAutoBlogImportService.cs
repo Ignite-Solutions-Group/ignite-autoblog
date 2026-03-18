@@ -10,6 +10,9 @@ public class ImportResult
     public int ErrorCount { get; set; }
     public bool LicenseValid { get; set; } = true;
     public string? ErrorMessage { get; set; }
+    public bool FeedDisabled { get; set; }
+    public bool MissingEmail { get; set; }
+    public int ApiArticleCount { get; set; }
 }
 
 public class ImportedPostInfo
