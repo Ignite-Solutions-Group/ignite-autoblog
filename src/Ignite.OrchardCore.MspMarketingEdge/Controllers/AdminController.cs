@@ -2,12 +2,11 @@ using Ignite.OrchardCore.MspMarketingEdge.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
-using OrchardCore.Admin;
 using OrchardCore.DisplayManagement.Notify;
 
 namespace Ignite.OrchardCore.MspMarketingEdge.Controllers;
 
-[Admin("autoblog/{action=Index}", "AutoBlog.{action}")]
+[Route("admin/autoblog")]
 public class AdminController : Controller
 {
     private readonly IAutoBlogImportService _importService;
