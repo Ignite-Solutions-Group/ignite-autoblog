@@ -41,6 +41,11 @@ public class AdminController : Controller
         {
             await _notifier.WarningAsync(H["License validation failed. Please check your licensed email address."]);
         }
+        else if (result.ErrorCount > 0)
+        {
+            var message = $"Import failed for {result.ErrorCount} article(s). See the error details in the Sync Status card below.";
+            await _notifier.ErrorAsync(H[message]);
+        }
         else if (result.CreatedPosts.Count == 0 && result.UpdatedPosts.Count == 0)
         {
             await _notifier.InformationAsync(H["No new or updated posts found."]);

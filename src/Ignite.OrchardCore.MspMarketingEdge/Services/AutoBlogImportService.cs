@@ -63,6 +63,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         {
             _logger.LogWarning("AutoBlog import skipped: license not valid for {Email}.", settings.LicensedEmail);
             result.LicenseValid = false;
+            await UpdateSyncStatusAsync(result);
             return result;
         }
 
@@ -70,6 +71,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         if (articles.Count == 0)
         {
             _logger.LogInformation("AutoBlog import: no articles returned from feed.");
+            await UpdateSyncStatusAsync(result);
             return result;
         }
 
@@ -83,6 +85,8 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             }
             catch (Exception ex)
             {
+                result.ErrorCount++;
+                result.ErrorMessage ??= ex.Message;
                 _logger.LogError(ex, "AutoBlog import: error processing article '{Title}' (GUID: {Guid}).",
                     article.Title.Rendered, article.Guid.Rendered);
             }
@@ -110,8 +114,16 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             var settings = site.As<AutoBlogSettings>();
 
             settings.LastSyncUtc = DateTime.UtcNow;
-            settings.LastSyncSuccess = result.LicenseValid && result.ErrorMessage == null;
+            settings.LastSyncSuccess = result.LicenseValid && result.ErrorCount == 0;
             settings.LastSyncSummary = $"{result.CreatedPosts.Count} created, {result.UpdatedPosts.Count} updated, {result.SkippedCount} skipped";
+            settings.LastSyncError = null;
+
+            if (result.ErrorCount > 0)
+            {
+                settings.LastSyncSummary += $", {result.ErrorCount} failed";
+                settings.LastSyncSuccess = false;
+                settings.LastSyncError = result.ErrorMessage;
+            }
 
             if (!result.LicenseValid)
             {

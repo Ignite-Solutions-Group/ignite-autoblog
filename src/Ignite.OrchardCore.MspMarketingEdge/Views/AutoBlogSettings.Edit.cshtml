@@ -15,7 +15,7 @@
             <div class="row mb-2">
                 <div class="col-sm-3 fw-bold">Last sync</div>
                 <div class="col-sm-9">
-                    @Model.LastSyncLocal.Value.ToString("dd MMM yyyy 'at' HH:mm zzz")
+                    @Model.LastSyncLocal.Value.LocalDateTime.ToString("g")
                     @if (Model.LastSyncSuccess)
                     {
                         <span class="badge bg-success ms-2">Success</span>
@@ -30,6 +30,12 @@
                 <div class="col-sm-3 fw-bold">Result</div>
                 <div class="col-sm-9">@Model.LastSyncSummary</div>
             </div>
+            @if (!string.IsNullOrWhiteSpace(Model.LastSyncError))
+            {
+                <div class="alert alert-danger mt-2 mb-0">
+                    <strong>Error:</strong> @Model.LastSyncError
+                </div>
+            }
         }
         else
         {
@@ -39,7 +45,7 @@
         {
             <div class="row mb-2">
                 <div class="col-sm-3 fw-bold">Next sync</div>
-                <div class="col-sm-9">@Model.NextSyncLocal.Value.ToString("dd MMM yyyy 'at' HH:mm zzz")</div>
+                <div class="col-sm-9">@Model.NextSyncLocal.Value.LocalDateTime.ToString("g")</div>
             </div>
         }
         <div class="mt-3">
