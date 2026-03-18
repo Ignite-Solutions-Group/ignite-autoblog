@@ -109,7 +109,7 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
 
             return cron.GetNextOccurrence(baseTime, TimeZoneInfo.Utc);
         }
-        catch
+        catch (CronFormatException)
         {
             return null;
         }

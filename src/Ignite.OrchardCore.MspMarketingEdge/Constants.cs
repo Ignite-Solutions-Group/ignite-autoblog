@@ -9,7 +9,7 @@ public static class Constants
 
     public const string LicenseEndpoint = "https://www.mspmarketingedge.com/wp-content/keap/msp_edge_license.php";
     public const string FeedEndpoint = "https://www.yourtechupdates.com/wp-json/tech/videos/";
-    public const string ParentPostEndpoint = "https://www.yourtechupdates.com/wp-json/tech/videos/";
+    public const string ParentPostEndpoint = "https://www.yourtechupdates.com/wp-json/wp/v2/posts/";
 
     public static readonly Dictionary<int, string> FeedOptions = new()
     {
