@@ -106,4 +106,36 @@ public class AutoBlogMigrations : DataMigration
 
         return 1;
     }
+
+    public async Task<int> UpdateFrom1Async()
+    {
+        // Ensures the index table and index exist for sites that were previously
+        // at version 1 but lost the table (e.g., manual DB cleanup, failed prior
+        // migration, or feature disable/re-enable cycle).
+        // The try-catch makes this safe to run whether or not the table already exists.
+        try
+        {
+            await SchemaBuilder.CreateMapIndexTableAsync(typeof(AutoBlogPostIndex), table => table
+                .Column<string>(nameof(AutoBlogPostIndex.EdgeGuid), col => col.WithLength(255))
+            , collection: null);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "AutoBlogPostIndex table may already exist — skipping creation.");
+        }
+
+        try
+        {
+            await SchemaBuilder.AlterIndexTableAsync(typeof(AutoBlogPostIndex), table => table
+                .CreateIndex("IDX_AutoBlogPostIndex_EdgeGuid",
+                    nameof(AutoBlogPostIndex.EdgeGuid))
+            , collection: null);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "IDX_AutoBlogPostIndex_EdgeGuid index may already exist — skipping creation.");
+        }
+
+        return 2;
+    }
 }
