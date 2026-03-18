@@ -43,7 +43,7 @@ public class AdminController : Controller
         }
         else if (result.ErrorCount > 0)
         {
-            var message = $"Import encountered {result.ErrorCount} error(s): {result.ErrorMessage} — check the logs for details.";
+            var message = $"Import failed for {result.ErrorCount} article(s). See the error details in the Sync Status card below.";
             await _notifier.ErrorAsync(H[message]);
         }
         else if (result.CreatedPosts.Count == 0 && result.UpdatedPosts.Count == 0)

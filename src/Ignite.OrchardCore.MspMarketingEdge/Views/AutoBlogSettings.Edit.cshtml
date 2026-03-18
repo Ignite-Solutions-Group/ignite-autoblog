@@ -30,6 +30,12 @@
                 <div class="col-sm-3 fw-bold">Result</div>
                 <div class="col-sm-9">@Model.LastSyncSummary</div>
             </div>
+            @if (!string.IsNullOrWhiteSpace(Model.LastSyncError))
+            {
+                <div class="alert alert-danger mt-2 mb-0">
+                    <strong>Error:</strong> @Model.LastSyncError
+                </div>
+            }
         }
         else
         {

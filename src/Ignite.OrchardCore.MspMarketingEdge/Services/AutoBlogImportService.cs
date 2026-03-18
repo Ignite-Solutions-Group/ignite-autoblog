@@ -116,11 +116,13 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             settings.LastSyncUtc = DateTime.UtcNow;
             settings.LastSyncSuccess = result.LicenseValid && result.ErrorCount == 0;
             settings.LastSyncSummary = $"{result.CreatedPosts.Count} created, {result.UpdatedPosts.Count} updated, {result.SkippedCount} skipped";
+            settings.LastSyncError = null;
 
             if (result.ErrorCount > 0)
             {
                 settings.LastSyncSummary += $", {result.ErrorCount} failed";
                 settings.LastSyncSuccess = false;
+                settings.LastSyncError = result.ErrorMessage;
             }
 
             if (!result.LicenseValid)

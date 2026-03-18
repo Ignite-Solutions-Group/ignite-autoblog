@@ -64,6 +64,7 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
             model.LastSyncLocal = lastSyncLocal;
             model.LastSyncSuccess = settings.LastSyncSuccess;
             model.LastSyncSummary = settings.LastSyncSummary;
+            model.LastSyncError = settings.LastSyncError;
             model.NextSyncLocal = nextSyncLocal;
         }).Location("Content:1")
           .OnGroup(SettingsGroupId);

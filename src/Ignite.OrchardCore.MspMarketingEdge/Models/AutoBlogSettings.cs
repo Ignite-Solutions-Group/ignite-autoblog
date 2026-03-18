@@ -14,4 +14,5 @@ public class AutoBlogSettings
     public DateTime? LastSyncUtc { get; set; }
     public bool LastSyncSuccess { get; set; }
     public string LastSyncSummary { get; set; } = string.Empty;
+    public string? LastSyncError { get; set; }
 }
