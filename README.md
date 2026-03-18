@@ -56,6 +56,32 @@ After enabling the module, navigate to **Configuration → MSP Marketing Edge Au
 4. Configure the module settings under Configuration → MSP Marketing Edge AutoBlog.
 5. Use the **Run Import Now** button to verify the connection and trigger an initial import.
 
+## Templates
+
+The module includes default Liquid templates for rendering `AutoBlogPost` content items:
+
+- **`Content-AutoBlogPost.liquid`** — Detail view (single article page). Renders the title, publish date, featured image (hidden automatically for Blog + Video feeds where the video is embedded in the body), full article body, and a link back to the original source.
+- **`Content_Summary-AutoBlogPost.liquid`** — Summary view (article lists). Renders a Bootstrap card with featured image thumbnail, title, date, excerpt, and a "Read more" link.
+
+These templates use Bootstrap 5 classes and work out of the box. To customize them, copy the template file into your theme's `Views/` folder and modify it there — Orchard's shape resolution will pick up your theme's version over the module's default.
+
+### Listing AutoBlog Posts
+
+To display a list of imported posts on a page, you can use Orchard's built-in Liquid query support. For example, in a Liquid widget or template:
+
+```liquid
+{% assign posts = ContentItem | query: type: 'AutoBlogPost', sort: 'PublishedUtc', order: 'desc', count: 10 %}
+{% for post in posts %}
+    {{ post | shape_build_display: 'Summary' | shape_render }}
+{% endfor %}
+```
+
+Alternatively, create a **List** content item in the Orchard admin that queries the `AutoBlogPost` content type — this gives you pagination and filtering without any template changes.
+
+### Combining with existing Blog Posts
+
+If your site already has a blog page that lists `BlogPost` items and you want imported `AutoBlogPost` items to appear alongside them, update your blog list template to query both content types.
+
 ## Disclaimer
 
 This is an independent community project. It is not affiliated with or endorsed by MSP Marketing Edge. MSP Marketing Edge is a trademark of its respective owner.

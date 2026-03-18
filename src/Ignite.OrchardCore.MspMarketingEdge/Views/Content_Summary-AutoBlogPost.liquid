@@ -1,0 +1,40 @@
+{% assign autoblogPart = Model.ContentItem.Content.AutoBlogPart %}
+{% assign seoMetaPart = Model.ContentItem.Content.SeoMetaPart %}
+{% assign publishDate = Model.ContentItem.PublishedUtc | default: Model.ContentItem.CreatedUtc %}
+{% assign excerpt = seoMetaPart.MetaDescription %}
+{% assign postUrl = Model.ContentItem | display_url %}
+
+<article class="autoblog-summary card mb-4">
+    <div class="row g-0">
+        {% assign ogImage = seoMetaPart.OpenGraphImage %}
+        {% if ogImage.Paths.size > 0 %}
+            <div class="col-md-4">
+                <a href="{{ postUrl }}">
+                    <img src="{{ ogImage.Paths[0] | asset_url }}"
+                         alt="{{ ogImage.MediaTexts[0] | default: Model.ContentItem.DisplayText }}"
+                         class="img-fluid rounded-start h-100 object-fit-cover" />
+                </a>
+            </div>
+            <div class="col-md-8">
+        {% else %}
+            <div class="col-12">
+        {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{{ postUrl }}" class="text-decoration-none">
+                            {{ Model.ContentItem.DisplayText }}
+                        </a>
+                    </h5>
+                    <p class="card-text text-muted small">
+                        <time datetime="{{ publishDate | date: '%Y-%m-%dT%H:%M:%S' }}">
+                            {{ publishDate | date: '%d %B %Y' }}
+                        </time>
+                    </p>
+                    {% if excerpt != blank %}
+                        <p class="card-text">{{ excerpt }}</p>
+                    {% endif %}
+                    <a href="{{ postUrl }}" class="btn btn-outline-primary btn-sm">Read more</a>
+                </div>
+            </div>
+    </div>
+</article>
