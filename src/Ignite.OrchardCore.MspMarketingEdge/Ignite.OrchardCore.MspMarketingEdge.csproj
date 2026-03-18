@@ -5,6 +5,12 @@
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>Ignite.OrchardCore.MspMarketingEdge</PackageId>
+    <Authors>Ignite Solutions Group</Authors>
+    <Description>Orchard Core module for MSP Marketing Edge blog syndication</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/dsghi/ignite-autoblog</RepositoryUrl>
+    <PackageTags>orchardcore;module;msp;autoblog;marketing</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
