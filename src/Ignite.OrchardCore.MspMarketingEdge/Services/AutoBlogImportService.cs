@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using OrchardCore.Media.Fields;
 using OrchardCore.ResourceManagement;
 using OrchardCore.ContentManagement;
+using OrchardCore.ContentManagement.Metadata;
+using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.ContentManagement.Records;
 using OrchardCore.Email;
 using OrchardCore.Entities;
@@ -23,6 +25,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
 {
     private readonly ISiteService _siteService;
     private readonly IContentManager _contentManager;
+    private readonly IContentDefinitionManager _contentDefinitionManager;
     private readonly ISession _session;
     private readonly IEdgeApiService _edgeApiService;
     private readonly IImageService _imageService;
@@ -32,6 +35,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
     public AutoBlogImportService(
         ISiteService siteService,
         IContentManager contentManager,
+        IContentDefinitionManager contentDefinitionManager,
         ISession session,
         IEdgeApiService edgeApiService,
         IImageService imageService,
@@ -40,6 +44,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
     {
         _siteService = siteService;
         _contentManager = contentManager;
+        _contentDefinitionManager = contentDefinitionManager;
         _session = session;
         _edgeApiService = edgeApiService;
         _imageService = imageService;
@@ -66,6 +71,10 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             await UpdateSyncStatusAsync(result);
             return result;
         }
+
+        // Ensure AutoBlogPart has no legacy content field definitions that
+        // conflict with the C# part properties (causes JsonException on NewAsync).
+        await EnsurePartDefinitionCleanAsync();
 
         var articles = await _edgeApiService.GetFeedArticlesAsync(settings.FeedId, settings.LicensedEmail);
         if (articles.Count == 0)
@@ -536,6 +545,25 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         body += "<p>The MSP Marketing Edge team.</p>";
 
         return body;
+    }
+
+    private async Task EnsurePartDefinitionCleanAsync()
+    {
+        var partDef = await _contentDefinitionManager.GetPartDefinitionAsync(Constants.AutoBlogPartName);
+        if (partDef?.Fields?.Any() != true)
+        {
+            return;
+        }
+
+        _logger.LogWarning(
+            "AutoBlog: removing {Count} legacy content field definition(s) from {Part} that conflict with code properties.",
+            partDef.Fields.Count(), Constants.AutoBlogPartName);
+
+        // Delete and recreate the part definition without fields
+        await _contentDefinitionManager.DeletePartDefinitionAsync(Constants.AutoBlogPartName);
+        await _contentDefinitionManager.AlterPartDefinitionAsync(Constants.AutoBlogPartName, part => part
+            .WithDescription("Stores MSP Marketing Edge metadata for imported blog posts.")
+        );
     }
 
     private async Task<AutoBlogSettings?> GetSettingsAsync()
