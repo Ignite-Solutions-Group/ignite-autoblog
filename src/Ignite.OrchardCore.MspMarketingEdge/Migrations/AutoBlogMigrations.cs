@@ -3,6 +3,7 @@ using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
 using OrchardCore.Autoroute.Models;
+using OrchardCore.Media.Settings;
 
 namespace Ignite.OrchardCore.MspMarketingEdge.Migrations;
 
@@ -88,5 +89,29 @@ public class AutoBlogMigrations : DataMigration
         , collection: null);
 
         return 3;
+    }
+
+    public async Task<int> UpdateFrom3Async()
+    {
+        // Add the implicit part (same name as content type) with a MediaField for the featured image
+        await _contentDefinitionManager.AlterTypeDefinitionAsync(Constants.ContentType, type => type
+            .WithPart(Constants.ContentType, part => part
+                .WithPosition("6")
+            )
+        );
+
+        await _contentDefinitionManager.AlterPartDefinitionAsync(Constants.ContentType, part => part
+            .WithField("FeaturedImage", field => field
+                .OfType("MediaField")
+                .WithDisplayName("Featured Image")
+                .WithSettings(new MediaFieldSettings
+                {
+                    Multiple = false,
+                    AllowMediaText = true
+                })
+            )
+        );
+
+        return 4;
     }
 }

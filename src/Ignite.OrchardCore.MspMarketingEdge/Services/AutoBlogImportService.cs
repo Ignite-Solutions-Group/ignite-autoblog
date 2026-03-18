@@ -241,6 +241,19 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         var imageUrl = article.YoastHeadJson?.OgImage?.FirstOrDefault()?.Url;
         var mediaPath = await _imageService.DownloadAndStoreImageAsync(imageUrl ?? string.Empty, article.Slug);
 
+        // FeaturedImage MediaField on the implicit part
+        if (mediaPath != null)
+        {
+            contentItem.Alter<ContentPart>(Constants.ContentType, part =>
+            {
+                part.Alter<MediaField>("FeaturedImage", field =>
+                {
+                    field.Paths = ["/" + mediaPath];
+                    field.MediaTexts = [title];
+                });
+            });
+        }
+
         // SeoMetaPart
         await PopulateSeoMetaPartAsync(contentItem, title, excerpt, canonicalUrl, mediaPath, settings);
 
@@ -319,6 +332,19 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         var imageUrl = article.YoastHeadJson?.OgImage?.FirstOrDefault()?.Url;
         var slug = contentItem.As<AutoroutePart>()?.Path ?? article.Slug;
         var mediaPath = await _imageService.DownloadAndStoreImageAsync(imageUrl ?? string.Empty, slug);
+
+        // FeaturedImage MediaField on the implicit part
+        if (mediaPath != null)
+        {
+            contentItem.Alter<ContentPart>(Constants.ContentType, part =>
+            {
+                part.Alter<MediaField>("FeaturedImage", field =>
+                {
+                    field.Paths = ["/" + mediaPath];
+                    field.MediaTexts = [title];
+                });
+            });
+        }
 
         // Refresh SeoMetaPart (canonical and robots unchanged)
         await PopulateSeoMetaPartAsync(contentItem, title, excerpt, canonicalUrl, mediaPath, settings);
