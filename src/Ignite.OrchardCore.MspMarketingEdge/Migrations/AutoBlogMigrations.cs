@@ -18,10 +18,22 @@ public class AutoBlogMigrations : DataMigration
 
     public async Task<int> CreateAsync()
     {
-        // AutoBlogPart uses code-only properties (not content fields),
-        // so the part definition should not declare fields.
+        // AutoBlogPart — code-only properties, no content fields
         await _contentDefinitionManager.AlterPartDefinitionAsync(Constants.AutoBlogPartName, part => part
             .WithDescription("Stores MSP Marketing Edge metadata for imported blog posts.")
+        );
+
+        // Implicit part for content fields (FeaturedImage)
+        await _contentDefinitionManager.AlterPartDefinitionAsync(Constants.ContentType, part => part
+            .WithField("FeaturedImage", field => field
+                .OfType("MediaField")
+                .WithDisplayName("Featured Image")
+                .WithSettings(new MediaFieldSettings
+                {
+                    Multiple = false,
+                    AllowMediaText = true
+                })
+            )
         );
 
         await _contentDefinitionManager.AlterTypeDefinitionAsync(Constants.ContentType, type => type
@@ -56,29 +68,12 @@ public class AutoBlogMigrations : DataMigration
             .WithPart("PublishLaterPart", part => part
                 .WithPosition("5")
             )
+            .WithPart(Constants.ContentType, part => part
+                .WithPosition("6")
+            )
         );
 
-        return 1;
-    }
-
-    public async Task<int> UpdateFrom1Async()
-    {
-        // Remove content field definitions that conflict with the C# part properties.
-        // AutoBlogPart stores data via code properties, not content fields.
-        await _contentDefinitionManager.AlterPartDefinitionAsync(Constants.AutoBlogPartName, part => part
-            .RemoveField("EdgeGuid")
-            .RemoveField("EdgePostId")
-            .RemoveField("EdgeUrl")
-            .RemoveField("EdgeUpdateVersion")
-            .RemoveField("EdgeWeekCommencing")
-            .RemoveField("EdgeHasVideo")
-        );
-
-        return 2;
-    }
-
-    public async Task<int> UpdateFrom2Async()
-    {
+        // YesSql index for efficient GUID lookups
         await SchemaBuilder.CreateMapIndexTableAsync(typeof(AutoBlogPostIndex), table => table
             .Column<string>(nameof(AutoBlogPostIndex.EdgeGuid), col => col.WithLength(255))
         , collection: null);
@@ -88,30 +83,6 @@ public class AutoBlogMigrations : DataMigration
                 nameof(AutoBlogPostIndex.EdgeGuid))
         , collection: null);
 
-        return 3;
-    }
-
-    public async Task<int> UpdateFrom3Async()
-    {
-        // Add the implicit part (same name as content type) with a MediaField for the featured image
-        await _contentDefinitionManager.AlterTypeDefinitionAsync(Constants.ContentType, type => type
-            .WithPart(Constants.ContentType, part => part
-                .WithPosition("6")
-            )
-        );
-
-        await _contentDefinitionManager.AlterPartDefinitionAsync(Constants.ContentType, part => part
-            .WithField("FeaturedImage", field => field
-                .OfType("MediaField")
-                .WithDisplayName("Featured Image")
-                .WithSettings(new MediaFieldSettings
-                {
-                    Multiple = false,
-                    AllowMediaText = true
-                })
-            )
-        );
-
-        return 4;
+        return 1;
     }
 }
