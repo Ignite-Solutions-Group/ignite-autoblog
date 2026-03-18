@@ -63,6 +63,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         {
             _logger.LogWarning("AutoBlog import skipped: license not valid for {Email}.", settings.LicensedEmail);
             result.LicenseValid = false;
+            await UpdateSyncStatusAsync(result);
             return result;
         }
 
@@ -70,6 +71,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         if (articles.Count == 0)
         {
             _logger.LogInformation("AutoBlog import: no articles returned from feed.");
+            await UpdateSyncStatusAsync(result);
             return result;
         }
 
