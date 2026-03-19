@@ -57,6 +57,7 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
             model.TwitterHandle = settings.TwitterHandle;
             model.PublisherName = settings.PublisherName;
             model.EnableGoogleStructuredData = settings.EnableGoogleStructuredData;
+            model.BlogContainerContentItemId = settings.BlogContainerContentItemId;
 
             // Sync status (local times)
             model.LastSyncLocal = lastSyncLocal;
@@ -86,6 +87,7 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
         settings.TwitterHandle = model.TwitterHandle?.Trim() ?? string.Empty;
         settings.PublisherName = model.PublisherName?.Trim() ?? string.Empty;
         settings.EnableGoogleStructuredData = model.EnableGoogleStructuredData;
+        settings.BlogContainerContentItemId = model.BlogContainerContentItemId?.Trim() ?? string.Empty;
 
         // Don't overwrite sync status fields — those are managed by the import service
 

@@ -25,6 +25,9 @@ public class AutoBlogSettingsViewModel
     [Display(Name = "Enable Google Structured Data")]
     public bool EnableGoogleStructuredData { get; set; } = true;
 
+    [Display(Name = "Blog Container")]
+    public string BlogContainerContentItemId { get; set; } = string.Empty;
+
     // Sync status (read-only, populated by the driver)
     public DateTime? LastSyncLocal { get; set; }
     public bool LastSyncSuccess { get; set; }

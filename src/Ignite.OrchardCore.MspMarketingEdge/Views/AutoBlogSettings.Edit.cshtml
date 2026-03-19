@@ -99,6 +99,12 @@
 </div>
 
 <div class="mb-3">
+    <label asp-for="BlogContainerContentItemId" class="form-label">Blog Container</label>
+    <input asp-for="BlogContainerContentItemId" class="form-control" placeholder="Content Item ID of the Blog" />
+    <span class="hint">The Content Item ID of the Blog that imported posts should be added to. Find this in the URL when editing the Blog content item (e.g. <code>/Admin/Contents/ContentItems/&lt;id&gt;</code>). Required for posts to appear in the Blog listing.</span>
+</div>
+
+<div class="mb-3">
     <label asp-for="NotificationEmail" class="form-label">Notification Email</label>
     <input asp-for="NotificationEmail" class="form-control" placeholder="admin@example.com, editor@example.com" />
     <span class="hint">Comma-separated email addresses to notify when new posts are imported. Leave blank to disable.</span>

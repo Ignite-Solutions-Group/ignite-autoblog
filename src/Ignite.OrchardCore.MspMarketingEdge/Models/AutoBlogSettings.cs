@@ -9,6 +9,7 @@ public class AutoBlogSettings
     public string TwitterHandle { get; set; } = string.Empty;
     public string PublisherName { get; set; } = string.Empty;
     public bool EnableGoogleStructuredData { get; set; } = true;
+    public string BlogContainerContentItemId { get; set; } = string.Empty;
 
     // Sync status (written by the import service, read-only in the UI)
     public DateTime? LastSyncUtc { get; set; }
