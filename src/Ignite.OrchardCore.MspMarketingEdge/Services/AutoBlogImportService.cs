@@ -130,10 +130,11 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             }
             catch (Exception ex)
             {
+                var title = article.Title?.Rendered ?? "unknown";
                 result.ErrorCount++;
-                result.ErrorMessage ??= ex.Message;
+                result.ErrorMessage ??= $"Failed to create post '{title}': {ex.Message}";
                 _logger.LogError(ex, "AutoBlog import: error processing article '{Title}' (GUID: {Guid}).",
-                    article.Title?.Rendered ?? "unknown", article.Guid?.Rendered ?? "unknown");
+                    title, article.Guid?.Rendered ?? "unknown");
             }
         }
 
@@ -159,16 +160,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             var settings = site.As<AutoBlogSettings>();
 
             settings.LastSyncUtc = DateTime.UtcNow;
-            settings.LastSyncSuccess = result.LicenseValid && result.ErrorCount == 0;
-            settings.LastSyncSummary = $"{result.CreatedPosts.Count} created, {result.UpdatedPosts.Count} updated, {result.SkippedCount} skipped";
             settings.LastSyncError = null;
-
-            if (result.ErrorCount > 0)
-            {
-                settings.LastSyncSummary += $", {result.ErrorCount} failed";
-                settings.LastSyncSuccess = false;
-                settings.LastSyncError = result.ErrorMessage;
-            }
 
             if (result.LicenseTransientError)
             {
@@ -179,6 +171,17 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             {
                 settings.LastSyncSummary = "License validation failed";
                 settings.LastSyncSuccess = false;
+            }
+            else
+            {
+                settings.LastSyncSummary = $"{result.CreatedPosts.Count} created, {result.UpdatedPosts.Count} updated, {result.SkippedCount} skipped";
+                settings.LastSyncSuccess = result.ErrorCount == 0;
+
+                if (result.ErrorCount > 0)
+                {
+                    settings.LastSyncSummary += $", {result.ErrorCount} failed";
+                    settings.LastSyncError = result.ErrorMessage;
+                }
             }
 
             site.Put(settings);
@@ -603,14 +606,33 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         // This catches posts whose EdgeGuid wasn't indexed (e.g. index rebuilt, manual creation).
         // The path may be container-relative (e.g. "ignition/post-slug") so we match
         // on the slug appearing at the end of the path after a '/'.
+        // Build the container-prefixed path in C# so the query uses exact-match comparisons
+        // instead of SQL string concatenation (which breaks on MySQL).
         // Filter Latest=true so soft-deleted items are ignored.
+        var containerSlug = await GetContainerSlugAsync();
+        var containerPath = !string.IsNullOrEmpty(containerSlug)
+            ? containerSlug + "/" + slug
+            : null;
+
         var item = await _session
             .Query<ContentItem, AutoroutePartIndex>(x =>
-                x.Path == slug || x.Path.EndsWith("/" + slug))
+                x.Path == slug || (containerPath != null && x.Path == containerPath))
             .With<ContentItemIndex>(x => x.ContentType == Constants.ContentType && x.Latest)
             .FirstOrDefaultAsync();
 
         return item;
+    }
+
+    private async Task<string?> GetContainerSlugAsync()
+    {
+        var settings = await GetSettingsAsync();
+        if (string.IsNullOrWhiteSpace(settings?.BlogContainerContentItemId))
+        {
+            return null;
+        }
+
+        var container = await _contentManager.GetAsync(settings.BlogContainerContentItemId);
+        return container?.As<AutoroutePart>()?.Path;
     }
 
     private async Task SendNotificationEmailAsync(AutoBlogSettings settings, ImportResult result)
