@@ -54,7 +54,7 @@ public class AutoBlogMigrations : DataMigration
                 .WithPosition("1")
                 .WithSettings(new AutoroutePartSettings
                 {
-                    Pattern = "{{ ContentItem | display_text | slugify }}",
+                    Pattern = "{{ Model.ContentItem | container | display_text | slugify }}/{{ Model.ContentItem | display_text | slugify }}",
                     AllowCustomPath = true,
                     ShowHomepageOption = false
                 })
@@ -137,5 +137,23 @@ public class AutoBlogMigrations : DataMigration
         }
 
         return 2;
+    }
+
+    public async Task<int> UpdateFrom2Async()
+    {
+        // Update the AutoroutePart pattern to be container-relative so posts
+        // automatically route under their Blog container (e.g. /ignition/post-title).
+        await _contentDefinitionManager.AlterTypeDefinitionAsync(Constants.ContentType, type => type
+            .WithPart("AutoroutePart", part => part
+                .WithSettings(new AutoroutePartSettings
+                {
+                    Pattern = "{{ Model.ContentItem | container | display_text | slugify }}/{{ Model.ContentItem | display_text | slugify }}",
+                    AllowCustomPath = true,
+                    ShowHomepageOption = false
+                })
+            )
+        );
+
+        return 3;
     }
 }
