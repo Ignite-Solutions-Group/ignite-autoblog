@@ -4,7 +4,7 @@ using OrchardCore.Modules.Manifest;
     Name = "MSP Marketing Edge AutoBlog",
     Author = "Ignite Solutions",
     Website = "https://ignitesolutions.co.uk",
-    Version = "1.0.0",
+    Version = "1.1.0",
     Description = "Automatically imports weekly blog posts from MSP Marketing Edge into your Orchard CMS site.",
     Category = "Content"
 )]
