@@ -14,6 +14,7 @@ using OrchardCore.Entities;
 using OrchardCore.Settings;
 using OrchardCore.Title.Models;
 using OrchardCore.Html.Models;
+using OrchardCore.Autoroute.Core.Indexes;
 using OrchardCore.Autoroute.Models;
 using OrchardCore.PublishLater.Models;
 using OrchardCore.Infrastructure.Html;
@@ -104,6 +105,10 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             return result;
         }
 
+        // Reconcile the GUID index before processing — catches posts created while the index
+        // was broken, manually created posts, or items that survived a database recovery.
+        await ReconcileGuidIndexAsync();
+
         _logger.LogInformation("AutoBlog import: processing {Count} articles from feed.", articles.Count);
 
         foreach (var article in articles)
@@ -180,6 +185,22 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         }
 
         var existingItem = await FindExistingPostByGuidAsync(guid);
+
+        // Fallback: if the GUID index missed it (e.g. index was rebuilt), check by slug
+        if (existingItem == null && !string.IsNullOrWhiteSpace(article.Slug))
+        {
+            existingItem = await FindExistingPostBySlugAsync(article.Slug);
+            if (existingItem != null)
+            {
+                _logger.LogInformation(
+                    "AutoBlog: post with slug '{Slug}' found by fallback lookup (GUID index miss). Backfilling EdgeGuid.",
+                    article.Slug);
+
+                // Backfill the EdgeGuid so future lookups use the fast index path
+                existingItem.Alter<AutoBlogPart>(part => part.EdgeGuid = guid);
+                await _contentManager.UpdateAsync(existingItem);
+            }
+        }
 
         if (existingItem == null)
         {
@@ -486,6 +507,69 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         var item = await _session
             .Query<ContentItem, AutoBlogPostIndex>(x => x.EdgeGuid == guid)
             .FirstOrDefaultAsync();
+
+        return item;
+    }
+
+    /// <summary>
+    /// Ensures every AutoBlogPost content item with an EdgeGuid is present in the
+    /// AutoBlogPostIndex. This covers index-table rebuilds, manual content creation,
+    /// and database recovery scenarios. Runs once per import cycle — the item count
+    /// is small (typically &lt;20) so the overhead is negligible.
+    /// </summary>
+    private async Task ReconcileGuidIndexAsync()
+    {
+        // Get all AutoBlogPost content items from Orchard's built-in index
+        var allPosts = await _session
+            .Query<ContentItem, ContentItemIndex>(x =>
+                x.ContentType == Constants.ContentType && x.Latest)
+            .ListAsync();
+
+        // Get all GUIDs currently in our custom index
+        var indexedGuids = (await _session
+            .QueryIndex<AutoBlogPostIndex>()
+            .ListAsync())
+            .Select(idx => idx.EdgeGuid)
+            .Where(g => !string.IsNullOrWhiteSpace(g))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var reconciled = 0;
+        foreach (var post in allPosts)
+        {
+            var part = post.As<AutoBlogPart>();
+            if (part == null || string.IsNullOrWhiteSpace(part.EdgeGuid))
+            {
+                continue;
+            }
+
+            if (!indexedGuids.Contains(part.EdgeGuid))
+            {
+                // Re-save to trigger the index provider, which will populate the index row
+                await _contentManager.UpdateAsync(post);
+                reconciled++;
+            }
+        }
+
+        if (reconciled > 0)
+        {
+            _logger.LogInformation(
+                "AutoBlog: reconciled {Count} post(s) into the GUID index.", reconciled);
+        }
+    }
+
+    private async Task<ContentItem?> FindExistingPostBySlugAsync(string slug)
+    {
+        // Fallback duplicate check using Orchard's built-in AutoroutePartIndex.
+        // This catches posts whose EdgeGuid wasn't indexed (e.g. index rebuilt, manual creation).
+        var item = await _session
+            .Query<ContentItem, AutoroutePartIndex>(x => x.Path == slug)
+            .FirstOrDefaultAsync();
+
+        // Only match AutoBlogPost content items
+        if (item != null && item.ContentType != Constants.ContentType)
+        {
+            return null;
+        }
 
         return item;
     }
