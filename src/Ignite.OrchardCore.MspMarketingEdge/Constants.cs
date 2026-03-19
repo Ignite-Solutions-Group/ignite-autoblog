@@ -2,6 +2,9 @@ namespace Ignite.OrchardCore.MspMarketingEdge;
 
 public static class Constants
 {
+    public const string Version = "1.1.0";
+    public const string RepositoryUrl = "https://github.com/dsghi/ignite-autoblog";
+
     public const string ModuleId = "Ignite.OrchardCore.MspMarketingEdge";
     public const string ContentType = "AutoBlogPost";
     public const string AutoBlogPartName = "AutoBlogPart";

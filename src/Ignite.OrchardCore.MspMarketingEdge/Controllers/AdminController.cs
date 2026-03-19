@@ -41,6 +41,10 @@ public class AdminController : Controller
         {
             await _notifier.SuccessAsync(H["API test passed — the API returned {0} article(s). Choose a feed option below to enable content creation.", result.ApiArticleCount]);
         }
+        else if (result.FeedDisabled && result.LicenseTransientError)
+        {
+            await _notifier.WarningAsync(H["API test could not reach the MSP Marketing Edge server (timeout or server error). This is usually temporary — please try again in 10–15 minutes."]);
+        }
         else if (result.FeedDisabled && !result.LicenseValid)
         {
             await _notifier.ErrorAsync(H["API test failed — license validation did not succeed. Please check your licensed email address below."]);
@@ -48,6 +52,10 @@ public class AdminController : Controller
         else if (result.MissingEmail)
         {
             await _notifier.WarningAsync(H["Import skipped: no licensed email address configured. Please enter your MSP Marketing Edge email below."]);
+        }
+        else if (result.LicenseTransientError)
+        {
+            await _notifier.WarningAsync(H["Could not reach the MSP Marketing Edge server (timeout or server error). Import will retry on the next scheduled sync."]);
         }
         else if (!result.LicenseValid)
         {

@@ -21,6 +21,24 @@ jobs:
         id: version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
+      - name: Read version from Constants.cs
+        id: constants
+        run: |
+          CONST_VERSION=$(grep -oP 'Version\s*=\s*"\K[^"]+' src/Ignite.OrchardCore.MspMarketingEdge/Constants.cs)
+          echo "VERSION=$CONST_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Validate tag matches Constants.Version
+        run: |
+          if [ "${{ steps.version.outputs.VERSION }}" != "${{ steps.constants.outputs.VERSION }}" ]; then
+            echo "::error::Tag version (${{ steps.version.outputs.VERSION }}) does not match Constants.Version (${{ steps.constants.outputs.VERSION }}). Update Constants.Version before tagging."
+            exit 1
+          fi
+
+      - name: Stamp Manifest.cs with version from Constants
+        run: |
+          sed -i "s/Version = \"[^\"]*\"/Version = \"${{ steps.constants.outputs.VERSION }}\"/" \
+            src/Ignite.OrchardCore.MspMarketingEdge/Manifest.cs
+
       - name: Restore dependencies
         run: dotnet restore src/Ignite.OrchardCore.sln
 
