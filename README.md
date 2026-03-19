@@ -24,6 +24,10 @@ An Orchard Core module that automatically imports weekly blog posts from MSP Mar
   - `OrchardCore.Email` (with SMTP configured)
   - `OrchardCore.Media`
 
+## Recommended Configuration
+
+For proper date and time display (localized format with AM/PM), enable **OrchardCore.Localization** and set a default culture (e.g. `en-US`, `en-GB`, or `en-AU`) under **Configuration → Settings → Localization**. Also verify your site timezone under **Configuration → Settings → General**. The module works without this, but dates will display in UTC with invariant formatting.
+
 ## Configuration
 
 After enabling the module, navigate to **Configuration → MSP Marketing Edge AutoBlog** in the Orchard admin. The settings page provides:
