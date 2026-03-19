@@ -16,6 +16,7 @@ using OrchardCore.Title.Models;
 using OrchardCore.Html.Models;
 using OrchardCore.Autoroute.Core.Indexes;
 using OrchardCore.Autoroute.Models;
+using OrchardCore.Lists.Models;
 using OrchardCore.PublishLater.Models;
 using OrchardCore.Infrastructure.Html;
 using OrchardCore.ResourceManagement;
@@ -306,6 +307,23 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         // SeoMetaPart
         await PopulateSeoMetaPartAsync(contentItem, title, excerpt, canonicalUrl, mediaPath, settings);
 
+        // ContainedPart — link to the Blog container so ListPart includes this post
+        if (!string.IsNullOrWhiteSpace(settings.BlogContainerContentItemId))
+        {
+            contentItem.Weld<ContainedPart>();
+            contentItem.Alter<ContainedPart>(part =>
+            {
+                part.ListContentItemId = settings.BlogContainerContentItemId;
+            });
+        }
+
+        // Parse the article date to preserve the original publish/create timestamps
+        DateTime? articleDateUtc = null;
+        if (DateTime.TryParse(article.Date, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var parsedDate))
+        {
+            articleDateUtc = parsedDate.ToUniversalTime();
+        }
+
         // Determine publish status
         var isFutureDated = string.Equals(article.Status, "future", StringComparison.OrdinalIgnoreCase);
         var publishStatus = "Draft";
@@ -315,11 +333,11 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             if (isFutureDated)
             {
                 // Future-dated + DirectlyPublish: create as draft with scheduled publish date
-                if (DateTime.TryParse(article.Date, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var publishDate))
+                if (articleDateUtc.HasValue)
                 {
                     contentItem.Alter<PublishLaterPart>(part =>
                     {
-                        part.ScheduledPublishUtc = publishDate.ToUniversalTime();
+                        part.ScheduledPublishUtc = articleDateUtc.Value;
                     });
                 }
                 publishStatus = "Scheduled";
@@ -335,6 +353,14 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         {
             publishStatus = "Draft";
             await _contentManager.CreateAsync(contentItem, VersionOptions.Draft);
+        }
+
+        // Stamp the original article date so blog listing sorts by source publish date
+        if (articleDateUtc.HasValue)
+        {
+            contentItem.CreatedUtc = articleDateUtc.Value;
+            contentItem.PublishedUtc = articleDateUtc.Value;
+            await _contentManager.UpdateAsync(contentItem);
         }
 
         _logger.LogInformation("AutoBlog: created post '{Title}' as {Status}.", title, publishStatus);
