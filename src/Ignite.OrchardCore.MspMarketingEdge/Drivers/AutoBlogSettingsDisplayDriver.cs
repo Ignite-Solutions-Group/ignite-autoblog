@@ -142,10 +142,17 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
         }
 
         // Query published content items of those types.
-        var containers = await _session
-            .Query<ContentItem, ContentItemIndex>(x =>
-                x.Published && listContentTypes.Contains(x.ContentType))
-            .ListAsync();
+        // YesSql cannot evaluate List.Contains() inside a predicate expression,
+        // so we query each content type individually.
+        var containers = new List<ContentItem>();
+        foreach (var contentType in listContentTypes)
+        {
+            var items = await _session
+                .Query<ContentItem, ContentItemIndex>(x =>
+                    x.Published && x.ContentType == contentType)
+                .ListAsync();
+            containers.AddRange(items);
+        }
 
         options.AddRange(
             containers
