@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Ignite.OrchardCore.MspMarketingEdge.ViewModels;
 
@@ -27,6 +28,8 @@ public class AutoBlogSettingsViewModel
 
     [Display(Name = "Blog Container")]
     public string BlogContainerContentItemId { get; set; } = string.Empty;
+
+    public List<SelectListItem> BlogContainerOptions { get; set; } = [];
 
     // Sync status (read-only, populated by the driver)
     public DateTime? LastSyncLocal { get; set; }

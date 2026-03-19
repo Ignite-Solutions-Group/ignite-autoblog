@@ -3,10 +3,16 @@ using Ignite.OrchardCore.MspMarketingEdge.Models;
 using Ignite.OrchardCore.MspMarketingEdge.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using OrchardCore.ContentManagement;
+using OrchardCore.ContentManagement.Metadata;
+using OrchardCore.ContentManagement.Records;
 using OrchardCore.DisplayManagement.Entities;
 using OrchardCore.DisplayManagement.Handlers;
 using OrchardCore.DisplayManagement.Views;
+using OrchardCore.Lists.Models;
 using OrchardCore.Settings;
+using YesSql;
 
 namespace Ignite.OrchardCore.MspMarketingEdge.Drivers;
 
@@ -17,13 +23,19 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
 
     private readonly IAuthorizationService _authorizationService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IContentDefinitionManager _contentDefinitionManager;
+    private readonly YesSql.ISession _session;
 
     public AutoBlogSettingsDisplayDriver(
         IAuthorizationService authorizationService,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IContentDefinitionManager contentDefinitionManager,
+        YesSql.ISession session)
     {
         _authorizationService = authorizationService;
         _httpContextAccessor = httpContextAccessor;
+        _contentDefinitionManager = contentDefinitionManager;
+        _session = session;
     }
 
     protected override string SettingsGroupId => GroupId;
@@ -48,6 +60,8 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
             ? TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(nextSyncUtc.Value, DateTimeKind.Utc), timeZone)
             : (DateTime?)null;
 
+        var blogContainerOptions = await GetBlogContainerOptionsAsync();
+
         return Initialize<AutoBlogSettingsViewModel>("AutoBlogSettings_Edit", model =>
         {
             model.LicensedEmail = settings.LicensedEmail;
@@ -58,6 +72,7 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
             model.PublisherName = settings.PublisherName;
             model.EnableGoogleStructuredData = settings.EnableGoogleStructuredData;
             model.BlogContainerContentItemId = settings.BlogContainerContentItemId;
+            model.BlogContainerOptions = blogContainerOptions;
 
             // Sync status (local times)
             model.LastSyncLocal = lastSyncLocal;
@@ -106,6 +121,40 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
         }
 
         return TimeZoneInfo.Utc;
+    }
+
+    private async Task<List<SelectListItem>> GetBlogContainerOptionsAsync()
+    {
+        // Find all content types that have a ListPart attached.
+        var listContentTypes = (await _contentDefinitionManager.ListTypeDefinitionsAsync())
+            .Where(t => t.Parts.Any(p => p.PartDefinition.Name == nameof(ListPart)))
+            .Select(t => t.Name)
+            .ToList();
+
+        var options = new List<SelectListItem>
+        {
+            new("— Select a container —", string.Empty),
+        };
+
+        if (listContentTypes.Count == 0)
+        {
+            return options;
+        }
+
+        // Query published content items of those types.
+        var containers = await _session
+            .Query<ContentItem, ContentItemIndex>(x =>
+                x.Published && listContentTypes.Contains(x.ContentType))
+            .ListAsync();
+
+        options.AddRange(
+            containers
+                .OrderBy(c => c.DisplayText)
+                .Select(c => new SelectListItem(
+                    $"{c.DisplayText} ({c.ContentType})",
+                    c.ContentItemId)));
+
+        return options;
     }
 
     private static DateTime? CalculateNextSync(DateTime? lastSyncUtc)
