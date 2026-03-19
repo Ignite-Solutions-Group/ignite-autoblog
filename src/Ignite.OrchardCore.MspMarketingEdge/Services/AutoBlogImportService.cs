@@ -518,9 +518,11 @@ public partial class AutoBlogImportService : IAutoBlogImportService
 
     private async Task<ContentItem?> FindExistingPostByGuidAsync(string guid)
     {
-        // Use the AutoBlogPostIndex for efficient lookup instead of loading all items
+        // Use the AutoBlogPostIndex for efficient lookup, but only match the latest
+        // version so soft-deleted items (Latest=false) are ignored.
         var item = await _session
             .Query<ContentItem, AutoBlogPostIndex>(x => x.EdgeGuid == guid)
+            .With<ContentItemIndex>(x => x.Latest)
             .FirstOrDefaultAsync();
 
         return item;
@@ -576,15 +578,11 @@ public partial class AutoBlogImportService : IAutoBlogImportService
     {
         // Fallback duplicate check using Orchard's built-in AutoroutePartIndex.
         // This catches posts whose EdgeGuid wasn't indexed (e.g. index rebuilt, manual creation).
+        // Filter Latest=true so soft-deleted items are ignored.
         var item = await _session
             .Query<ContentItem, AutoroutePartIndex>(x => x.Path == slug)
+            .With<ContentItemIndex>(x => x.ContentType == Constants.ContentType && x.Latest)
             .FirstOrDefaultAsync();
-
-        // Only match AutoBlogPost content items
-        if (item != null && item.ContentType != Constants.ContentType)
-        {
-            return null;
-        }
 
         return item;
     }
