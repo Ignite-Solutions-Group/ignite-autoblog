@@ -15,7 +15,7 @@ public class EdgeApiService : IEdgeApiService
         _logger = logger;
     }
 
-    public async Task<bool> CheckLicenseAsync(string email)
+    public async Task<LicenseCheckResult> CheckLicenseAsync(string email)
     {
         try
         {
@@ -24,17 +24,37 @@ public class EdgeApiService : IEdgeApiService
             var url = $"{Constants.LicenseEndpoint}?email={Uri.EscapeDataString(email)}&tool=techupdatesplugin&time={timestamp}";
 
             using var response = await client.GetAsync(url);
+            if ((int)response.StatusCode >= 500 || response.StatusCode == System.Net.HttpStatusCode.RequestTimeout)
+            {
+                _logger.LogWarning(
+                    "MSP Marketing Edge license check returned {StatusCode} — transient error, will retry.",
+                    (int)response.StatusCode);
+                return LicenseCheckResult.TransientError;
+            }
+
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<EdgeLicenseResponse>(json);
 
-            return result?.IsLicensed ?? false;
+            return result?.IsLicensed == true
+                ? LicenseCheckResult.Valid
+                : LicenseCheckResult.Invalid;
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogWarning(ex, "MSP Marketing Edge license check failed — transient network error.");
+            return LicenseCheckResult.TransientError;
+        }
+        catch (TaskCanceledException ex)
+        {
+            _logger.LogWarning(ex, "MSP Marketing Edge license check timed out.");
+            return LicenseCheckResult.TransientError;
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Failed to validate MSP Marketing Edge license.");
-            return false;
+            return LicenseCheckResult.Invalid;
         }
     }
 

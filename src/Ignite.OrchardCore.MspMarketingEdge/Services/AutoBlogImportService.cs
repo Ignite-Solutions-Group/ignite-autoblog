@@ -71,8 +71,14 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         {
             _logger.LogInformation("AutoBlog: feed is off — performing API test only.");
             result.FeedDisabled = true;
-            result.LicenseValid = await _edgeApiService.CheckLicenseAsync(settings.LicensedEmail);
-            if (!result.LicenseValid)
+            var testCheck = await _edgeApiService.CheckLicenseAsync(settings.LicensedEmail);
+            result.LicenseValid = testCheck == LicenseCheckResult.Valid;
+            result.LicenseTransientError = testCheck == LicenseCheckResult.TransientError;
+            if (testCheck == LicenseCheckResult.TransientError)
+            {
+                _logger.LogWarning("AutoBlog API test: MSP Marketing Edge server unreachable for '{Email}'.", settings.LicensedEmail);
+            }
+            else if (testCheck == LicenseCheckResult.Invalid)
             {
                 _logger.LogWarning("AutoBlog API test: license not valid for '{Email}'.", settings.LicensedEmail);
             }
@@ -87,11 +93,15 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             return result;
         }
 
-        var licensed = await _edgeApiService.CheckLicenseAsync(settings.LicensedEmail);
-        if (!licensed)
+        var licenseCheck = await _edgeApiService.CheckLicenseAsync(settings.LicensedEmail);
+        if (licenseCheck != LicenseCheckResult.Valid)
         {
-            _logger.LogWarning("AutoBlog import skipped: license not valid.");
             result.LicenseValid = false;
+            result.LicenseTransientError = licenseCheck == LicenseCheckResult.TransientError;
+            _logger.LogWarning(
+                licenseCheck == LicenseCheckResult.TransientError
+                    ? "AutoBlog import skipped: MSP Marketing Edge server unreachable."
+                    : "AutoBlog import skipped: license not valid.");
             await UpdateSyncStatusAsync(result);
             return result;
         }
@@ -159,7 +169,12 @@ public partial class AutoBlogImportService : IAutoBlogImportService
                 settings.LastSyncError = result.ErrorMessage;
             }
 
-            if (!result.LicenseValid)
+            if (result.LicenseTransientError)
+            {
+                settings.LastSyncSummary = "MSP Marketing Edge server unreachable — will retry next sync";
+                settings.LastSyncSuccess = false;
+            }
+            else if (!result.LicenseValid)
             {
                 settings.LastSyncSummary = "License validation failed";
                 settings.LastSyncSuccess = false;

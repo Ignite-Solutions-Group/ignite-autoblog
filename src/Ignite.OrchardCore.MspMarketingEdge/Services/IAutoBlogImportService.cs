@@ -9,6 +9,7 @@ public class ImportResult
     public int SkippedCount { get; set; }
     public int ErrorCount { get; set; }
     public bool LicenseValid { get; set; } = true;
+    public bool LicenseTransientError { get; set; }
     public string? ErrorMessage { get; set; }
     public bool FeedDisabled { get; set; }
     public bool MissingEmail { get; set; }
