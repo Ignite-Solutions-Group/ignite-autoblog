@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using OrchardCore.DisplayManagement.Entities;
 using OrchardCore.DisplayManagement.Handlers;
 using OrchardCore.DisplayManagement.Views;
-using OrchardCore.Modules;
 using OrchardCore.Settings;
 
 namespace Ignite.OrchardCore.MspMarketingEdge.Drivers;
@@ -18,16 +17,13 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
 
     private readonly IAuthorizationService _authorizationService;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILocalClock _localClock;
 
     public AutoBlogSettingsDisplayDriver(
         IAuthorizationService authorizationService,
-        IHttpContextAccessor httpContextAccessor,
-        ILocalClock localClock)
+        IHttpContextAccessor httpContextAccessor)
     {
         _authorizationService = authorizationService;
         _httpContextAccessor = httpContextAccessor;
-        _localClock = localClock;
     }
 
     protected override string SettingsGroupId => GroupId;
@@ -41,14 +37,16 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
         }
 
         // Convert UTC timestamps to the site's configured timezone
+        var timeZone = GetSiteTimeZone(site);
+
         var lastSyncLocal = settings.LastSyncUtc.HasValue
-            ? await _localClock.ConvertToLocalAsync(new DateTimeOffset(DateTime.SpecifyKind(settings.LastSyncUtc.Value, DateTimeKind.Utc)))
-            : (DateTimeOffset?)null;
+            ? TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(settings.LastSyncUtc.Value, DateTimeKind.Utc), timeZone)
+            : (DateTime?)null;
 
         var nextSyncUtc = CalculateNextSync(settings.LastSyncUtc);
         var nextSyncLocal = nextSyncUtc.HasValue
-            ? await _localClock.ConvertToLocalAsync(new DateTimeOffset(DateTime.SpecifyKind(nextSyncUtc.Value, DateTimeKind.Utc)))
-            : (DateTimeOffset?)null;
+            ? TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(nextSyncUtc.Value, DateTimeKind.Utc), timeZone)
+            : (DateTime?)null;
 
         return Initialize<AutoBlogSettingsViewModel>("AutoBlogSettings_Edit", model =>
         {
@@ -92,6 +90,20 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
         // Don't overwrite sync status fields — those are managed by the import service
 
         return await EditAsync(site, settings, context);
+    }
+
+    private static TimeZoneInfo GetSiteTimeZone(ISite site)
+    {
+        if (!string.IsNullOrEmpty(site.TimeZoneId))
+        {
+            try
+            {
+                return TimeZoneInfo.FindSystemTimeZoneById(site.TimeZoneId);
+            }
+            catch (TimeZoneNotFoundException) { }
+        }
+
+        return TimeZoneInfo.Utc;
     }
 
     private static DateTime? CalculateNextSync(DateTime? lastSyncUtc)
