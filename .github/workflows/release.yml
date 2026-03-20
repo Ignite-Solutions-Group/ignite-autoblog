@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to release (e.g. 1.6.1)"
+        description: "Version to release (e.g. 1.6.2)"
         required: true
 
 jobs:
@@ -22,9 +22,9 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Extract version from tag
+      - name: Set version from input
         id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: echo "VERSION=${{ inputs.version }}" >> $GITHUB_OUTPUT
 
       - name: Read version from Constants.cs
         id: constants
@@ -32,10 +32,10 @@ jobs:
           CONST_VERSION=$(grep -oP 'Version\s*=\s*"\K[^"]+' src/IgniteSG.OrchardCore.MspMarketingEdge/Constants.cs)
           echo "VERSION=$CONST_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Validate tag matches Constants.Version
+      - name: Validate input matches Constants.Version
         run: |
           if [ "${{ steps.version.outputs.VERSION }}" != "${{ steps.constants.outputs.VERSION }}" ]; then
-            echo "::error::Tag version (${{ steps.version.outputs.VERSION }}) does not match Constants.Version (${{ steps.constants.outputs.VERSION }}). Update Constants.Version before tagging."
+            echo "::error::Input version (${{ steps.version.outputs.VERSION }}) does not match Constants.Version (${{ steps.constants.outputs.VERSION }}). Update Constants.Version before releasing."
             exit 1
           fi
 
@@ -63,10 +63,15 @@ jobs:
           dotnet nuget push ./artifacts/*.nupkg
           --api-key ${{ secrets.NUGET_API_KEY }}
           --source https://api.nuget.org/v3/index.json
-          --skip-duplicate
+
+      - name: Tag release
+        run: |
+          git tag v${{ steps.version.outputs.VERSION }}
+          git push origin v${{ steps.version.outputs.VERSION }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ steps.version.outputs.VERSION }}
           files: ./artifacts/*.nupkg
           generate_release_notes: true
