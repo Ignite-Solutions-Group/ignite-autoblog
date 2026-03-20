@@ -2,7 +2,7 @@ namespace Ignite.OrchardCore.MspMarketingEdge;
 
 public static class Constants
 {
-    public const string Version = "1.5.0";
+    public const string Version = "1.6.0";
     public const string RepositoryUrl = "https://github.com/dsghi/ignite-autoblog";
 
     public const string ModuleId = "Ignite.OrchardCore.MspMarketingEdge";
