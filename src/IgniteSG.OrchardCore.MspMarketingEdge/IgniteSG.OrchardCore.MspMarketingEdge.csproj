@@ -9,6 +9,7 @@
     <Authors>Ignite Solutions Group</Authors>
     <Description>Orchard Core module for MSP Marketing Edge blog syndication</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/dsghi/ignite-autoblog</RepositoryUrl>
     <PackageTags>orchardcore;module;msp;autoblog;marketing</PackageTags>
   </PropertyGroup>
@@ -32,6 +33,10 @@
     <PackageReference Include="OrchardCore.Lists" Version="2.2.1" />
     <PackageReference Include="Cronos" Version="0.8.4" />
     <PackageReference Include="OrchardCore.Infrastructure.Abstractions" Version="2.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<None Include="..\..\README.md" Pack="true" PackAs="content" PackagePath="\" />
   </ItemGroup>
 
 </Project>
