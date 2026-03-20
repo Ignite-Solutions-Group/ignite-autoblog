@@ -9,6 +9,10 @@
             <time datetime="{{ publishDate | date: '%Y-%m-%dT%H:%M:%S' }}">
                 {{ publishDate | date: '%d %B %Y' }}
             </time>
+            {% assign bodyText = Model.ContentItem.Content.HtmlBodyPart.Html | strip_html %}
+            {% assign words = bodyText | split: " " | size %}
+            {% assign minutes = words | plus: 199 | divided_by: 200 | at_least: 1 %}
+            &middot; {{ minutes }} min read
         </div>
     </header>
 
