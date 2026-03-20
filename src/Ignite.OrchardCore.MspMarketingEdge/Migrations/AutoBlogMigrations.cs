@@ -156,4 +156,29 @@ public class AutoBlogMigrations : DataMigration
 
         return 3;
     }
+
+    public async Task<int> UpdateFrom3Async()
+    {
+        // Attach CommonPart with the date editor enabled so the Created date
+        // is visible and editable in the admin editor.
+        await _contentDefinitionManager.AlterTypeDefinitionAsync(Constants.ContentType, type => type
+            .WithPart("CommonPart", part => part
+                .WithPosition("7")
+                .WithSettings(new CommonPartSettings
+                {
+                    DisplayDateEditor = true,
+                })
+            )
+        );
+
+        return 4;
+    }
+}
+
+// Minimal settings class matching OrchardCore.Contents.Models.CommonPartSettings.
+// OC resolves settings by simple type name, so this serializes identically.
+internal class CommonPartSettings
+{
+    public bool DisplayDateEditor { get; set; }
+    public bool DisplayOwnerEditor { get; set; }
 }
