@@ -1,18 +1,21 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*'  # Triggers on version tags like v1.0.0, v1.0.1-preview, etc.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (e.g. 1.6.1)"
+        required: true
 
 jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
