@@ -1,4 +1,4 @@
-# Ignite.AutoBlog — Orchard Core Module Brief
+# IgniteSG.AutoBlog — Orchard Core Module Brief
 
 ## Purpose
 
@@ -289,7 +289,7 @@ Create a code-based migration that:
 
 ## Project Structure
 
-The repo is `ignite-autoblog`. The solution is `Ignite.OrchardCore`. The module project is `Ignite.OrchardCore.MspMarketingEdge`.
+The repo is `ignite-autoblog`. The solution is `IgniteSG.OrchardCore`. The module project is `IgniteSG.OrchardCore.MspMarketingEdge`.
 
 Follow Orchard Core module conventions. The module should be a self-contained, cleanly organized project that can be enabled/disabled through the Orchard admin features screen.
 
@@ -309,9 +309,9 @@ ignite-autoblog/
 │       ├── meta_data_updater.php
 │       └── readme.txt
 └── src/
-    ├── Ignite.OrchardCore.sln
-    └── Ignite.OrchardCore.MspMarketingEdge/
-        ├── Ignite.OrchardCore.MspMarketingEdge.csproj
+    ├── IgniteSG.OrchardCore.sln
+    └── IgniteSG.OrchardCore.MspMarketingEdge/
+        ├── IgniteSG.OrchardCore.MspMarketingEdge.csproj
         ├── Manifest.cs
         ├── Startup.cs
         └── ...
@@ -321,7 +321,7 @@ ignite-autoblog/
 
 Generate a `README.md` for the repo root that includes:
 
-- **Project title**: Ignite.OrchardCore.MspMarketingEdge
+- **Project title**: IgniteSG.OrchardCore.MspMarketingEdge
 - **One-liner**: An Orchard Core module that automatically imports weekly blog posts from MSP Marketing Edge into your Orchard CMS site.
 - **What it does**: Brief description of the autoblog functionality — scheduled import, deduplication, featured images, draft/publish/scheduled publishing, full SEO metadata via SeoMetaPart.
 - **Requirements**: Orchard Core 2.2.x, .NET 8, `OrchardCore.Seo` and `OrchardCore.PublishLater` features enabled.

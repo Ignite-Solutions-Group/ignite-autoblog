@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>IgniteSG.OrchardCore.MspMarketingEdge</PackageId>
+    <Authors>Ignite Solutions Group</Authors>
+    <Description>Orchard Core module for MSP Marketing Edge blog syndication</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/dsghi/ignite-autoblog</RepositoryUrl>
+    <PackageTags>orchardcore;module;msp;autoblog;marketing</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OrchardCore.Module.Targets" Version="2.2.1" />
+    <PackageReference Include="OrchardCore.ContentManagement" Version="2.2.1" />
+    <PackageReference Include="OrchardCore.BackgroundTasks" Version="2.2.1" />
+    <PackageReference Include="OrchardCore.Media.Abstractions" Version="2.2.1" />
+    <PackageReference Include="OrchardCore.Email.Abstractions" Version="2.2.1" />
+    <PackageReference Include="OrchardCore.Seo" Version="2.2.1" />
+    <PackageReference Include="OrchardCore.PublishLater" Version="2.2.1" />
+    <PackageReference Include="OrchardCore.ContentFields" Version="2.2.1" />
+    <PackageReference Include="OrchardCore.Title" Version="2.2.1" />
+    <PackageReference Include="OrchardCore.Html" Version="2.2.1" />
+    <PackageReference Include="OrchardCore.Autoroute" Version="2.2.1" />
+    <PackageReference Include="OrchardCore.Lists" Version="2.2.1" />
+    <PackageReference Include="Cronos" Version="0.8.4" />
+    <PackageReference Include="OrchardCore.Infrastructure.Abstractions" Version="2.2.1" />
+  </ItemGroup>
+
+</Project>

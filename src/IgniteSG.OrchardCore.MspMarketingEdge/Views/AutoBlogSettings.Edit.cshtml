@@ -1,0 +1,135 @@
+@using IgniteSG.OrchardCore.MspMarketingEdge
+@using IgniteSG.OrchardCore.MspMarketingEdge.ViewModels
+@using Microsoft.AspNetCore.Localization
+@model AutoBlogSettingsViewModel
+
+@{
+    var culture = Context.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture
+        ?? System.Globalization.CultureInfo.CurrentUICulture;
+}
+
+<h3>MSP Marketing Edge AutoBlog</h3>
+<p>Configure the automatic import of weekly syndicated blog posts from MSP Marketing Edge.</p>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Sync Status</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.LastSyncLocal.HasValue)
+        {
+            <div class="row mb-2">
+                <div class="col-sm-3 fw-bold">Last sync</div>
+                <div class="col-sm-9">
+                    @Model.LastSyncLocal.Value.ToString("g", culture)
+                    @if (Model.LastSyncSuccess)
+                    {
+                        <span class="badge bg-success ms-2">Success</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger ms-2">Failed</span>
+                    }
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-3 fw-bold">Result</div>
+                <div class="col-sm-9">@Model.LastSyncSummary</div>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.LastSyncError))
+            {
+                <div class="alert alert-danger mt-2 mb-0">
+                    <strong>Error:</strong> @Model.LastSyncError
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-muted mb-2">No import has run yet.</p>
+        }
+        @if (Model.NextSyncLocal.HasValue)
+        {
+            <div class="row mb-2">
+                <div class="col-sm-3 fw-bold">Next sync</div>
+                <div class="col-sm-9">@Model.NextSyncLocal.Value.ToString("g", culture)</div>
+            </div>
+        }
+        <div class="mt-3">
+            <button type="button" class="btn btn-warning btn-sm" id="btn-run-import-now">Run Import Now</button>
+            <span class="hint ms-2">Triggers an immediate import outside of the background schedule. If Feed Selection is 'Off', will perform an API test.</span>
+        </div>
+        <script at="Foot">
+            document.getElementById('btn-run-import-now').addEventListener('click', function () {
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '@Url.Action("ForceRefresh", "Admin", new { area = "IgniteSG.OrchardCore.MspMarketingEdge" })';
+                var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = '__RequestVerificationToken';
+                input.value = token;
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            });
+        </script>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label asp-for="LicensedEmail" class="form-label">Licensed Email</label>
+    <input asp-for="LicensedEmail" class="form-control" placeholder="your@email.com" />
+    <span class="hint">The email address used to register with MSP Marketing Edge.</span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="FeedId" class="form-label">Feed Selection</label>
+    <select asp-for="FeedId" class="form-select">
+        @foreach (var feed in Constants.FeedOptions)
+        {
+            <option value="@feed.Key">@feed.Value</option>
+        }
+    </select>
+</div>
+
+<div class="mb-3 form-check">
+    <input asp-for="DirectlyPublish" class="form-check-input" type="checkbox" />
+    <label asp-for="DirectlyPublish" class="form-check-label">Directly Publish</label>
+    <span class="hint d-block">When enabled, imported posts are published immediately. When disabled, they are created as drafts for manual review. Future-dated posts will be scheduled for automatic publishing.</span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="BlogContainerContentItemId" class="form-label">Blog Container</label>
+    <select asp-for="BlogContainerContentItemId" asp-items="Model.BlogContainerOptions" class="form-select"></select>
+    <span class="hint">The list container that imported posts will be added to. Required for posts to appear in the Blog listing.</span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="NotificationEmail" class="form-label">Notification Email</label>
+    <input asp-for="NotificationEmail" class="form-control" placeholder="admin@example.com, editor@example.com" />
+    <span class="hint">Comma-separated email addresses to notify when new posts are imported. Leave blank to disable.</span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="TwitterHandle" class="form-label">Twitter/X Handle</label>
+    <input asp-for="TwitterHandle" class="form-control" placeholder="@@yourcompany" />
+    <span class="hint">Used for Twitter Card metadata on imported posts. Leave blank to omit.</span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="PublisherName" class="form-label">Publisher Name</label>
+    <input asp-for="PublisherName" class="form-control" placeholder="Your Organization Name" />
+    <span class="hint">Used in Google structured data (JSON-LD). Falls back to the site name if left blank.</span>
+</div>
+
+<div class="mb-3 form-check">
+    <input asp-for="EnableGoogleStructuredData" class="form-check-input" type="checkbox" />
+    <label asp-for="EnableGoogleStructuredData" class="form-check-label">Enable Google Structured Data</label>
+    <span class="hint d-block">Generates a JSON-LD Article schema on each imported post.</span>
+</div>
+
+<hr />
+<p class="text-muted small mb-4">
+    MSP Marketing Edge AutoBlog v@(Constants.Version) &mdash;
+    <a href="@Constants.RepositoryUrl" target="_blank" rel="noopener">GitHub</a>
+</p>

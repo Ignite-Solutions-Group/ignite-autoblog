@@ -1,4 +1,4 @@
-# Ignite.OrchardCore.MspMarketingEdge
+# IgniteSG.OrchardCore.MspMarketingEdge
 
 An Orchard Core module that automatically imports weekly blog posts from [MSP Marketing Edge](https://www.mspmarketingedge.com/) into your Orchard CMS site.
 
@@ -36,18 +36,18 @@ An Orchard Core module that automatically imports weekly blog posts from [MSP Ma
 ### NuGet (recommended)
 
 ```shell
-dotnet add package Ignite.OrchardCore.MspMarketingEdge
+dotnet add package IgniteSG.OrchardCore.MspMarketingEdge
 ```
 
 Or via the Package Manager Console:
 
 ```powershell
-Install-Package Ignite.OrchardCore.MspMarketingEdge
+Install-Package IgniteSG.OrchardCore.MspMarketingEdge
 ```
 
 ### Project reference
 
-1. Add the `Ignite.OrchardCore.MspMarketingEdge` project to your Orchard Core solution.
+1. Add the `IgniteSG.OrchardCore.MspMarketingEdge` project to your Orchard Core solution.
 2. Reference it from your web project.
 
 ### Enable the feature

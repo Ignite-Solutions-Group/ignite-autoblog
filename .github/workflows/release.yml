@@ -26,7 +26,7 @@ jobs:
       - name: Read version from Constants.cs
         id: constants
         run: |
-          CONST_VERSION=$(grep -oP 'Version\s*=\s*"\K[^"]+' src/Ignite.OrchardCore.MspMarketingEdge/Constants.cs)
+          CONST_VERSION=$(grep -oP 'Version\s*=\s*"\K[^"]+' src/IgniteSG.OrchardCore.MspMarketingEdge/Constants.cs)
           echo "VERSION=$CONST_VERSION" >> $GITHUB_OUTPUT
 
       - name: Validate tag matches Constants.Version
@@ -39,17 +39,17 @@ jobs:
       - name: Stamp Manifest.cs with version from Constants
         run: |
           sed -i "s/Version = \"[^\"]*\"/Version = \"${{ steps.constants.outputs.VERSION }}\"/" \
-            src/Ignite.OrchardCore.MspMarketingEdge/Manifest.cs
+            src/IgniteSG.OrchardCore.MspMarketingEdge/Manifest.cs
 
       - name: Restore dependencies
-        run: dotnet restore src/Ignite.OrchardCore.sln
+        run: dotnet restore src/IgniteSG.OrchardCore.sln
 
       - name: Build
-        run: dotnet build src/Ignite.OrchardCore.sln --configuration Release --no-restore
+        run: dotnet build src/IgniteSG.OrchardCore.sln --configuration Release --no-restore
 
       - name: Pack NuGet
         run: >
-          dotnet pack src/Ignite.OrchardCore.MspMarketingEdge/Ignite.OrchardCore.MspMarketingEdge.csproj
+          dotnet pack src/IgniteSG.OrchardCore.MspMarketingEdge/IgniteSG.OrchardCore.MspMarketingEdge.csproj
           --configuration Release
           --no-build
           --output ./artifacts
