@@ -1,17 +1,24 @@
 # Ignite.OrchardCore.MspMarketingEdge
 
-An Orchard Core module that automatically imports weekly blog posts from MSP Marketing Edge into your Orchard CMS site.
+An Orchard Core module that automatically imports weekly blog posts from [MSP Marketing Edge](https://www.mspmarketingedge.com/) into your Orchard CMS site.
 
-## What It Does
+## Features
 
 - **Scheduled import** — A background task polls the MSP Marketing Edge content feed every 6 hours and imports new blog posts as `AutoBlogPost` content items.
-- **Deduplication** — Each imported post is tracked by its upstream GUID to prevent duplicates.
-- **Update detection** — When the upstream service flags a post for update with a new version number, the module updates the existing content item.
+- **Deduplication** — Each imported post is tracked by its upstream GUID in a dedicated index. A slug-based fallback lookup catches posts that may have been created manually or survived an index rebuild, and backfills the GUID automatically.
+- **Index reconciliation** — On each run the module reconciles the GUID index against existing content, so database recovery or index rebuilds don't cause duplicate imports.
+- **Update detection** — When the upstream service flags a post for update with a new version number, the module updates the existing content item in place.
 - **Featured images** — Downloads and stores featured images in the Orchard media library under `/autoblog/`.
 - **Draft or publish** — Choose whether imported posts go live immediately or are created as drafts for manual review.
 - **Scheduled publishing** — Future-dated posts from the feed are created as drafts with a scheduled publish date via `PublishLaterPart`, so Orchard auto-publishes them when the date arrives.
 - **Full SEO metadata** — Populates `SeoMetaPart` on every imported post: canonical URL (pointing to the original source), `noindex, follow` robots directive, Open Graph tags, Twitter Card tags, and optional Google JSON-LD structured data.
+- **HTML sanitization** — All external HTML from the feed is sanitized before storage to prevent stored XSS attacks.
+- **Blog container support** — Imported posts can be linked to a Blog container via `ContainedPart`, so they automatically appear in List-based blog pages.
+- **Estimated reading time** — Templates calculate and display an estimated reading time (words / 200, minimum 1 minute).
+- **Video feed detection** — Posts from video feeds automatically hide the featured image in the detail template, since the video is embedded in the body.
+- **Editable created date** — The original publication date is preserved from the feed and exposed in the admin editor for manual adjustment.
 - **Email notifications** — Sends a summary email when new posts are imported or updated.
+- **Sync status dashboard** — The admin settings page displays the last sync time, success/failure status, and a summary of what was imported.
 - **Force refresh** — An admin button triggers an immediate import outside of the background schedule.
 
 ## Requirements
@@ -24,9 +31,38 @@ An Orchard Core module that automatically imports weekly blog posts from MSP Mar
   - `OrchardCore.Email` (with SMTP configured)
   - `OrchardCore.Media`
 
-## Recommended Configuration
+## Installation
 
-For proper date and time display (localized format with AM/PM), enable **OrchardCore.Localization** and set a default culture (e.g. `en-US`, `en-GB`, or `en-AU`) under **Configuration → Settings → Localization**. Also verify your site timezone under **Configuration → Settings → General**. The module works without this, but dates will display in UTC with invariant formatting.
+### NuGet (recommended)
+
+```shell
+dotnet add package Ignite.OrchardCore.MspMarketingEdge
+```
+
+Or via the Package Manager Console:
+
+```powershell
+Install-Package Ignite.OrchardCore.MspMarketingEdge
+```
+
+### Project reference
+
+1. Add the `Ignite.OrchardCore.MspMarketingEdge` project to your Orchard Core solution.
+2. Reference it from your web project.
+
+### Enable the feature
+
+1. In the Orchard admin, go to **Configuration → Features** and enable **MSP Marketing Edge AutoBlog**.
+2. Configure the module under **Configuration → MSP Marketing Edge AutoBlog**.
+3. Use the **Run Import Now** button to verify the connection and trigger an initial import.
+
+## Permissions
+
+The module registers a single permission:
+
+| Permission | Description |
+|---|---|
+| `ManageAutoBlogSettings` | Access the AutoBlog settings page and trigger manual imports. Granted to the Administrator role by default. |
 
 ## Configuration
 
@@ -35,37 +71,44 @@ After enabling the module, navigate to **Configuration → MSP Marketing Edge Au
 | Setting | Description |
 |---|---|
 | **Licensed Email** | The email used to register with MSP Marketing Edge. Used for license validation and feed authentication. |
-| **Feed Selection** | Choose the content feed: Blog Only (US/UK/AU) or Blog + Video (US/UK/AU). Set to "Feed Off" to disable. |
+| **Feed Selection** | Choose the content feed (see table below). Set to "Feed Off" to disable imports. |
 | **Directly Publish** | When enabled, imported posts are published immediately. When disabled, they are created as drafts. Default: disabled. |
 | **Notification Email** | Comma-separated addresses to notify when posts are imported. Leave blank to disable. |
 | **Twitter/X Handle** | Your organization's @handle for Twitter Card metadata. Leave blank to omit. |
 | **Publisher Name** | Organization name for Google structured data. Falls back to the Orchard site name if blank. |
 | **Enable Google Structured Data** | Toggle JSON-LD Article schema generation on imported posts. Default: enabled. |
 
+### Feed options
+
+| Option | Description |
+|---|---|
+| Feed Off | Disables the import |
+| Blog Only — US | Blog articles only, US English |
+| Blog Only — UK/AU | Blog articles only, UK/AU English |
+| Blog + Video — US | Blog articles and video posts, US English |
+| Blog + Video — UK | Blog articles and video posts, UK English |
+| Blog + Video — AU | Blog articles and video posts, AU English |
+
+### Recommended site configuration
+
+For proper date and time display (localized format with AM/PM), enable **OrchardCore.Localization** and set a default culture (e.g. `en-US`, `en-GB`, or `en-AU`) under **Configuration → Settings → Localization**. Also verify your site timezone under **Configuration → Settings → General**. The module works without this, but dates will display in UTC with invariant formatting.
+
 ## How It Works
 
 1. The background task runs every 6 hours (configurable via Orchard's Background Tasks admin).
 2. It validates the license email against the MSP Marketing Edge license API.
 3. It fetches the content feed (the API returns ~6 posts: a mix of recent published and upcoming scheduled posts).
-4. For each article, it checks for an existing `AutoBlogPost` with a matching GUID.
-5. New posts are created with title, body, slug, featured image, and full SEO metadata.
+4. For each article, it checks for an existing `AutoBlogPost` by GUID index, falling back to a slug-based lookup if needed.
+5. New posts are created with title, body, slug, featured image, and full SEO metadata. External HTML is sanitized before storage.
 6. Existing posts are updated only when the upstream `send_update` flag is set and the `update_version` has changed.
 7. A notification email is sent if any posts were created or updated.
-
-## Installation
-
-1. Add the `Ignite.OrchardCore.MspMarketingEdge` project to your Orchard Core solution.
-2. Reference it from your web project.
-3. Enable the **MSP Marketing Edge AutoBlog** feature in the Orchard admin (Configuration → Features).
-4. Configure the module settings under Configuration → MSP Marketing Edge AutoBlog.
-5. Use the **Run Import Now** button to verify the connection and trigger an initial import.
 
 ## Templates
 
 The module includes default Liquid templates for rendering `AutoBlogPost` content items:
 
-- **`Content-AutoBlogPost.liquid`** — Detail view (single article page). Renders the title, publish date, featured image (hidden automatically for Blog + Video feeds where the video is embedded in the body), full article body, and a link back to the original source.
-- **`Content_Summary-AutoBlogPost.liquid`** — Summary view (article lists). Renders a Bootstrap card with featured image thumbnail, title, date, excerpt, and a "Read more" link.
+- **`Content-AutoBlogPost.liquid`** — Detail view (single article page). Renders the title, publish date, estimated reading time, featured image (hidden automatically for video feeds where the video is embedded in the body), full article body, and a link back to the original source.
+- **`Content_Summary-AutoBlogPost.liquid`** — Summary view (article lists). Renders a Bootstrap card with featured image thumbnail, title, date, estimated reading time, excerpt, and a "Read more" link.
 
 These templates use Bootstrap 5 classes and work out of the box. To customize them, copy the template file into your theme's `Views/` folder and modify it there — Orchard's shape resolution will pick up your theme's version over the module's default.
 
@@ -86,10 +129,25 @@ Alternatively, create a **List** content item in the Orchard admin that queries 
 
 If your site already has a blog page that lists `BlogPost` items and you want imported `AutoBlogPost` items to appear alongside them, update your blog list template to query both content types.
 
+## Changelog
+
+### v1.6.0
+- Added estimated reading time to blog post templates
+- Exposed editable created date on AutoBlogPost content type
+- Fixed MySQL syntax error in slug lookup and misleading error messages
+- Fixed slug fallback to correctly match existing posts during import
+
+### v1.5.0
+- Added slug-based fallback lookup for deduplication resilience
+- Added GUID index reconciliation on each import run
+
+### v1.1.0
+- Initial public release with scheduled import, SEO metadata, email notifications, and template support
+
 ## Disclaimer
 
 This is an independent community project. It is not affiliated with or endorsed by MSP Marketing Edge. MSP Marketing Edge is a trademark of its respective owner.
 
 ## License
 
-MIT
+[MIT](https://opensource.org/licenses/MIT)
