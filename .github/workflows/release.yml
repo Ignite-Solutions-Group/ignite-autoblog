@@ -58,12 +58,6 @@ jobs:
           --output ./artifacts
           /p:PackageVersion=${{ steps.version.outputs.VERSION }}
 
-      - name: Push to NuGet
-        run: >
-          dotnet nuget push ./artifacts/*.nupkg
-          --api-key ${{ secrets.NUGET_API_KEY }}
-          --source https://api.nuget.org/v3/index.json
-
       - name: Tag release
         run: |
           git tag v${{ steps.version.outputs.VERSION }}
@@ -75,3 +69,9 @@ jobs:
           tag_name: v${{ steps.version.outputs.VERSION }}
           files: ./artifacts/*.nupkg
           generate_release_notes: true
+
+      - name: Push to NuGet
+        run: >
+          dotnet nuget push ./artifacts/*.nupkg
+          --api-key ${{ secrets.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
