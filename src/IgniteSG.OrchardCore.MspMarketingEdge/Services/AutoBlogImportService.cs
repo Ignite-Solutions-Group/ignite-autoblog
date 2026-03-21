@@ -714,8 +714,10 @@ public partial class AutoBlogImportService : IAutoBlogImportService
 
         if (!string.IsNullOrWhiteSpace(siteBaseUrl))
         {
-            var settingsUrl = $"{siteBaseUrl}/Admin/Settings/AutoBlog";
-            body.Append($"<p>You can manage your AutoBlog <a href=\"{settingsUrl}\">settings</a>.</p>");
+            var settingsPath = "/Admin/Settings/AutoBlog";
+            var settingsUrl = string.Concat(siteBaseUrl.TrimEnd('/'), settingsPath);
+            var encodedSettingsUrl = WebUtility.HtmlEncode(settingsUrl);
+            body.Append($"<p>You can manage your AutoBlog <a href=\"{encodedSettingsUrl}\">settings</a>.</p>");
         }
         else
         {
