@@ -394,7 +394,8 @@ public partial class AutoBlogImportService : IAutoBlogImportService
 
         // Update AutoBlogPart (keep existing EdgeGuid, EdgeUrl, don't change slug)
         var existingPart = contentItem.As<AutoBlogPart>();
-        var canonicalUrl = existingPart?.EdgeUrl ?? await ResolveCanonicalUrlAsync(article);
+        var existingUrl = existingPart?.EdgeUrl;
+        var canonicalUrl = IsHttpUrl(existingUrl) ? existingUrl! : await ResolveCanonicalUrlAsync(article);
 
         contentItem.Alter<AutoBlogPart>(part =>
         {
@@ -533,13 +534,20 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         if (parentPostId.HasValue && parentPostId.Value > 0)
         {
             var parentUrl = await _edgeApiService.ResolveParentPostUrlAsync(parentPostId.Value);
-            if (!string.IsNullOrWhiteSpace(parentUrl))
+            if (IsHttpUrl(parentUrl))
             {
-                return parentUrl;
+                return parentUrl!;
             }
         }
 
-        return article.Link;
+        return IsHttpUrl(article.Link) ? article.Link : string.Empty;
+    }
+
+    private static bool IsHttpUrl(string? url)
+    {
+        return !string.IsNullOrWhiteSpace(url)
+            && Uri.TryCreate(url, UriKind.Absolute, out var uri)
+            && (uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeHttp);
     }
 
     private async Task<ContentItem?> FindExistingPostByGuidAsync(string guid)
