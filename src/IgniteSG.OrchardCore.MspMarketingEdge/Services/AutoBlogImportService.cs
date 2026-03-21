@@ -652,10 +652,12 @@ public partial class AutoBlogImportService : IAutoBlogImportService
 
         var isDraft = !settings.DirectlyPublish;
         var subject = isDraft
-            ? "MSP Marketing Edge AutoBlog — new DRAFT blog post(s)"
-            : "MSP Marketing Edge AutoBlog — new blog post(s)";
+            ? "AutoBlog — new DRAFT blog post(s)"
+            : "AutoBlog — new blog post(s)";
 
-        var body = BuildEmailBody(result, isDraft);
+        var site = await _siteService.GetSiteSettingsAsync();
+        var siteBaseUrl = site.BaseUrl?.TrimEnd('/');
+        var body = BuildEmailBody(result, isDraft, siteBaseUrl);
 
         foreach (var email in emails)
         {
@@ -675,11 +677,11 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         }
     }
 
-    private static string BuildEmailBody(ImportResult result, bool isDraft)
+    private static string BuildEmailBody(ImportResult result, bool isDraft, string? siteBaseUrl)
     {
         var body = new StringBuilder();
 
-        body.Append("<p>This is an automatic notification from the MSP Marketing Edge AutoBlog module.</p>");
+        body.Append("<p>This is an automatic notification from the AutoBlog module on your website.</p>");
 
         if (isDraft)
         {
@@ -710,8 +712,15 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             body.Append("</ul>");
         }
 
-        body.Append("<p>You can manage your AutoBlog settings in the Orchard admin under Configuration &gt; MSP Marketing Edge AutoBlog.</p>");
-        body.Append("<p>The MSP Marketing Edge team.</p>");
+        if (!string.IsNullOrWhiteSpace(siteBaseUrl))
+        {
+            var settingsUrl = $"{siteBaseUrl}/Admin/Settings/AutoBlog";
+            body.Append($"<p>You can manage your AutoBlog <a href=\"{settingsUrl}\">settings</a>.</p>");
+        }
+        else
+        {
+            body.Append("<p>You can manage your AutoBlog settings in the admin under Configuration &gt; Settings &gt; AutoBlog.</p>");
+        }
 
         return body.ToString();
     }
