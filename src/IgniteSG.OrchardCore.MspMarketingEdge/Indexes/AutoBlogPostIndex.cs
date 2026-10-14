@@ -16,7 +16,7 @@ public class AutoBlogPostIndexProvider : IndexProvider<ContentItem>
             .When(contentItem => contentItem.ContentType == Constants.ContentType)
             .Map(contentItem =>
             {
-                var part = contentItem.As<Models.AutoBlogPart>();
+                var part = contentItem.Get<Models.AutoBlogPart>(nameof(Models.AutoBlogPart));
                 if (part == null || string.IsNullOrWhiteSpace(part.EdgeGuid))
                 {
                     return null!;

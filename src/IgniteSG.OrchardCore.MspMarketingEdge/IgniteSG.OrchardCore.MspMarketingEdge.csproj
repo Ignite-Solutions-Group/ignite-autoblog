@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -19,20 +19,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OrchardCore.Module.Targets" Version="2.2.1" />
-    <PackageReference Include="OrchardCore.ContentManagement" Version="2.2.1" />
-    <PackageReference Include="OrchardCore.BackgroundTasks" Version="2.2.1" />
-    <PackageReference Include="OrchardCore.Media.Abstractions" Version="2.2.1" />
-    <PackageReference Include="OrchardCore.Email.Abstractions" Version="2.2.1" />
-    <PackageReference Include="OrchardCore.Seo" Version="2.2.1" />
-    <PackageReference Include="OrchardCore.PublishLater" Version="2.2.1" />
-    <PackageReference Include="OrchardCore.ContentFields" Version="2.2.1" />
-    <PackageReference Include="OrchardCore.Title" Version="2.2.1" />
-    <PackageReference Include="OrchardCore.Html" Version="2.2.1" />
-    <PackageReference Include="OrchardCore.Autoroute" Version="2.2.1" />
-    <PackageReference Include="OrchardCore.Lists" Version="2.2.1" />
+    <PackageReference Include="OrchardCore.Module.Targets" Version="3.0.1" />
+    <PackageReference Include="OrchardCore.ContentManagement" Version="3.0.1" />
+    <PackageReference Include="OrchardCore.BackgroundTasks" Version="3.0.1" />
+    <PackageReference Include="OrchardCore.Media.Abstractions" Version="3.0.1" />
+    <PackageReference Include="OrchardCore.Email.Abstractions" Version="3.0.1" />
+    <PackageReference Include="OrchardCore.Seo" Version="3.0.1" />
+    <PackageReference Include="OrchardCore.PublishLater" Version="3.0.1" />
+    <PackageReference Include="OrchardCore.ContentFields" Version="3.0.1" />
+    <PackageReference Include="OrchardCore.Title" Version="3.0.1" />
+    <PackageReference Include="OrchardCore.Html" Version="3.0.1" />
+    <PackageReference Include="OrchardCore.Autoroute" Version="3.0.1" />
+    <PackageReference Include="OrchardCore.Lists" Version="3.0.1" />
     <PackageReference Include="Cronos" Version="0.8.4" />
-    <PackageReference Include="OrchardCore.Infrastructure.Abstractions" Version="2.2.1" />
+    <PackageReference Include="OrchardCore.Infrastructure.Abstractions" Version="3.0.1" />
   </ItemGroup>
 
   <ItemGroup>

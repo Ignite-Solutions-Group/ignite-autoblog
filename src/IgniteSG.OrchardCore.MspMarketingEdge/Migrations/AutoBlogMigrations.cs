@@ -42,7 +42,7 @@ public class AutoBlogMigrations : DataMigration
         );
 
         await _contentDefinitionManager.AlterTypeDefinitionAsync(Constants.ContentType, type => type
-            .DisplayedAs("AutoBlog Post")
+            .WithDisplayName("AutoBlog Post")
             .Creatable()
             .Listable()
             .Draftable()

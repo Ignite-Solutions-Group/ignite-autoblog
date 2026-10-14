@@ -23,32 +23,54 @@ An Orchard Core module that automatically imports weekly blog posts from [MSP Ma
 
 ## Requirements
 
-- Orchard Core 2.2.x
-- .NET 8
+- Orchard Core 3.0.1
+- .NET 10
+- An active MSP Marketing Edge subscription and its licensed email address
 - The following Orchard Core features must be enabled:
   - `OrchardCore.Seo`
   - `OrchardCore.PublishLater`
   - `OrchardCore.Email` (with SMTP configured)
   - `OrchardCore.Media`
 
+### Version compatibility
+
+| Module version | Orchard Core | .NET runtime |
+|---|---|---|
+| 1.7.0 | 3.0.1 | .NET 10 |
+| 1.6.6 | 2.2.1 | .NET 8 |
+
+Upgrade the host application's Orchard Core packages and .NET target before installing module 1.7.0. Applications remaining on Orchard Core 2 and .NET 8 should keep module 1.6.6. Earlier module binaries reference email APIs removed in Orchard Core 3.
+
+Building from source requires .NET SDK **10.0.200** or a later stable .NET 10 feature band, as selected by `global.json`.
+
 ## Installation
 
 ### NuGet (recommended)
 
+For Orchard Core 3.0.1 / .NET 10, install module 1.7.0 once that release is available on NuGet:
+
 ```shell
-dotnet add package IgniteSG.OrchardCore.MspMarketingEdge
+dotnet add package IgniteSG.OrchardCore.MspMarketingEdge --version 1.7.0
 ```
 
 Or via the Package Manager Console:
 
 ```powershell
-Install-Package IgniteSG.OrchardCore.MspMarketingEdge
+Install-Package IgniteSG.OrchardCore.MspMarketingEdge -Version 1.7.0
 ```
+
+For an Orchard Core 2.2.1 / .NET 8 host, use `--version 1.6.6` or `-Version 1.6.6` instead.
 
 ### Project reference
 
 1. Add the `IgniteSG.OrchardCore.MspMarketingEdge` project to your Orchard Core solution.
 2. Reference it from your web project.
+
+To build the module from the repository root:
+
+```shell
+dotnet build src/IgniteSG.OrchardCore.sln --configuration Release
+```
 
 ### Enable the feature
 
@@ -77,6 +99,7 @@ After enabling the module, navigate to **Configuration → MSP Marketing Edge Au
 | **Twitter/X Handle** | Your organization's @handle for Twitter Card metadata. Leave blank to omit. |
 | **Publisher Name** | Organization name for Google structured data. Falls back to the Orchard site name if blank. |
 | **Enable Google Structured Data** | Toggle JSON-LD Article schema generation on imported posts. Default: enabled. |
+| **Blog Container** | An existing content item with a ListPart to contain imported posts. Leave unselected to import posts without a container. |
 
 ### Feed options
 
@@ -130,6 +153,13 @@ Alternatively, create a **List** content item in the Orchard admin that queries 
 If your site already has a blog page that lists `BlogPost` items and you want imported `AutoBlogPost` items to appear alongside them, update your blog list template to query both content types.
 
 ## Changelog
+
+### v1.7.0
+- Targets Orchard Core 3.0.1 and .NET 10
+- Updates HTML notification emails to the Orchard Core 3 email API
+- Migrates obsolete content-part, site-settings, and display-name APIs
+- Updates build and release workflows to use the stable .NET 10 SDK
+- Documents version compatibility and installation requirements
 
 ### v1.6.0
 - Added estimated reading time to blog post templates

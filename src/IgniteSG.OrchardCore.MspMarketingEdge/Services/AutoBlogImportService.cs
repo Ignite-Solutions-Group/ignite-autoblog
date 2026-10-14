@@ -157,7 +157,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         try
         {
             var site = await _siteService.LoadSiteSettingsAsync();
-            var settings = site.As<AutoBlogSettings>();
+            var settings = site.GetOrCreate<AutoBlogSettings>();
 
             settings.LastSyncUtc = DateTime.UtcNow;
             settings.LastSyncError = null;
@@ -231,7 +231,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         }
         else if (article.Acf?.SendUpdate == true)
         {
-            var existingPart = existingItem.As<AutoBlogPart>();
+            var existingPart = existingItem.Get<AutoBlogPart>(nameof(AutoBlogPart));
             if (existingPart != null && existingPart.EdgeUpdateVersion != article.Acf.UpdateVersion)
             {
                 var updated = await UpdatePostAsync(existingItem, article, settings);
@@ -393,7 +393,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         });
 
         // Update AutoBlogPart (keep existing EdgeGuid, EdgeUrl, don't change slug)
-        var existingPart = contentItem.As<AutoBlogPart>();
+        var existingPart = contentItem.Get<AutoBlogPart>(nameof(AutoBlogPart));
         var existingUrl = existingPart?.EdgeUrl;
         var canonicalUrl = IsHttpUrl(existingUrl) ? existingUrl! : await ResolveCanonicalUrlAsync(article);
 
@@ -406,7 +406,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
 
         // Re-download featured image
         var imageUrl = article.YoastHeadJson?.OgImage?.FirstOrDefault()?.Url;
-        var slug = contentItem.As<AutoroutePart>()?.Path ?? article.Slug;
+        var slug = contentItem.Get<AutoroutePart>(nameof(AutoroutePart))?.Path ?? article.Slug;
         var mediaPath = await _imageService.DownloadAndStoreImageAsync(imageUrl ?? string.Empty, slug);
 
         // FeaturedImage MediaField on the implicit part
@@ -587,7 +587,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         var reconciled = 0;
         foreach (var post in allPosts)
         {
-            var part = post.As<AutoBlogPart>();
+            var part = post.Get<AutoBlogPart>(nameof(AutoBlogPart));
             if (part == null || string.IsNullOrWhiteSpace(part.EdgeGuid))
             {
                 continue;
@@ -640,7 +640,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         }
 
         var container = await _contentManager.GetAsync(settings.BlogContainerContentItemId);
-        return container?.As<AutoroutePart>()?.Path;
+        return container?.Get<AutoroutePart>(nameof(AutoroutePart))?.Path;
     }
 
     private async Task SendNotificationEmailAsync(AutoBlogSettings settings, ImportResult result)
@@ -673,8 +673,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             {
                 To = email,
                 Subject = subject,
-                Body = body,
-                IsHtmlBody = true
+                HtmlBody = body
             };
 
             var sendResult = await _emailService.SendAsync(message);
@@ -738,7 +737,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
     private async Task<AutoBlogSettings?> GetSettingsAsync()
     {
         var site = await _siteService.GetSiteSettingsAsync();
-        return site.As<AutoBlogSettings>();
+        return site.GetOrCreate<AutoBlogSettings>();
     }
 
     private static string HtmlDecode(string html)
