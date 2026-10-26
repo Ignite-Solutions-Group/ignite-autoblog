@@ -10,7 +10,7 @@
     <Description>Orchard Core module for MSP Marketing Edge blog syndication</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/dsghi/ignite-autoblog</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Ignite-Solutions-Group/ignite-autoblog</RepositoryUrl>
     <PackageTags>orchardcore;module;msp;autoblog;marketing</PackageTags>
   </PropertyGroup>
 
