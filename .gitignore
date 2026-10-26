@@ -54,4 +54,4 @@ TestResult.xml
 nunit-*.xml
 ref/
 docs/
-.vs/
+.vs//tests/VerifyEditorial/Localization/
