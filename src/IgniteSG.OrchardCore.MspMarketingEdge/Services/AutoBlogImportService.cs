@@ -232,7 +232,13 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         else if (article.Acf?.SendUpdate == true)
         {
             var existingPart = existingItem.Get<AutoBlogPart>(nameof(AutoBlogPart));
-            if (existingPart != null && existingPart.EdgeUpdateVersion != article.Acf.UpdateVersion)
+            if (existingPart?.PreserveLocalEdits == true)
+            {
+                // Do not advance EdgeUpdateVersion: clearing the flag must allow the pending update.
+                result.SkippedCount++;
+                _logger.LogInformation("AutoBlog: preserving local edits for post {ContentItemId}.", existingItem.ContentItemId);
+            }
+            else if (existingPart != null && existingPart.EdgeUpdateVersion != article.Acf.UpdateVersion)
             {
                 var updated = await UpdatePostAsync(existingItem, article, settings);
                 if (updated != null)

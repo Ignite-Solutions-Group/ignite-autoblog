@@ -1,0 +1,12 @@
+@model IgniteSG.OrchardCore.MspMarketingEdge.ViewModels.AutoBlogPartViewModel
+@inject Microsoft.Extensions.Localization.IStringLocalizer<IgniteSG.OrchardCore.MspMarketingEdge.Drivers.AutoBlogPartDisplayDriver> T
+
+<div class="ocat-wrapper" asp-validation-class-for="PreserveLocalEdits">
+    <div class="ocat-end-offset">
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" asp-for="PreserveLocalEdits" />
+            <label asp-for="PreserveLocalEdits" class="form-check-label">@T["Preserve local editorial content"]</label>
+        </div>
+        <span class="hint">@T["Skip feed updates for this article, including its title, body, images and SEO metadata. Clear this option to resume pending vendor updates."]</span>
+    </div>
+</div>

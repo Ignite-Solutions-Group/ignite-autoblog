@@ -1,0 +1,10 @@
+{
+  "name": "EditorialVerification",
+  "displayName": "Disposable editorial verification",
+  "tags": [],
+  "issetuprecipe": true,
+  "steps": [{
+    "name": "feature",
+    "enable": ["OrchardCore.Recipes", "OrchardCore.Settings", "OrchardCore.Users", "OrchardCore.Roles", "OrchardCore.Contents", "OrchardCore.ContentTypes", "OrchardCore.Lists", "IgniteSG.OrchardCore.MspMarketingEdge"]
+  }]
+}
