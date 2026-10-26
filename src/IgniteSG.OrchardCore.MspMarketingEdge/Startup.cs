@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.BackgroundTasks;
 using OrchardCore.ContentManagement;
+using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.Data.Migration;
 using OrchardCore.DisplayManagement.Handlers;
 using OrchardCore.Modules;
@@ -23,7 +24,7 @@ public class Startup : StartupBase
     public override void ConfigureServices(IServiceCollection services)
     {
         // Content part
-        services.AddContentPart<AutoBlogPart>();
+        services.AddContentPart<AutoBlogPart>().UseDisplayDriver<AutoBlogPartDisplayDriver>();
 
         // Data migration
         services.AddScoped<IDataMigration, AutoBlogMigrations>();

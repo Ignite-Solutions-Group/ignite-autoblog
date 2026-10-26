@@ -55,3 +55,4 @@ nunit-*.xml
 ref/
 docs/
 .vs/
+/tests/VerifyEditorial/Localization/
