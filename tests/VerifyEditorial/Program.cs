@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text.Json.Nodes;
 using IgniteSG.OrchardCore.MspMarketingEdge;
+using IgniteSG.OrchardCore.MspMarketingEdge.Drivers;
 using IgniteSG.OrchardCore.MspMarketingEdge.Models;
 using IgniteSG.OrchardCore.MspMarketingEdge.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -59,6 +60,15 @@ try
         if (!condition) throw new InvalidOperationException(name);
         assertions++;
     }
+    var nextSync = typeof(AutoBlogSettingsDisplayDriver).GetMethod("CalculateNextSync", BindingFlags.Static | BindingFlags.NonPublic)!;
+    var futureYear = DateTime.UtcNow.Year + 1;
+    foreach (var (from, expected) in new[]
+    {
+        (new DateTime(futureYear, 4, 30, 23, 59, 59, DateTimeKind.Utc), new DateTime(futureYear, 5, 1, 0, 0, 0, DateTimeKind.Utc)),
+        (new DateTime(futureYear, 5, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(futureYear, 5, 1, 6, 0, 0, DateTimeKind.Utc)),
+        (new DateTime(futureYear, 12, 31, 23, 59, 59, DateTimeKind.Utc), new DateTime(futureYear + 1, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+    })
+        Check((DateTime?)nextSync.Invoke(null, [from]) == expected, "Six-hour UTC schedule retains boundary behavior");
     async Task Scope(Func<IServiceProvider, Task> action)
     {
         var scope = await host.GetScopeAsync("Default");
