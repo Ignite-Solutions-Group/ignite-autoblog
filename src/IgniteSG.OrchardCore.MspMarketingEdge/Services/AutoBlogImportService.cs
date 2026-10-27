@@ -7,6 +7,7 @@ using IgniteSG.OrchardCore.MspMarketingEdge.Indexes;
 using IgniteSG.OrchardCore.MspMarketingEdge.Models;
 using Microsoft.Extensions.Logging;
 using OrchardCore.Media.Fields;
+using OrchardCore.Media;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Records;
 using OrchardCore.Email;
@@ -35,6 +36,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
     private readonly IEmailService _emailService;
     private readonly IHtmlSanitizerService _htmlSanitizerService;
     private readonly ILogger<AutoBlogImportService> _logger;
+    private readonly IMediaFileStore _mediaFileStore;
 
     public AutoBlogImportService(
         ISiteService siteService,
@@ -44,7 +46,8 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         IImageService imageService,
         IEmailService emailService,
         IHtmlSanitizerService htmlSanitizerService,
-        ILogger<AutoBlogImportService> logger)
+        ILogger<AutoBlogImportService> logger,
+        IMediaFileStore mediaFileStore)
     {
         _siteService = siteService;
         _contentManager = contentManager;
@@ -54,6 +57,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         _emailService = emailService;
         _htmlSanitizerService = htmlSanitizerService;
         _logger = logger;
+        _mediaFileStore = mediaFileStore;
     }
 
     public async Task<ImportResult> RunImportAsync()
@@ -310,8 +314,13 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             });
         }
 
+        // Resolve the source date before generating structured data; NewAsync has no CreatedUtc yet.
+        DateTime? articleDateUtc = null;
+        if (DateTime.TryParse(article.Date, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var parsedDate))
+            articleDateUtc = parsedDate.ToUniversalTime();
+
         // SeoMetaPart
-        await PopulateSeoMetaPartAsync(contentItem, title, excerpt, canonicalUrl, mediaPath, settings);
+        await PopulateSeoMetaPartAsync(contentItem, title, excerpt, canonicalUrl, mediaPath, settings, articleDateUtc);
 
         // ContainedPart — link to the Blog container so ListPart includes this post
         if (!string.IsNullOrWhiteSpace(settings.BlogContainerContentItemId))
@@ -321,13 +330,6 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             {
                 part.ListContentItemId = settings.BlogContainerContentItemId;
             });
-        }
-
-        // Parse the article date to preserve the original publish/create timestamps
-        DateTime? articleDateUtc = null;
-        if (DateTime.TryParse(article.Date, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var parsedDate))
-        {
-            articleDateUtc = parsedDate.ToUniversalTime();
         }
 
         // Determine publish status
@@ -459,7 +461,8 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         string excerpt,
         string canonicalUrl,
         string? mediaPath,
-        AutoBlogSettings settings)
+        AutoBlogSettings settings,
+        DateTime? originalPublishedUtc = null)
     {
         var metaDescription = Truncate(excerpt, 160);
         var ogDescription = Truncate(excerpt, 300);
@@ -472,7 +475,16 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         string? googleSchema = null;
         if (settings.EnableGoogleStructuredData)
         {
-            googleSchema = BuildGoogleSchema(contentItem, title, excerpt, mediaPath, settings);
+            string? publicImageUrl = null;
+            if (mediaPath != null)
+            {
+                publicImageUrl = _mediaFileStore.MapPathToPublicUrl(mediaPath.TrimStart('/'));
+                var site = await _siteService.GetSiteSettingsAsync();
+                if (Uri.TryCreate(site.BaseUrl, UriKind.Absolute, out var origin) && (origin.Scheme == "https" || origin.Scheme == "http"))
+                    publicImageUrl = new Uri(origin, publicImageUrl).AbsoluteUri;
+            }
+            googleSchema = BuildGoogleSchema(title, excerpt, publicImageUrl,
+                originalPublishedUtc ?? contentItem.CreatedUtc ?? DateTime.UtcNow, settings);
         }
 
         contentItem.Alter<SeoMetaPart>(seo =>
@@ -503,34 +515,32 @@ public partial class AutoBlogImportService : IAutoBlogImportService
     }
 
     private static string BuildGoogleSchema(
-        ContentItem contentItem,
         string title,
         string excerpt,
-        string? mediaPath,
+        string? publicImageUrl,
+        DateTime publishedUtc,
         AutoBlogSettings settings)
     {
         var publisherName = !string.IsNullOrWhiteSpace(settings.PublisherName)
             ? settings.PublisherName
             : "Organization";
 
-        // Escape title to prevent JSON-LD script breakout
-        var safeTitle = title.Replace("</", "<\\/");
-
-        var schema = new
+        // '@' escapes a C# identifier; it does not add '@' to a serialized property name.
+        var schema = new Dictionary<string, object?>
         {
-            @context = "https://schema.org",
-            @type = "Article",
-            headline = safeTitle,
-            description = Truncate(excerpt, 300),
-            image = mediaPath != null ? "/" + mediaPath : (string?)null,
-            datePublished = contentItem.CreatedUtc?.ToString("o"),
-            publisher = new
+            ["@context"] = "https://schema.org",
+            ["@type"] = "Article",
+            ["headline"] = title,
+            ["description"] = Truncate(excerpt, 300),
+            ["image"] = publicImageUrl,
+            ["datePublished"] = publishedUtc.ToString("o", CultureInfo.InvariantCulture),
+            ["publisher"] = new Dictionary<string, object?>
             {
-                @type = "Organization",
-                name = publisherName
+                ["@type"] = "Organization",
+                ["name"] = publisherName
             }
         };
-
+        // The default encoder escapes '<' to prevent a headline/description from closing the script element.
         return JsonSerializer.Serialize(schema, new JsonSerializerOptions { WriteIndented = false });
     }
 

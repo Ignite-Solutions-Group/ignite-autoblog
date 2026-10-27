@@ -31,7 +31,8 @@
     <PackageReference Include="OrchardCore.Html" Version="3.0.1" />
     <PackageReference Include="OrchardCore.Autoroute" Version="3.0.1" />
     <PackageReference Include="OrchardCore.Lists" Version="3.0.1" />
-    <PackageReference Include="Cronos" Version="0.8.4" />
+    <PackageReference Include="Cronos" Version="0.13.0" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
     <PackageReference Include="OrchardCore.Infrastructure.Abstractions" Version="3.0.1" />
   </ItemGroup>
 

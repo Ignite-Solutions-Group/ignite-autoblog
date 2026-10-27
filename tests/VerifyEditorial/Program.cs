@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text.Json.Nodes;
 using IgniteSG.OrchardCore.MspMarketingEdge;
+using IgniteSG.OrchardCore.MspMarketingEdge.Drivers;
 using IgniteSG.OrchardCore.MspMarketingEdge.Models;
 using IgniteSG.OrchardCore.MspMarketingEdge.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -11,6 +12,7 @@ using OrchardCore.Environment.Shell;
 using OrchardCore.Html.Models;
 using OrchardCore.Infrastructure.Html;
 using OrchardCore.Seo.Models;
+using OrchardCore.Media;
 using OrchardCore.Settings;
 using YesSql;
 using ISession = YesSql.ISession;
@@ -39,13 +41,13 @@ app.UseOrchardCore();
 await app.StartAsync();
 try
 {
-    using var http = new HttpClient();
+    using var http = new HttpClient { Timeout = TimeSpan.FromMinutes(5) };
     using var setup = await http.GetAsync("http://127.0.0.1:5278/");
     var host = app.Services.GetRequiredService<IShellHost>();
-    var settings = new AutoBlogSettings { FeedId = 8, DirectlyPublish = false };
+    var settings = new AutoBlogSettings { FeedId = 8, DirectlyPublish = false, EnableGoogleStructuredData = true, PublisherName = "Fixture Publisher" };
     var article = new EdgeFeedArticle
     {
-        Id = 123, Slug = "editorial-fixture", Guid = new() { Rendered = "https://example.invalid/?p=123" },
+        Id = 123, Slug = "editorial-fixture", Date = "2026-10-01T08:30:00Z", Guid = new() { Rendered = "https://example.invalid/?p=123" },
         Link = "https://example.invalid/editorial-fixture", Title = new() { Rendered = "Vendor title" },
         Content = new() { Rendered = "<p>Vendor body</p>" }, Excerpt = new() { Rendered = "Vendor excerpt" },
         Acf = new() { SendUpdate = true, UpdateVersion = 1 }
@@ -58,6 +60,15 @@ try
         if (!condition) throw new InvalidOperationException(name);
         assertions++;
     }
+    var nextSync = typeof(AutoBlogSettingsDisplayDriver).GetMethod("CalculateNextSync", BindingFlags.Static | BindingFlags.NonPublic)!;
+    var futureYear = DateTime.UtcNow.Year + 1;
+    foreach (var (from, expected) in new[]
+    {
+        (new DateTime(futureYear, 4, 30, 23, 59, 59, DateTimeKind.Utc), new DateTime(futureYear, 5, 1, 0, 0, 0, DateTimeKind.Utc)),
+        (new DateTime(futureYear, 5, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(futureYear, 5, 1, 6, 0, 0, DateTimeKind.Utc)),
+        (new DateTime(futureYear, 12, 31, 23, 59, 59, DateTimeKind.Utc), new DateTime(futureYear + 1, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+    })
+        Check((DateTime?)nextSync.Invoke(null, [from]) == expected, "Six-hour UTC schedule retains boundary behavior");
     async Task Scope(Func<IServiceProvider, Task> action)
     {
         var scope = await host.GetScopeAsync("Default");
@@ -77,7 +88,8 @@ try
     {
         var service = new AutoBlogImportService(sp.GetRequiredService<ISiteService>(), sp.GetRequiredService<IContentManager>(),
             sp.GetRequiredService<ISession>(), new NoNetworkFeed(), images, sp.GetRequiredService<IEmailService>(),
-            sp.GetRequiredService<IHtmlSanitizerService>(), NullLogger<AutoBlogImportService>.Instance);
+            sp.GetRequiredService<IHtmlSanitizerService>(), NullLogger<AutoBlogImportService>.Instance,
+            sp.GetRequiredService<IMediaFileStore>());
         var result = new ImportResult();
         await (Task)process.Invoke(service, [article, settings, result])!;
         return result;
@@ -85,11 +97,27 @@ try
     async Task<ContentItem> Read(IServiceProvider sp) => (await sp.GetRequiredService<ISession>()
         .Query<ContentItem, ContentItemIndex>(i => i.ContentType == Constants.ContentType && i.Latest).FirstOrDefaultAsync())!;
 
+    await Scope(async sp =>
+    {
+        var sites = sp.GetRequiredService<ISiteService>();
+        var site = await sites.LoadSiteSettingsAsync();
+        site.BaseUrl = "https://www.fixture.invalid";
+        await sites.UpdateSiteSettingsAsync(site);
+    });
     await Scope(async sp => Check((await Process(sp)).CreatedPosts.Count == 1, "Initial import creates draft"));
     JsonNode? protectedContent = null;
     await Scope(async sp =>
     {
         var item = await Read(sp);
+        var seo = item.Get<SeoMetaPart>(nameof(SeoMetaPart));
+        var schema = JsonNode.Parse(seo.GoogleSchema)!;
+        Check(schema["@context"]!.GetValue<string>() == "https://schema.org" && schema["context"] is null, "JSON-LD context keyword");
+        Check(schema["@type"]!.GetValue<string>() == "Article" && schema["type"] is null, "JSON-LD article type keyword");
+        Check(schema["publisher"]!["@type"]!.GetValue<string>() == "Organization", "JSON-LD publisher type keyword");
+        Check(schema["image"]!.GetValue<string>() == "https://www.fixture.invalid/media/autoblog/editorial-fixture.jpeg", "Schema uses the native public media URL");
+        Check(DateTime.Parse(schema["datePublished"]!.GetValue<string>(), null, System.Globalization.DateTimeStyles.RoundtripKind) == item.CreatedUtc,
+            "Source publication date is populated before import persistence");
+        Check(schema["headline"]!.GetValue<string>() == item.DisplayText, "Schema retains the actual headline");
         Check(!item.Get<AutoBlogPart>(nameof(AutoBlogPart)).PreserveLocalEdits, "Existing imports default to vendor updates");
         item.Alter<HtmlBodyPart>(p => p.Html = "<p>Locally corrected body</p>");
         item.Alter<SeoMetaPart>(p => p.MetaDescription = "Locally corrected description");
@@ -98,7 +126,7 @@ try
     });
     await Scope(async sp => protectedContent = ((JsonObject)(await Read(sp)).Content).DeepClone());
     images.Calls = 0;
-    article.Title.Rendered = "New vendor title";
+    article.Title.Rendered = "New vendor title &lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;";
     article.Content.Rendered = "<p>New vendor body</p>";
     article.Excerpt.Rendered = "New vendor excerpt";
     article.Acf.UpdateVersion = 2;
@@ -120,11 +148,17 @@ try
     await Scope(async sp =>
     {
         var item = await Read(sp);
-        Check(item.DisplayText == "New vendor title", "Normal title update persists");
+        Check(item.DisplayText == "New vendor title </script><script>alert(1)</script>", "Normal title update persists");
         Check(item.Get<HtmlBodyPart>(nameof(HtmlBodyPart)).Html == "<p>New vendor body</p>", "Normal body update persists");
         Check(item.Get<AutoBlogPart>(nameof(AutoBlogPart)).EdgeUpdateVersion == 2, "Normal version update persists");
         Check(item.Get<SeoMetaPart>(nameof(SeoMetaPart)).MetaRobots == "noindex, follow", "Existing robots policy retained");
         Check(item.Get<SeoMetaPart>(nameof(SeoMetaPart)).Canonical == article.Link, "Publisher canonical retained");
+        var seo = item.Get<SeoMetaPart>(nameof(SeoMetaPart));
+        Check(!seo.GoogleSchema.Contains("</script>", StringComparison.OrdinalIgnoreCase), "JSON-LD cannot break out of its script element");
+        var schema = JsonNode.Parse(seo.GoogleSchema)!;
+        Check(schema["headline"]!.GetValue<string>() == item.DisplayText, "Script escaping preserves decoded headline wording");
+        Check(DateTime.Parse(schema["datePublished"]!.GetValue<string>(), null, System.Globalization.DateTimeStyles.RoundtripKind) == item.CreatedUtc,
+            "Updates retain the original publication date");
     });
     await Scope(async sp => Check((await Process(sp)).SkippedCount == 1, "Already applied version skips"));
     Check(errors.Count == 0, "Native content handlers logged an error");
@@ -135,7 +169,7 @@ finally { await app.StopAsync(); }
 sealed class NoNetworkImages : IImageService
 {
     public int Calls;
-    public Task<string?> DownloadAndStoreImageAsync(string imageUrl, string slug) { Calls++; return Task.FromResult<string?>(null); }
+    public Task<string?> DownloadAndStoreImageAsync(string imageUrl, string slug) { Calls++; return Task.FromResult<string?>("autoblog/editorial-fixture.jpeg"); }
 }
 sealed class NoNetworkFeed : IEdgeApiService
 {
