@@ -2,7 +2,7 @@ name: Build
 
 on:
   pull_request:
-    branches: [main, 'codex/**']
+    branches: [main, 'release/**', 'codex/**']
 
 permissions:
   contents: read
