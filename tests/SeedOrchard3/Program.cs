@@ -79,6 +79,10 @@ builder.Services.AddOrchardCms()
     .AddSetupFeatures("OrchardCore.AutoSetup")
     .ConfigureServices(services => services.Configure<HttpClientFactoryOptions>("EdgeApi", o =>
         o.HttpMessageHandlerBuilderActions.Add(b => b.PrimaryHandler = edge.CreateHandler())), order: 10_000);
+// Imports are run explicitly below; Orchard's scheduler must not also fire one when a run crosses a schedule boundary.
+var scheduler = builder.Services.Where(d => d.ServiceType == typeof(IHostedService) && d.ImplementationType?.Name == "ModularBackgroundService").ToList();
+if (scheduler.Count != 1) throw new InvalidOperationException("Orchard's background service registration was not found.");
+builder.Services.Remove(scheduler[0]);
 builder.Services.Configure<ShellOptions>(o => o.ShellsApplicationDataPath = dataPath);
 builder.WebHost.UseUrls("http://127.0.0.1:0");
 
@@ -252,23 +256,37 @@ try
     await Configure(x => { x.FeedId = 8; x.NotificationEmail = "seeded@example.invalid"; });
 
     // What the released templates and admin produced on Orchard Core 3, for comparison after the upgrade.
-    var cookies = new CookieContainer();
-    using (var http = new HttpClient(new HttpClientHandler { CookieContainer = cookies, AllowAutoRedirect = false }) { BaseAddress = baseAddress })
+    HttpClient Browser() => new(new HttpClientHandler { CookieContainer = new CookieContainer(), AllowAutoRedirect = false }) { BaseAddress = baseAddress };
+    async Task<int> SignIn(HttpClient http, string userName, string password)
     {
-        manifest.Pages["/blog/seeded-live"] = await (await http.GetAsync("/blog/seeded-live")).Content.ReadAsStringAsync();
-        manifest.Pages["/blog/seeded-video"] = await (await http.GetAsync("/blog/seeded-video")).Content.ReadAsStringAsync();
-        manifest.Pages["/blog"] = await (await http.GetAsync("/blog")).Content.ReadAsStringAsync();
-
         var login = await (await http.GetAsync("/Login")).Content.ReadAsStringAsync();
         var fields = Regex.Matches(login, "<input\\b[^>]*>").Select(m => m.Value)
             .Select(tag => (Name: Regex.Match(tag, "\\sname=\"([^\"]*)\"").Groups[1].Value, Value: WebUtility.HtmlDecode(Regex.Match(tag, "\\svalue=\"([^\"]*)\"").Groups[1].Value)))
             .Where(f => f.Name.Length > 0).GroupBy(f => f.Name).ToDictionary(g => g.Key, g => g.First().Value);
-        fields[fields.Keys.First(k => k.EndsWith("UserName", StringComparison.OrdinalIgnoreCase))] = "fixture";
-        fields[fields.Keys.First(k => k.EndsWith("Password", StringComparison.OrdinalIgnoreCase))] = manifest.AdminPassword;
+        fields[fields.Keys.First(k => k.EndsWith("UserName", StringComparison.OrdinalIgnoreCase))] = userName;
+        fields[fields.Keys.First(k => k.EndsWith("Password", StringComparison.OrdinalIgnoreCase))] = password;
         using var signedIn = await http.PostAsync("/Login", new FormUrlEncodedContent(fields));
-        manifest.Observations["AdminSignInStatus"] = ((int)signedIn.StatusCode).ToString();
+        return (int)signedIn.StatusCode;
+    }
+    using (var http = Browser())
+    {
+        foreach (var route in new[] { "/blog/seeded-live", "/blog/seeded-video", "/blog" })
+        {
+            using var page = await http.GetAsync(route);
+            if (!page.IsSuccessStatusCode) throw new InvalidOperationException($"The Orchard Core 3 site answered {(int)page.StatusCode} for {route}.");
+            manifest.Pages[route] = await page.Content.ReadAsStringAsync();
+        }
+
+        manifest.Observations["AdminSignInStatus"] = (await SignIn(http, "fixture", manifest.AdminPassword)).ToString();
         manifest.Observations["NotificationLinkStatus"] = ((int)(await http.GetAsync("/Admin/Settings/Index?groupId=AutoBlog")).StatusCode).ToString();
         manifest.Observations["SettingsRouteStatus"] = ((int)(await http.GetAsync("/Admin/Settings/AutoBlog")).StatusCode).ToString();
+    }
+    using (var http = Browser())
+    {
+        // Whether the narrow role could open the settings before the upgrade.
+        await SignIn(http, "blogmanager", manifest.UserPassword);
+        using var settingsPage = await http.GetAsync("/Admin/Settings/AutoBlog");
+        manifest.Observations["ManagerSettingsStatus"] = $"{(int)settingsPage.StatusCode} {settingsPage.Headers.Location?.AbsolutePath}".Trim();
     }
 
     await Scope(async sp =>

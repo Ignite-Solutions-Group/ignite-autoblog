@@ -757,7 +757,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         }
         else
         {
-            body.Append("<p>You can manage your AutoBlog settings in the admin under Configuration &gt; MSP Marketing Edge AutoBlog.</p>");
+            body.Append("<p>You can manage your AutoBlog settings in the admin under Settings &gt; MSP Marketing Edge AutoBlog.</p>");
         }
 
         return body.ToString();

@@ -10,6 +10,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       # A build agent starts the fixture site in seconds; this only bounds a hung start.
       AUTOBLOG_FIXTURE_STARTUP_MINUTES: 15

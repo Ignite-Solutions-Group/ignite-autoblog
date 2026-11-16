@@ -49,6 +49,12 @@ sealed class Scenario
         Id = 110, Slug = "manual-entry", Title = "Manual entry", Content = "<p>Vendor body for the manual entry</p>",
         Excerpt = "Excerpt M", Date = "2026-10-10T08:30:00Z",
     };
+    /// <summary>A different vendor article whose slug equals the route of the "No image post" article.</summary>
+    public FakeArticle RouteCollision { get; } = new()
+    {
+        Id = 120, Slug = "no-image-post", Title = "A later article on the same slug", Content = "<p>Vendor body for the later article</p>",
+        Excerpt = "Excerpt for the later article", Date = "2026-10-11T08:30:00Z",
+    };
     public FakeArticle FutureDraft { get; } = new()
     {
         Id = 107, Slug = "future-draft", Title = "Future draft", Content = "<p>Vendor body F</p>",

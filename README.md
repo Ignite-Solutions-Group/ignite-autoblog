@@ -37,10 +37,10 @@ An Orchard Core module that automatically imports weekly blog posts from [MSP Ma
 | Module version | Orchard Core | .NET runtime |
 |---|---|---|
 | 2.0.0-preview.1 | 4.0.0-preview-19227 (exact) | .NET 11 |
-| 1.7.2 | 3.0.1 | .NET 10 |
+| 1.7.x | 3.0.1 | .NET 10 |
 | 1.6.6 | 2.2.1 | .NET 8 |
 
-Each line keeps its own compatibility promise. The 2.x line is for Orchard Core 4; the 1.7.x line stays the Orchard Core 3 line and is not replaced by it. Applications on Orchard Core 3 and .NET 10 should keep module 1.7.2, and applications on Orchard Core 2 and .NET 8 should keep module 1.6.6. Upgrade the host application's Orchard Core packages and .NET target before moving to a newer module line.
+Each line keeps its own compatibility promise. The 2.x line is for Orchard Core 4; the 1.7.x line stays the Orchard Core 3 line and is not replaced by it. Applications on Orchard Core 3 and .NET 10 should stay on the latest 1.7.x release, and applications on Orchard Core 2 and .NET 8 should keep module 1.6.6. Upgrade the host application's Orchard Core packages and .NET target before moving to a newer module line.
 
 #### Orchard Core 4 is a preview
 
@@ -85,11 +85,11 @@ Or via the Package Manager Console:
 Install-Package IgniteSG.OrchardCore.MspMarketingEdge -Version 2.0.0-preview.1
 ```
 
-For an Orchard Core 3.0.1 / .NET 10 host, use version `1.7.2` instead, and for an Orchard Core 2.2.1 / .NET 8 host use `1.6.6`.
+For an Orchard Core 3.0.1 / .NET 10 host, use the latest `1.7.x` version instead, and for an Orchard Core 2.2.1 / .NET 8 host use `1.6.6`.
 
 ### Project reference
 
-1. Add the `IgniteSG.OrchardCore.MspMarketingEdge` project to your Orchard Core solution.
+1. Add the `IgniteSG.OrchardCore.MspMarketingEdge` project to your Orchard Core solution. The project reads the Orchard Core version from this repository's `Directory.Build.props`, so either keep that file above the project or define `OrchardCoreVersion` in your own build properties.
 2. Reference it from your web project.
 
 To build the module from the repository root:
@@ -190,7 +190,8 @@ dotnet run --project tests/VerifyEditorial -c Release
 # string in AUTOBLOG_FIXTURE_AZURE_STORAGE)
 dotnet run --project tests/VerifyEditorial -c Release -- --azure-media
 
-# An existing site: write an Orchard Core 3 database with the released module, then open it on this build
+# An existing site: write an Orchard Core 3 database with the released module, then open it on this build.
+# The seed step needs the .NET 10 runtime and an output folder that is empty or does not exist yet.
 dotnet run --project tests/SeedOrchard3 -c Release -- ./artifacts/seed-orchard3
 dotnet run --project tests/VerifyEditorial -c Release -- --upgrade-from ./artifacts/seed-orchard3
 ```
@@ -205,8 +206,9 @@ The first run after a build can take several minutes to start on a workstation w
 - Moves the settings page to Orchard Core 4's **Settings** menu and updates the permission to the localizable description API
 - Fixes the default detail template so video-feed posts no longer show the featured image
 - Fixes the settings link in notification emails, which pointed at a page that does not exist
-- Fixes the slug fallback for posts inside a blog container, so a matching hand-made post is adopted instead of duplicated
+- Fixes the slug fallback for posts inside a blog container, so a matching hand-made post is adopted instead of duplicated, and keeps it from taking over a post that belongs to a different article
 - Stores downloaded images under the same file name on Windows and Linux hosts
+- Shows **Next sync** on the settings page in the site's time zone, which is the clock Orchard runs the schedule on
 - Takes the manifest version from `Constants.Version`, so the two can no longer disagree
 - Verifies every pull request and release against a new site, Azure Blob media and an upgraded Orchard Core 3 database
 

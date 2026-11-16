@@ -117,6 +117,12 @@ sealed class FixtureHost : IAsyncDisposable
                 }
             }, order: 10_000);
 
+        // The checks run each background task themselves. Orchard's scheduler would otherwise also fire the
+        // import on its own when a run happens to cross a six-hour boundary, in the middle of a check.
+        var scheduler = builder.Services.Where(d => d.ServiceType == typeof(IHostedService) && d.ImplementationType?.Name == "ModularBackgroundService").ToList();
+        if (scheduler.Count != 1) throw new InvalidOperationException("Orchard's background service registration was not found; the fixture would not be isolated from the schedule.");
+        builder.Services.Remove(scheduler[0]);
+
         builder.Services.Configure<ShellOptions>(o => o.ShellsApplicationDataPath = dataPath);
         builder.WebHost.UseUrls("http://127.0.0.1:0");
 

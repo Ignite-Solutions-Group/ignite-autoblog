@@ -75,6 +75,7 @@ static class ImportChecks
             c.Equal("Manage MSP Marketing Edge AutoBlog settings", permission?.Description?.Value, "The permission description is retained");
         });
 
+        // Orchard runs the six-hour schedule on the site's clock, so the page predicts the next run on it too.
         var nextSync = typeof(AutoBlogSettingsDisplayDriver).GetMethod("CalculateNextSync", BindingFlags.Static | BindingFlags.NonPublic)!;
         var year = DateTime.UtcNow.Year + 1;
         foreach (var (from, expected) in new[]
@@ -83,7 +84,16 @@ static class ImportChecks
             (new DateTime(year, 5, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(year, 5, 1, 6, 0, 0, DateTimeKind.Utc)),
             (new DateTime(year, 12, 31, 23, 59, 59, DateTimeKind.Utc), new DateTime(year + 1, 1, 1, 0, 0, 0, DateTimeKind.Utc)),
         })
-            c.Equal((DateTime?)expected, (DateTime?)nextSync.Invoke(null, [from]), "The next-sync display follows six-hour UTC boundaries");
+            c.Equal((DateTime?)expected, (DateTime?)nextSync.Invoke(null, [from, TimeZoneInfo.Utc]), "On a UTC site the next sync falls on six-hour UTC boundaries");
+
+        // Honolulu is UTC-10 all year: midnight, 6 AM, noon and 6 PM there are 10:00, 16:00, 22:00 and 04:00 UTC.
+        var honolulu = TimeZoneInfo.FindSystemTimeZoneById(FixtureHost.SiteTimeZone);
+        foreach (var (from, expected) in new[]
+        {
+            (new DateTime(year, 4, 30, 23, 59, 59, DateTimeKind.Utc), new DateTime(year, 5, 1, 4, 0, 0, DateTimeKind.Utc)),
+            (new DateTime(year, 5, 1, 4, 0, 0, DateTimeKind.Utc), new DateTime(year, 5, 1, 10, 0, 0, DateTimeKind.Utc)),
+        })
+            c.Equal((DateTime?)expected, (DateTime?)nextSync.Invoke(null, [from, honolulu]), "On a Honolulu site the next sync falls on six-hour local boundaries");
     }
 
     public static async Task FailurePathsAsync(FixtureHost site, Checks c, Scenario s)
@@ -386,6 +396,19 @@ static class ImportChecks
         c.Equal(manualId, adopted?.ContentItemId, "The vendor GUID is backfilled onto the existing post");
         c.Equal(4, (await site.PostsAsync()).Count, "Adopting a post adds no content item");
         c.Equal(4, (await site.IndexedGuidsAsync()).Count, "The adopted post is added to the GUID index");
+
+        // A different vendor article whose slug equals an existing post's route must not take that post over.
+        var owner = (await site.PostAsync(s.NoImage))!;
+        site.Edge.Articles.Add(s.RouteCollision);
+        result = await site.ImportAsync();
+        c.That(result.CreatedPosts.Count == 1, "An article that only shares a route with another article is imported as its own post", $"{result.CreatedPosts.Count} created");
+        var ownerNow = await site.PostAsync(s.NoImage);
+        c.That(ownerNow?.ContentItemId == owner.ContentItemId && ownerNow.DisplayText == "No image post"
+            && ownerNow.Get<HtmlBodyPart>(nameof(HtmlBodyPart))?.Html == "<p>Vendor body C</p>", "The post that owns the route keeps its GUID and content");
+        var later = await site.PostAsync(s.RouteCollision);
+        c.That(later != null && later.ContentItemId != owner.ContentItemId
+            && later.Get<AutoroutePart>(nameof(AutoroutePart))?.Path != ownerNow?.Get<AutoroutePart>(nameof(AutoroutePart))?.Path, "The later article gets its own content item and route");
+        c.Equal(5, (await site.PostsAsync()).Count, "The collision adds exactly one content item");
         site.Email.Clear();
     }
 
@@ -478,6 +501,7 @@ static class ImportChecks
         c.Equal("1 created, 0 updated, 0 skipped, 1 failed", status.LastSyncSummary, "The sync status counts the failure");
         c.That(!status.LastSyncSuccess && status.LastSyncError?.Contains("Broken article", StringComparison.Ordinal) == true, "The sync status names the failing article", status.LastSyncError);
         c.Equal(errorsBefore + 1, site.Errors.Count, "The failure is logged once as an error");
+        c.That(site.Errors.Entries.LastOrDefault()?.Contains("Broken article", StringComparison.Ordinal) == true, "The logged error names the failing article");
         site.ExpectedErrors++;
 
         // The scheduled path: the background task runs the same import.
@@ -491,8 +515,9 @@ static class ImportChecks
         c.That(await site.PostAsync(s.FromBackgroundTask) is not null, "The background task imports through the same service");
         c.That((await site.SettingsAsync()).LastSyncSuccess, "A later clean run clears the failed status");
 
-        c.Equal(11, (await site.PostsAsync()).Count, "Every imported article exists exactly once");
-        c.Equal(11, (await site.IndexedGuidsAsync()).Distinct().Count(), "Every post has exactly one GUID index row");
+        var guids = await site.IndexedGuidsAsync();
+        c.Equal(12, (await site.PostsAsync()).Count, "Every imported article exists exactly once");
+        c.That(guids.Count == 12 && guids.Distinct().Count() == 12, "Every post has exactly one GUID index row", $"{guids.Count} rows, {guids.Distinct().Count()} distinct");
         site.Email.Clear();
         edge.Articles.Clear();
     }

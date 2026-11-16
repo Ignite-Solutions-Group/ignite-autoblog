@@ -10,7 +10,7 @@ using IgniteSG.OrchardCore.MspMarketingEdge.Fixtures;
 static class AccessChecks
 {
     private const string SettingsPath = "/Admin/Settings/AutoBlog";
-    private const string RefreshPath = "/admin/autoblog/force-refresh";
+
     private const string Token = "__RequestVerificationToken";
 
     public static async Task RunAsync(FixtureHost site, Checks c, Scenario s)
@@ -81,25 +81,27 @@ static class AccessChecks
         c.Equal("Saved by the manager", (await site.SettingsAsync()).PublisherName, "Rejected saves change nothing");
         await site.ConfigureAsync(x => x.PublisherName = "Fixture Publisher");
 
-        // Manual import.
+        // Manual import, posted to the address the page's own button uses.
+        var refreshPath = Regex.Match(managerPage.Body, @"form\.action\s*=\s*'(?<url>[^']+)'").Groups["url"].Value;
+        c.Equal("/admin/autoblog/force-refresh", refreshPath, "The Run Import Now button posts to the manual import route");
         edge.ClearRequests();
-        var refresh = await manager.PostAsync(RefreshPath, [new(Token, await TokenAsync(manager, SettingsPath))]);
+        var refresh = await manager.PostAsync(refreshPath, [new(Token, await TokenAsync(manager, SettingsPath))]);
         c.That(refresh.Status == HttpStatusCode.Redirect && refresh.Location?.Contains(SettingsPath, StringComparison.OrdinalIgnoreCase) == true,
             "The AutoBlog manager can run the import and returns to the settings", $"{(int)refresh.Status} {refresh.Location}");
         c.Equal(1, edge.Count(FakeEdgeServer.LicenseHost), "The manual import contacts the vendor once");
         c.Contains((await manager.GetAsync(SettingsPath)).Body, "no new or updated posts were found", "The manual import reports its result on the settings page");
 
         edge.ClearRequests();
-        refresh = await admin.PostAsync(RefreshPath, [new(Token, await TokenAsync(admin, SettingsPath))]);
+        refresh = await admin.PostAsync(refreshPath, [new(Token, await TokenAsync(admin, SettingsPath))]);
         c.That(refresh.Status == HttpStatusCode.Redirect && edge.Count(FakeEdgeServer.LicenseHost) == 1, "An administrator can run the import");
 
         edge.ClearRequests();
-        c.Equal(HttpStatusCode.BadRequest, (await manager.PostAsync(RefreshPath, [])).Status, "A manual import without an antiforgery token is rejected");
-        var visitorRefresh = await visitor.PostAsync(RefreshPath, [new(Token, await TokenAsync(visitor, "/Admin"))]);
+        c.Equal(HttpStatusCode.BadRequest, (await manager.PostAsync(refreshPath, [])).Status, "A manual import without an antiforgery token is rejected");
+        var visitorRefresh = await visitor.PostAsync(refreshPath, [new(Token, await TokenAsync(visitor, "/Admin"))]);
         c.That(visitorRefresh.IsDenied, "A user without the permission cannot run the import", $"{(int)visitorRefresh.Status} {visitorRefresh.Location}");
-        var anonymousRefresh = await anonymous.PostAsync(RefreshPath, [new(Token, await TokenAsync(anonymous, "/Login"))]);
+        var anonymousRefresh = await anonymous.PostAsync(refreshPath, [new(Token, await TokenAsync(anonymous, "/Login"))]);
         c.That(anonymousRefresh.IsDenied, "An anonymous visitor cannot run the import", $"{(int)anonymousRefresh.Status} {anonymousRefresh.Location}");
-        var asLink = await manager.GetAsync(RefreshPath);
+        var asLink = await manager.GetAsync(refreshPath);
         c.That(asLink.Status is HttpStatusCode.MethodNotAllowed or HttpStatusCode.NotFound, "The manual import cannot be triggered by a link", $"{(int)asLink.Status}");
         c.Equal(0, edge.Requests.Count, "No rejected attempt reaches the vendor");
     }

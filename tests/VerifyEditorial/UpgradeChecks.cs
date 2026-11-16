@@ -55,7 +55,8 @@ static partial class UpgradeChecks
         var managerPage = await manager.GetAsync("/Admin/Settings/AutoBlog");
         c.That(managerPage.IsOk && Browser.FormFields(managerPage.Body).Keys.Any(k => k.EndsWith("LicensedEmail", StringComparison.Ordinal)),
             "A role granted ManageAutoBlogSettings before the upgrade still opens the settings", $"{(int)managerPage.Status} {managerPage.Location}");
-        c.Contains(managerPage.Body, before.Settings.LastSyncSummary, "The settings page shows the sync status recorded before the upgrade");
+        c.That(before.Settings.LastSyncSummary.Length > 0 && managerPage.Body.Contains(before.Settings.LastSyncSummary, StringComparison.Ordinal),
+            "The settings page shows the sync status recorded before the upgrade", before.Settings.LastSyncSummary);
         c.That((await admin.GetAsync("/Admin/Settings/AutoBlog")).IsOk, "The administrator still opens the settings");
         c.That((await visitor.GetAsync("/Admin/Settings/AutoBlog")).IsDenied, "A user without the permission is still refused");
     }
@@ -67,8 +68,9 @@ static partial class UpgradeChecks
         var live = await visitor.GetAsync("/blog/seeded-live");
         c.That(live.IsOk, "A post published before the upgrade is served at the same URL", $"{(int)live.Status}");
         c.Contains(live.Body, "<p>Seeded live body</p>", "Its stored body renders");
-        c.Equal(Normalize(TimeElement().Match(before.Pages["/blog/seeded-live"]).Value), Normalize(TimeElement().Match(live.Body).Value),
-            "The publication date renders exactly as it did on Orchard Core 3");
+        var timeBefore = Normalize(TimeElement().Match(before.Pages["/blog/seeded-live"]).Value);
+        c.That(timeBefore.Length > 0 && timeBefore == Normalize(TimeElement().Match(live.Body).Value),
+            "The publication date renders exactly as it did on Orchard Core 3", $"before '{timeBefore}'");
 
         var imageBefore = FeaturedImage().Match(before.Pages["/blog/seeded-live"]).Groups["src"].Value;
         var imageNow = FeaturedImage().Match(live.Body).Groups["src"].Value;
@@ -161,7 +163,8 @@ static partial class UpgradeChecks
         c.That(result.CreatedPosts.Count == 1 && addedNow?.Published == true, "A new article imports and publishes under the stored settings");
         c.Equal(before.BlogContentItemId, addedNow?.Get<ContainedPart>(nameof(ContainedPart))?.ListContentItemId, "The new post joins the existing blog list");
         c.Equal(count + 1, (await site.PostsAsync()).Count, "Only the new article was added");
-        c.Equal(before.IndexedGuids.Count + 1, (await site.IndexedGuidsAsync()).Distinct().Count(), "The GUID index gains exactly one row");
+        var guids = await site.IndexedGuidsAsync();
+        c.That(guids.Count == before.IndexedGuids.Count + 1 && guids.Distinct().Count() == guids.Count, "The GUID index gains exactly one row", $"{guids.Count} rows, {guids.Distinct().Count()} distinct");
         using (var visitor = site.CreateBrowser())
             c.That((await visitor.GetAsync("/blog/after-the-upgrade")).IsOk, "The new post is served under the blog");
         c.That(site.Email.Messages.Count > 0 && site.Email.Messages.All(m => m.To == before.Settings.NotificationEmail), "Notifications go to the address stored before the upgrade");
