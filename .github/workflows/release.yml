@@ -13,6 +13,8 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: write
+      # Lets the job request the identity token that nuget.org exchanges for a short-lived key.
+      id-token: write
     env:
       AUTOBLOG_FIXTURE_STARTUP_MINUTES: 15
       # Read through the environment, never pasted into a script, so the input cannot be run as shell.
@@ -52,6 +54,25 @@ jobs:
           --output ./artifacts
           /p:PackageVersion=${{ steps.constants.outputs.VERSION }}
 
+      # Publish first: if nuget.org refuses, nothing has been tagged or released and the run can simply be
+      # started again.
+      # Trusted Publishing: nuget.org checks this workflow's identity against the policy registered for the
+      # IgniteSolutionsGroup owner and returns a key that lasts one hour, so no API key is stored anywhere.
+      # "user" is the nuget.org profile name of the policy's creator, not an email address.
+      - name: NuGet login
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: dsghi
+
+      # --skip-duplicate makes a re-run safe when an earlier attempt already published the package.
+      - name: Push to NuGet
+        run: >
+          dotnet nuget push ./artifacts/*.nupkg
+          --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
+
       - name: Tag release
         run: |
           git tag "v${{ steps.constants.outputs.VERSION }}"
@@ -65,9 +86,3 @@ jobs:
           generate_release_notes: true
           # A version with a suffix (2.0.0-preview.1) is a prerelease and must not become "Latest".
           prerelease: ${{ contains(inputs.version, '-') }}
-
-      - name: Push to NuGet
-        run: >
-          dotnet nuget push ./artifacts/*.nupkg
-          --api-key ${{ secrets.NUGET_API_KEY }}
-          --source https://api.nuget.org/v3/index.json
