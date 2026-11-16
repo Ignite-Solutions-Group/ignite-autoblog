@@ -1,10 +1,49 @@
 {
   "name": "EditorialVerification",
   "displayName": "Disposable editorial verification",
+  "description": "A throwaway site with a stock theme, a blog list and two narrow roles for the AutoBlog fixture.",
   "tags": [],
   "issetuprecipe": true,
-  "steps": [{
-    "name": "feature",
-    "enable": ["OrchardCore.Recipes", "OrchardCore.Settings", "OrchardCore.Users", "OrchardCore.Roles", "OrchardCore.Contents", "OrchardCore.ContentTypes", "OrchardCore.Lists", "IgniteSG.OrchardCore.MspMarketingEdge"]
-  }]
+  "steps": [
+    {
+      "name": "feature",
+      "enable": [
+        "OrchardCore.Admin",
+        "OrchardCore.Recipes",
+        "OrchardCore.Settings",
+        "OrchardCore.Users",
+        "OrchardCore.Roles",
+        "OrchardCore.Contents",
+        "OrchardCore.ContentTypes",
+        "OrchardCore.Lists",
+        "OrchardCore.Liquid",
+        "OrchardCore.Themes",
+        "OrchardCore.Navigation",
+        "OrchardCore.Resources",
+        "TheAdmin",
+        "TheTheme",
+        "IgniteSG.OrchardCore.MspMarketingEdge"
+      ]
+    },
+    {
+      "name": "themes",
+      "admin": "TheAdmin",
+      "site": "TheTheme"
+    },
+    {
+      "name": "Roles",
+      "Roles": [
+        {
+          "Name": "AutoBlogManager",
+          "Description": "Can reach the admin and manage only the AutoBlog settings.",
+          "Permissions": [ "AccessAdminPanel", "ManageAutoBlogSettings" ]
+        },
+        {
+          "Name": "AdminVisitor",
+          "Description": "Can reach the admin but holds no AutoBlog permission.",
+          "Permissions": [ "AccessAdminPanel" ]
+        }
+      ]
+    }
+  ]
 }

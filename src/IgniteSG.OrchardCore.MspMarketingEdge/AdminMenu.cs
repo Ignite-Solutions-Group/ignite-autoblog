@@ -4,8 +4,14 @@ using OrchardCore.Navigation;
 
 namespace IgniteSG.OrchardCore.MspMarketingEdge;
 
-public class AdminMenu : INavigationProvider
+public sealed class AdminMenu : AdminNavigationProvider
 {
+    private static readonly RouteValueDictionary s_routeValues = new()
+    {
+        { "area", "OrchardCore.Settings" },
+        { "groupId", Drivers.AutoBlogSettingsDisplayDriver.GroupId },
+    };
+
     private readonly IStringLocalizer S;
 
     public AdminMenu(IStringLocalizer<AdminMenu> localizer)
@@ -13,24 +19,16 @@ public class AdminMenu : INavigationProvider
         S = localizer;
     }
 
-    public ValueTask BuildNavigationAsync(string name, NavigationBuilder builder)
+    protected override ValueTask BuildAsync(NavigationBuilder builder)
     {
-        if (!string.Equals(name, "admin", StringComparison.OrdinalIgnoreCase))
-        {
-            return ValueTask.CompletedTask;
-        }
-
+        // Orchard Core 4 has a single top-level "Settings" menu; the older "Configuration" menu is gone.
         builder
-            .Add(S["Configuration"], configuration => configuration
+            .Add(S["Settings"], settings => settings
                 .Add(S["MSP Marketing Edge AutoBlog"], S["MSP Marketing Edge AutoBlog"].PrefixPosition(), autoblog => autoblog
                     .AddClass("autoblog")
                     .Id("autoblog")
+                    .Action("Index", "Admin", s_routeValues)
                     .Permission(Permissions.ManageAutoBlogSettings)
-                    .Action("Index", "Admin", new RouteValueDictionary
-                    {
-                        { "area", "OrchardCore.Settings" },
-                        { "groupId", Drivers.AutoBlogSettingsDisplayDriver.GroupId }
-                    })
                     .LocalNav()
                 )
             );

@@ -1,10 +1,11 @@
+using IgniteSG.OrchardCore.MspMarketingEdge;
 using OrchardCore.Modules.Manifest;
 
 [assembly: Module(
     Name = "MSP Marketing Edge AutoBlog",
     Author = "Derek Gabriel, Ignite Solutions Group",
     Website = "https://www.ignitetheday.com",
-    Version = "1.7.1",
+    Version = Constants.Version,
     Description = "Automatically imports weekly blog posts from MSP Marketing Edge into your Orchard CMS site.",
     Category = "Content"
 )]

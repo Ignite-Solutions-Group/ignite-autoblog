@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -18,22 +18,27 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
+  <!--
+    Exact versions on purpose. Orchard Core 4 is still a preview whose nightly builds can change API, and
+    this module is only verified against the one build named in Directory.Build.props. A host on a different
+    nightly gets a restore conflict instead of a silent mismatch.
+  -->
   <ItemGroup>
-    <PackageReference Include="OrchardCore.Module.Targets" Version="3.0.1" />
-    <PackageReference Include="OrchardCore.ContentManagement" Version="3.0.1" />
-    <PackageReference Include="OrchardCore.BackgroundTasks" Version="3.0.1" />
-    <PackageReference Include="OrchardCore.Media.Abstractions" Version="3.0.1" />
-    <PackageReference Include="OrchardCore.Email.Abstractions" Version="3.0.1" />
-    <PackageReference Include="OrchardCore.Seo" Version="3.0.1" />
-    <PackageReference Include="OrchardCore.PublishLater" Version="3.0.1" />
-    <PackageReference Include="OrchardCore.ContentFields" Version="3.0.1" />
-    <PackageReference Include="OrchardCore.Title" Version="3.0.1" />
-    <PackageReference Include="OrchardCore.Html" Version="3.0.1" />
-    <PackageReference Include="OrchardCore.Autoroute" Version="3.0.1" />
-    <PackageReference Include="OrchardCore.Lists" Version="3.0.1" />
+    <PackageReference Include="OrchardCore.Module.Targets" Version="[$(OrchardCoreVersion)]" />
+    <PackageReference Include="OrchardCore.ContentManagement" Version="[$(OrchardCoreVersion)]" />
+    <PackageReference Include="OrchardCore.BackgroundTasks" Version="[$(OrchardCoreVersion)]" />
+    <PackageReference Include="OrchardCore.Media.Abstractions" Version="[$(OrchardCoreVersion)]" />
+    <PackageReference Include="OrchardCore.Email.Abstractions" Version="[$(OrchardCoreVersion)]" />
+    <PackageReference Include="OrchardCore.Seo" Version="[$(OrchardCoreVersion)]" />
+    <PackageReference Include="OrchardCore.PublishLater" Version="[$(OrchardCoreVersion)]" />
+    <PackageReference Include="OrchardCore.ContentFields" Version="[$(OrchardCoreVersion)]" />
+    <PackageReference Include="OrchardCore.Title" Version="[$(OrchardCoreVersion)]" />
+    <PackageReference Include="OrchardCore.Html" Version="[$(OrchardCoreVersion)]" />
+    <PackageReference Include="OrchardCore.Autoroute" Version="[$(OrchardCoreVersion)]" />
+    <PackageReference Include="OrchardCore.Lists" Version="[$(OrchardCoreVersion)]" />
     <PackageReference Include="Cronos" Version="0.13.0" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
-    <PackageReference Include="OrchardCore.Infrastructure.Abstractions" Version="3.0.1" />
+    <PackageReference Include="OrchardCore.Infrastructure.Abstractions" Version="[$(OrchardCoreVersion)]" />
+    <PackageReference Include="OrchardCore.Settings.Core" Version="[$(OrchardCoreVersion)]" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,12 +1,14 @@
+using OrchardCore.Localization;
 using OrchardCore.Security.Permissions;
 
 namespace IgniteSG.OrchardCore.MspMarketingEdge;
 
 public class Permissions : IPermissionProvider
 {
+    // The name is the stored identity that roles reference; only the description is localizable.
     public static readonly Permission ManageAutoBlogSettings = new(
         "ManageAutoBlogSettings",
-        "Manage MSP Marketing Edge AutoBlog settings");
+        LocalizationSource.Create("Manage MSP Marketing Edge AutoBlog settings", typeof(Permissions)));
 
     public Task<IEnumerable<Permission>> GetPermissionsAsync()
     {

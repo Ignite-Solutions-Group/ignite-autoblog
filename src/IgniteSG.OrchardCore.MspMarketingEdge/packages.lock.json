@@ -1,0 +1,1628 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net11.0": {
+      "Cronos": {
+        "type": "Direct",
+        "requested": "[0.13.0, )",
+        "resolved": "0.13.0",
+        "contentHash": "Nkve+Yi0+ol3ntSBRHeW0ka9cJQ8vndSUvvkXqF9LVqwpoqWueyxu/HS275r98RDOmF7/mzRnZW5XXUBXob+TA=="
+      },
+      "OrchardCore.Autoroute": {
+        "type": "Direct",
+        "requested": "[4.0.0-preview-19227, 4.0.0-preview-19227]",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "u1iOXy4b8n1bnk3AjIFamIRyoNbUKXNnm6oqAnAKZ/u9RFu4RERDLiZs7psWgxkQBdDtEaGq3+BMkfAA+4lQxQ==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "GraphQL": "8.8.5",
+          "GraphQL.DataLoader": "8.8.5",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.Apis.GraphQL.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Autoroute.Core": "4.0.0-preview-19227",
+          "OrchardCore.ContentLocalization.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Display": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.GraphQL": "4.0.0-preview-19227",
+          "OrchardCore.ContentTypes.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Contents.TagHelpers": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement.Liquid": "4.0.0-preview-19227",
+          "OrchardCore.Indexing.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Liquid.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.MetaWeblog.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Module.Targets": "4.0.0-preview-19227",
+          "OrchardCore.ResourceManagement": "4.0.0-preview-19227",
+          "OrchardCore.Sitemaps.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "YesSql.Filters.Abstractions": "6.3.0",
+          "YesSql.Filters.Query": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.BackgroundTasks": {
+        "type": "Direct",
+        "requested": "[4.0.0-preview-19227, 4.0.0-preview-19227]",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "5M/k7HRZ2Tc4FzthRVjXfxkyFL4q5b452nQJBmNZAMXvqqFvs4AOefBBlotSwWDOfqUIKzefFdFJpppeh9Tulg==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Admin.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Data.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement": "4.0.0-preview-19227",
+          "OrchardCore.Module.Targets": "4.0.0-preview-19227",
+          "OrchardCore.Navigation.Core": "4.0.0-preview-19227",
+          "OrchardCore.ResourceManagement": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "System.IO.Hashing": "11.0.0",
+          "ZString": "2.6.0",
+          "ncrontab": "3.4.0"
+        }
+      },
+      "OrchardCore.ContentFields": {
+        "type": "Direct",
+        "requested": "[4.0.0-preview-19227, 4.0.0-preview-19227]",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "AhBKtIt+dBQlMP4ESF/QB0pp9n17mMxINnhBUCKcWineFsks7KufH1qgPRRz/Fb22jbUmzyXskeGbFRY0xr7NA==",
+        "dependencies": {
+          "Acornima": "1.9.1",
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "GraphQL": "8.8.5",
+          "GraphQL.DataLoader": "8.8.5",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.Admin.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentFields.Core": "4.0.0-preview-19227",
+          "OrchardCore.ContentLocalization.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Display": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.GraphQL": "4.0.0-preview-19227",
+          "OrchardCore.ContentTypes.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Contents.Core": "4.0.0-preview-19227",
+          "OrchardCore.Contents.TagHelpers": "4.0.0-preview-19227",
+          "OrchardCore.Html.Core": "4.0.0-preview-19227",
+          "OrchardCore.Indexing.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Liquid.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Media.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Module.Targets": "4.0.0-preview-19227",
+          "OrchardCore.ResourceManagement": "4.0.0-preview-19227",
+          "OrchardCore.Shortcodes.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Users.Core": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "Shortcodes": "1.4.0",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "YesSql.Filters.Abstractions": "6.3.0",
+          "YesSql.Filters.Query": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.ContentManagement": {
+        "type": "Direct",
+        "requested": "[4.0.0-preview-19227, 4.0.0-preview-19227]",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "bKFxAZ+5PvuyyR2CpuZFr2tv0rwSogmLYY37sOaT9wDUZUhoO2W2PsMNJmqhAsipPCPBqjE9PwoyQQ610pUdaQ==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentTypes.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Data.YesSql": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Recipes.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Email.Abstractions": {
+        "type": "Direct",
+        "requested": "[4.0.0-preview-19227, 4.0.0-preview-19227]",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "QMj7XuEw1LN21/knQ4ns8TxmaK8S6793N83LDavt5sRIKHFgVldAlp92uPjZcsSqusZwB6vcmRdjYe5gU/lpiw==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Html": {
+        "type": "Direct",
+        "requested": "[4.0.0-preview-19227, 4.0.0-preview-19227]",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "wmkuUD52NlhRh4Yy2Ib4DE9k189rBJqBxsv/0rIGtSkkhLtVg8B4kzgIdD901CtqacwG3S1yUIlN/MQrfUwEyA==",
+        "dependencies": {
+          "Acornima": "1.9.1",
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "GraphQL": "8.8.5",
+          "GraphQL.DataLoader": "8.8.5",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.Admin.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Apis.GraphQL.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentLocalization.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Display": "4.0.0-preview-19227",
+          "OrchardCore.ContentTypes.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Data.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement": "4.0.0-preview-19227",
+          "OrchardCore.Html.Core": "4.0.0-preview-19227",
+          "OrchardCore.Indexing.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Media.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.MetaWeblog.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Module.Targets": "4.0.0-preview-19227",
+          "OrchardCore.ResourceManagement": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "Shortcodes": "1.4.0",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Infrastructure.Abstractions": {
+        "type": "Direct",
+        "requested": "[4.0.0-preview-19227, 4.0.0-preview-19227]",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "fIFsFXMLSBIHU4vZd3+po1w4nF/Dght/dYPZCC0m09Lu8tAhKhjOmaYVipGH+OiooRgFiYwJzoc0iBtOrViyYg==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Data.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ResourceManagement.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Lists": {
+        "type": "Direct",
+        "requested": "[4.0.0-preview-19227, 4.0.0-preview-19227]",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "8oALIp42oEM9XKOzA86OWMwY1qx/d3ObvUFPnrbSgVmwSPhCUWgnG0ig1omHdlbraW2Dj26QrD1RhGdaMsSeiQ==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "GraphQL": "8.8.5",
+          "GraphQL.DataLoader": "8.8.5",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.Admin.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.AdminMenu.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Apis.GraphQL.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentLocalization.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Display": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.GraphQL": "4.0.0-preview-19227",
+          "OrchardCore.ContentTypes.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Contents.Core": "4.0.0-preview-19227",
+          "OrchardCore.Contents.TagHelpers": "4.0.0-preview-19227",
+          "OrchardCore.Data.YesSql.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Feeds.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Indexing.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Media.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Media.Core": "4.0.0-preview-19227",
+          "OrchardCore.MetaWeblog.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Module.Targets": "4.0.0-preview-19227",
+          "OrchardCore.ResourceManagement": "4.0.0-preview-19227",
+          "OrchardCore.Users.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "System.IO.Hashing": "11.0.0",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "YesSql.Filters.Abstractions": "6.3.0",
+          "YesSql.Filters.Query": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Media.Abstractions": {
+        "type": "Direct",
+        "requested": "[4.0.0-preview-19227, 4.0.0-preview-19227]",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "+n7ir8XyjxI7svGFLlZMan/NIBqKUBH+2qW1maAWOKCRPfC/duOgDMai8E6GaE52EsWzCMLJFYDRu/HBNRUcZg==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.FileStorage.Abstractions": "4.0.0-preview-19227",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Module.Targets": {
+        "type": "Direct",
+        "requested": "[4.0.0-preview-19227, 4.0.0-preview-19227]",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "5/kXtwZ98hqS6Q84wljn+egsBjR+apVN67psN8VQ636iVTTBpmwTewASMSYTD0TWhIWGDsMsEaKkiu9ytWFXKA==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.PublishLater": {
+        "type": "Direct",
+        "requested": "[4.0.0-preview-19227, 4.0.0-preview-19227]",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "80TK5p9i5IsYK4nkgeL/Xwo0jJvZfe6LbaK1PwYHwgUhp6y6SU0F0fEP/fhKiIaggXYoDfgJGGoKU1/bxKbWQQ==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.ContentManagement": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Display": "4.0.0-preview-19227",
+          "OrchardCore.Contents.Core": "4.0.0-preview-19227",
+          "OrchardCore.Data.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Data.YesSql": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement": "4.0.0-preview-19227",
+          "OrchardCore.Module.Targets": "4.0.0-preview-19227",
+          "OrchardCore.ResourceManagement": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "YesSql.Filters.Abstractions": "6.3.0",
+          "YesSql.Filters.Query": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Seo": {
+        "type": "Direct",
+        "requested": "[4.0.0-preview-19227, 4.0.0-preview-19227]",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "7hu1vLaxL3Vxc17Bznh+NcO5JQl5WFKg8Jbxrw7DSZdu193ovLWD06I6QigMvDc6eb9t4YgOt6KQycx/x5TWGw==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "GraphQL": "8.8.5",
+          "GraphQL.DataLoader": "8.8.5",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.Admin.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Apis.GraphQL.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Display": "4.0.0-preview-19227",
+          "OrchardCore.ContentTypes.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement": "4.0.0-preview-19227",
+          "OrchardCore.Indexing": "4.0.0-preview-19227",
+          "OrchardCore.Media.Core": "4.0.0-preview-19227",
+          "OrchardCore.Module.Targets": "4.0.0-preview-19227",
+          "OrchardCore.Navigation.Core": "4.0.0-preview-19227",
+          "OrchardCore.Recipes.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ResourceManagement": "4.0.0-preview-19227",
+          "OrchardCore.Seo.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Shortcodes.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "Shortcodes": "1.4.0",
+          "System.IO.Hashing": "11.0.0",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Settings.Core": {
+        "type": "Direct",
+        "requested": "[4.0.0-preview-19227, 4.0.0-preview-19227]",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "vPa9cI0RawB7GONK9lZG67trqAoCffnquPfqk3fT5p/Vht5dKco3GbLKklAd+aE2rt+xsR0D6E9MRC/oTlQY2g==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Deployment.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Title": {
+        "type": "Direct",
+        "requested": "[4.0.0-preview-19227, 4.0.0-preview-19227]",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "0is14olMbjHkCEkDRwj9aSRQhRGE5MD/5Ufp9xIXZ7cd6ofPzCPL+XWRb/m6JO6ZbZls6I6r5wcVrVEP8IXtMw==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.ContentLocalization.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Display": "4.0.0-preview-19227",
+          "OrchardCore.ContentTypes.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Contents.TagHelpers": "4.0.0-preview-19227",
+          "OrchardCore.Data.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Indexing.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Liquid.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.MetaWeblog.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Module.Targets": "4.0.0-preview-19227",
+          "OrchardCore.ResourceManagement": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "Acornima": {
+        "type": "Transitive",
+        "resolved": "1.9.1",
+        "contentHash": "8dzVWz1AMyCaHq1DRU+qjNGd6jZyc4BgUBhl0qqdG0y+C02f2JASQaobF+O6A9vrW2QZL5Kx2q6V/KP3Q2LU+A=="
+      },
+      "AnyAscii": {
+        "type": "Transitive",
+        "resolved": "0.3.3",
+        "contentHash": "OY4df79Q9eTerwvelKcAINt7bzrndMoG97Dkk6Qf9RfuNOjqB0FxygTcgu0fLu+0i9rJNZ9SRb5Ka+lpTqolOQ=="
+      },
+      "Castle.Core": {
+        "type": "Transitive",
+        "resolved": "5.2.1",
+        "contentHash": "wHARzQA695jwwKreOzNsq54KiGqKP38tv8hi8e2FXDEC/sA6BtrX90tVPDkOfVu13PbEzr00TCV8coikl+D1Iw=="
+      },
+      "Dapper.StrongName": {
+        "type": "Transitive",
+        "resolved": "2.1.89",
+        "contentHash": "wUYZjkIStpbLMgUrybOHMLaCPCMu2qCBQoE4fSS7kK01d2o+Dm/oFNd3lxy8N1+3BE46AVO2MMT5cH1+tLN7XA=="
+      },
+      "Fluid.Core": {
+        "type": "Transitive",
+        "resolved": "3.0.0-beta.9",
+        "contentHash": "Sa/X7Oz1DTUfh9iaS+vKJ9ZohhPVSweL4uyMEmoR3U2hJkIwTFF4+t90YgMcWK4c37xQo3JB3por9wuHFqQy9A==",
+        "dependencies": {
+          "Parlot": "2.2.1"
+        }
+      },
+      "GraphQL": {
+        "type": "Transitive",
+        "resolved": "8.8.5",
+        "contentHash": "0dnaIzuzyRkpUfCBOWRLOnbTWcTpvK0pvWjgDTYoU3k/bu4Us1jkid7MPBhcth8I+6rg8SxhXFwNEenx53xUJg==",
+        "dependencies": {
+          "GraphQL-Parser": "9.5.0",
+          "GraphQL.Analyzers": "8.8.5"
+        }
+      },
+      "GraphQL-Parser": {
+        "type": "Transitive",
+        "resolved": "9.5.0",
+        "contentHash": "5XWJGKHdVi8pyD4P0EglmJmlXEGs0HzvGlEBf3+/Ve1jLYBBKIOkKvY0Ej17b9Kn1bbBxkrmghqbmsMbkLL1nQ=="
+      },
+      "GraphQL.Analyzers": {
+        "type": "Transitive",
+        "resolved": "8.8.5",
+        "contentHash": "2pmvrDAPbjNZfl7CB19cKpQ5y92A+tb1aPVZepz46KTx00/7nTojBTL9iJAOFVoKbq0I0sdZjj60aJLFKY/z8Q=="
+      },
+      "GraphQL.DataLoader": {
+        "type": "Transitive",
+        "resolved": "8.8.5",
+        "contentHash": "EY/tEXh7q3jvs2q/TC4wGZ6m592VF+MyA0AmaRRGZU0a1toR69KdCiQYtPJxFry9RjnROwgvFd/BJXk3cmN9mg==",
+        "dependencies": {
+          "GraphQL": "[8.8.5, 9.0.0)"
+        }
+      },
+      "Json.More.Net": {
+        "type": "Transitive",
+        "resolved": "2.2.0",
+        "contentHash": "fiyEZJNgiCzDa7/N9bZ+CnM5qnawyJ54+CkHNZ2svwxWBWNNFzydJ7RlroqMdOjokGBiLcKIxdajNvOklzlYqQ=="
+      },
+      "JsonPath.Net": {
+        "type": "Transitive",
+        "resolved": "2.2.0",
+        "contentHash": "oARgzvSWx8Xp7Y3oxapPDmB+gIGw31aqY0YS2xA0HfydYJMvWW6e0KeJIfPeCmqiOqKcOOXSwAYF/3yE+VhCOg==",
+        "dependencies": {
+          "Json.More.Net": "2.2.0"
+        }
+      },
+      "Microsoft.AspNetCore.Mvc.Razor.Extensions": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "M0h+ChPgydX2xY17agiphnAVa/Qh05RAP8eeuqGGhQKT10claRBlLNO6d2/oSV8zy0RLHzwLnNZm5xuC/gckGA==",
+        "dependencies": {
+          "Microsoft.AspNetCore.Razor.Language": "6.0.0",
+          "Microsoft.CodeAnalysis.Razor": "6.0.0"
+        }
+      },
+      "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": {
+        "type": "Transitive",
+        "resolved": "11.0.0",
+        "contentHash": "t0M0owoyA0Ymg4EpnvIcLOXmtKsSOYx3Y13BcXImSIgZ+/j6s9yTHVUk0tmbx5XcSgRXlQajFOuvrLgGg005UQ==",
+        "dependencies": {
+          "Microsoft.AspNetCore.Mvc.Razor.Extensions": "6.0.0",
+          "Microsoft.CodeAnalysis.Razor": "6.0.0",
+          "Microsoft.Extensions.DependencyModel": "11.0.0"
+        }
+      },
+      "Microsoft.AspNetCore.Razor.Language": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "yCtBr1GSGzJrrp1NJUb4ltwFYMKHw/tJLnIDvg9g/FnkGIEzmE19tbCQqXARIJv5kdtBgsoVIdGLL+zmjxvM/A=="
+      },
+      "Microsoft.Bcl.Cryptography": {
+        "type": "Transitive",
+        "resolved": "10.0.2",
+        "contentHash": "LG9Yll3B5aNpxv0+D47g6LiOiKBIlodhcHdQwcYzo8VeexFLGqx5ymetmA2aBRyo9cCcWsQWrFsdbsr8LvmWDw=="
+      },
+      "Microsoft.CodeAnalysis.Analyzers": {
+        "type": "Transitive",
+        "resolved": "5.9.0",
+        "contentHash": "jMNOo+uoBGiWbZ6Wx0dqU93r5WD4P5WnIRZdoz67RP5N09OUetHgAbo4L7hihOH1NHdD2TgW5/l+SP4gQukwww=="
+      },
+      "Microsoft.CodeAnalysis.Common": {
+        "type": "Transitive",
+        "resolved": "5.9.0",
+        "contentHash": "IYaIaUWdIx539AReKZOBEqTskFusZfCh/wFSPilDvCn5Say8MegLw2LONcSIcVy+v3Gzv53qYBspgvBGSErfbQ==",
+        "dependencies": {
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0-1.26328.17"
+        }
+      },
+      "Microsoft.CodeAnalysis.CSharp": {
+        "type": "Transitive",
+        "resolved": "5.9.0",
+        "contentHash": "7JGDA0UT1+h7k9ZcA3rF4eFC8+QPq1xyYaXxag4p8r/zzPurEJxvdi7aM+MRL/SfP7XADXpWF/pl/eUYXOq/ww==",
+        "dependencies": {
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0-1.26328.17",
+          "Microsoft.CodeAnalysis.Common": "[5.9.0]"
+        }
+      },
+      "Microsoft.CodeAnalysis.Razor": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "uqdzuQXxD7XrJCbIbbwpI/LOv0PBJ9VIR0gdvANTHOfK5pjTaCir+XcwvYvBZ5BIzd0KGzyiamzlEWw1cK1q0w==",
+        "dependencies": {
+          "Microsoft.AspNetCore.Razor.Language": "6.0.0",
+          "Microsoft.CodeAnalysis.CSharp": "4.0.0",
+          "Microsoft.CodeAnalysis.Common": "4.0.0"
+        }
+      },
+      "Microsoft.Data.SqlClient": {
+        "type": "Transitive",
+        "resolved": "7.1.1",
+        "contentHash": "Moz4+bba/OdEM9I4jXWggduJ4sqoNcgVAQyXG/dNnGGvnS/YDr2fTjP83fg5YX3drgRki6fRAhR94P8dAZgZtQ==",
+        "dependencies": {
+          "Microsoft.Bcl.Cryptography": "9.0.18",
+          "Microsoft.Data.SqlClient.Extensions.Abstractions": "[7.1.1, 8.0.0)",
+          "Microsoft.Data.SqlClient.Internal.Logging": "[7.1.1, 8.0.0)",
+          "Microsoft.Data.SqlClient.SNI.runtime": "[7.1.0, 8.0.0)",
+          "Microsoft.IdentityModel.JsonWebTokens": "8.16.0",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.16.0",
+          "Microsoft.SqlServer.Server": "[1.0.0, 2.0.0)",
+          "System.Configuration.ConfigurationManager": "9.0.18"
+        }
+      },
+      "Microsoft.Data.SqlClient.Extensions.Abstractions": {
+        "type": "Transitive",
+        "resolved": "7.1.1",
+        "contentHash": "qP/zUOCJwfKqWNC9o+TWqltfNbLnZi1APNpJZgj0yeEJhoI+h+eoQLX+331yZHNOlDxdafZLP5arW/yrS1jAAw==",
+        "dependencies": {
+          "Microsoft.Data.SqlClient.Internal.Logging": "[7.1.1, 8.0.0)"
+        }
+      },
+      "Microsoft.Data.SqlClient.Internal.Logging": {
+        "type": "Transitive",
+        "resolved": "7.1.1",
+        "contentHash": "bVqbATLnHQngue7U9K7GRnzvfdDa7IyiBU2vijfU2vBMBSZrAnQp/wXqNSfaVonckSaMXUk07wfujTqy9IVMdw=="
+      },
+      "Microsoft.Data.SqlClient.SNI.runtime": {
+        "type": "Transitive",
+        "resolved": "7.1.0",
+        "contentHash": "rWunOb6Dby0lcI82PohARcRbF+4x4wNKxnKRSHXhuwZMu8/cCS68DCfhceq4bv1gUEfoL5dWXHYnfxVvLQUN+Q=="
+      },
+      "Microsoft.Data.Sqlite.Core": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "1p9rO3Q2X/L/9YrYog3vaDzi8u+WZfJCOkDYoHqmofqYP0DLPLPyZcS2Rnh/79JXAodgbs1AgsaNwLpIvC3Xew==",
+        "dependencies": {
+          "SQLitePCLRaw.core": "2.1.13"
+        }
+      },
+      "Microsoft.Extensions.DependencyModel": {
+        "type": "Transitive",
+        "resolved": "11.0.0",
+        "contentHash": "K6M9zulTQ3OU0myKAcBb/Gbfw/aTKa3wlxyDhwfOmT7Wavoxe0lzAkeDjS5+/1dqcgGDUZtIykJIo3T4W7zKbQ=="
+      },
+      "Microsoft.IdentityModel.Abstractions": {
+        "type": "Transitive",
+        "resolved": "8.23.0",
+        "contentHash": "JjiBkKj12OKvuWr+kB5sQwb7fmWW5bi03Mq/rd2Fu/7YwZ1RWQO9KhI9lBxki4o1VvY0wzqny8c7nwx1uuZzVg=="
+      },
+      "Microsoft.IdentityModel.JsonWebTokens": {
+        "type": "Transitive",
+        "resolved": "8.23.0",
+        "contentHash": "ePEm+mv5iswzckE3mygh52uFUeQpVlHa1B10nS4jpEyNV5tL1mLgRS9U5sMaRlhsPRsZ1DJP0+FhxSrOIfMGIg==",
+        "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "8.23.0"
+        }
+      },
+      "Microsoft.IdentityModel.Logging": {
+        "type": "Transitive",
+        "resolved": "8.23.0",
+        "contentHash": "wSXXOoV4b4hhRcC492jyNBZkO0LWrcWtWP5Cl5ujrON3vTMlufXDT39gTZfBhFAZCV2XJtNU6DLHMDR6E9YpUg==",
+        "dependencies": {
+          "Microsoft.IdentityModel.Abstractions": "8.23.0"
+        }
+      },
+      "Microsoft.IdentityModel.Protocols": {
+        "type": "Transitive",
+        "resolved": "8.23.0",
+        "contentHash": "wQxyMdH/9Q25/kF7B56YgyqEaUBXJEQ5IY0TEKNH3oAPewNxVOl0ENuaKu0sazR0kw4owQDDSF+AvWcEFEvo2g==",
+        "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "8.23.0"
+        }
+      },
+      "Microsoft.IdentityModel.Protocols.OpenIdConnect": {
+        "type": "Transitive",
+        "resolved": "8.23.0",
+        "contentHash": "QvvFeTznlWHZ7w3aE4cJ+Ln2BnKzKleVG+H7ywiNcQtGUWmo2XS3LJDizpTyv9N0b8FDWYOnvWAxNynaJapwMQ==",
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols": "8.23.0",
+          "System.IdentityModel.Tokens.Jwt": "8.23.0"
+        }
+      },
+      "Microsoft.IdentityModel.Tokens": {
+        "type": "Transitive",
+        "resolved": "8.23.0",
+        "contentHash": "PUowLq8gqICt+oepHWmKBOJmnVmWoQ5dOVn2CgwFMBZZOAEMHgCQLWs8ONYdsjAyjhDHaFy+AAx0OMG/oV06Zw==",
+        "dependencies": {
+          "Microsoft.Bcl.Cryptography": "10.0.2",
+          "Microsoft.IdentityModel.Logging": "8.23.0"
+        }
+      },
+      "Microsoft.IO.RecyclableMemoryStream": {
+        "type": "Transitive",
+        "resolved": "3.0.1",
+        "contentHash": "s/s20YTVY9r9TPfTrN5g8zPF1YhwxyqO6PxUkrYTGI2B+OGPe9AdajWZrLhFqXIvqIW23fnUE4+ztrUWNU1+9g=="
+      },
+      "Microsoft.SqlServer.Server": {
+        "type": "Transitive",
+        "resolved": "1.0.0",
+        "contentHash": "N4KeF3cpcm1PUHym1RmakkzfkEv3GRMyofVv40uXsQhCQeglr2OHNcUk2WOG51AKpGO8ynGpo9M/kFXSzghwug=="
+      },
+      "MySqlConnector": {
+        "type": "Transitive",
+        "resolved": "2.6.2",
+        "contentHash": "dlTc/tsBa42szdvpj4nrHvQVUb0gsMwR9HT6J0Zz2OSqfP0CdYlGw+qQPqCpbnO97idfvclSjKYtM6y5QaBQaQ=="
+      },
+      "NCrontab": {
+        "type": "Transitive",
+        "resolved": "3.4.0",
+        "contentHash": "t3okCB6odi64mZvhetBPSR/ejKib3uSnmyCqj8M0mf2S3yFxbDFZLjxfWqcwvmS3zzgXR6LAIi0XlBU4oqxTlg=="
+      },
+      "Npgsql": {
+        "type": "Transitive",
+        "resolved": "10.0.3",
+        "contentHash": "7nb5YzXuvWWJxB0J8DiyL3we+X4FOctZrt0fIBnucOIaIevFEEwGQVZKtiu9olXdlNAK1eNgqSral6r/jlhI4w=="
+      },
+      "OrchardCore.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "mJNliuQTxvBBGZbjc1HRE8ZQ+PYYLzfg5upoYNMz7rQmyeMzF08YiYFMS8D7Nj8iG/wFHZ8NJg7siLKf+OGo3w==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Admin.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "W98asCAgdrUpEMlIwLvwaGjSzVnG7u8UZ1/GWELs1D88HEzebfLKFAt5SNTUDhMWuQXbq6Rv8ZF7+npG222QNg==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.AdminMenu.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "1qC1u+mvHSb5Nu96dwSwVPA2gB+GTltWEroJbmnIZLuuFGGiNlwOZ0+55KwfYqQZ+g4FaKGGYDbi7p6J44xNqg==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Navigation.Core": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "System.IO.Hashing": "11.0.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Apis.GraphQL.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "AoKlgGydDkuUHW9yqr1BrkDw/RGuWNeZbXDO+jaeB7YgLrhluTtS6myswcp1aBBy70bx7NId2z6o6UU3aD7mGw==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "GraphQL": "8.8.5",
+          "GraphQL.DataLoader": "8.8.5",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.DisplayManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Autoroute.Core": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "pBiNZE2Hx8uUC1o0rXNhubrJTH5DAnqptyvW3jnRh4q5BMk0fSB0N3Xxf4TibIjmxHPar2KIwMbdCUwaHo8M2w==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Data.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.ContentFields.Core": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "y9aBBOqP7MQ7JhW2VsHQ7X7cFht7Eqhd054glNesDtuqQCEr8ggvVbTU96fgkBOGzynJbPW2ROgsLNCFD+cDEw==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.ContentLocalization.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "MpZXHySD3dIb03wUpautK/0YqGP3ZyDGx68t6EWx9JNtI+jJugR58u+trWLsSI8tasP3FxLTyvij/BMCNL69aw==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.ContentManagement.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "l/+nm1mMxwP5GIGQ1PplG9Z4bu4sB2G2v970nXR8Qz++KOYozRH+FTEAa2VPfahalswhviEP/iTptSIIsVsUDg==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Data.YesSql.Abstractions": "4.0.0-preview-19227",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.ContentManagement.Display": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "tmd5bGCGe+qy8q1ma7n/o+3zpRiC9SZ08OywRJ1EmfPaVOHnP67j+u4M9lRJP+T9hkCZ6FMfFfyJtOBzq5PpbQ==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.ContentManagement.GraphQL": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "wScQZijRxQxSZhkip4X4vYex5IfMoK15pN8P547FmFmBkSXXNWiFDppDPw2sgvQmWuZ5sxu5ltbE86+160xMHg==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "GraphQL": "8.8.5",
+          "GraphQL.DataLoader": "8.8.5",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.Apis.GraphQL.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Display": "4.0.0-preview-19227",
+          "OrchardCore.ContentTypes.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Contents.Core": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "YesSql.Filters.Abstractions": "6.3.0",
+          "YesSql.Filters.Query": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.ContentPreview.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "sVf/G1nR6OOUeA7dfAGgKOENUmrGXcevnYDE2XhO8ipJk3+dnQjWo+lxQZYPEVA5Y8GphqWVDOskX4MQfLxFwA=="
+      },
+      "OrchardCore.Contents.Core": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "kh1DtHRA9YFuoRzmHW2WSxQmwag7MEc1KHMhZ12Fe9Fnk6JiTGp8mDSAeeDyzm4hxuHt08jJeQYlnbYVZScJZA==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.ContentManagement": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "YesSql.Filters.Abstractions": "6.3.0",
+          "YesSql.Filters.Query": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Contents.TagHelpers": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "P1DfLQY4u3yhoKPO91u1IOJbtzKTXLsMO3/aPSvssVtxOiRkKVp1wvPy8LAC7YUQqGA9p1iKSFWlcoWNBYtQdw==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.ContentTypes.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "upEEaWYXF4Ow6IIKyaJy3PHICfjpJs/vG1kOwuFXcS+b72JrYn1lZw/ZsaB7odUJLNMezr1SsWF1mofwkDxWKw==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement.Display": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Data": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "1kAD6HyJ7w+JAn5m6zShwI2qDyxuOk4Q4WHoTxDHGiUNDiuoevRlbg+Be/oUhC4qamKp+YzMLj0vkqKztJ0zng==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Data.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Data.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "Jspj1kVzy0rqiEW0j4iDX+57S8zQHcJRhaqnEBNsglxOvceGF4zSvYYOyf1AsNYMKfPiNOdcCcUjp9H40D59kA==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Data.YesSql": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "a7cP09+Eeeex5ucRtKEOJwmtB58lhU03Si+qQeo14rKfxHd+B0joBYlEB1TpwbTH3+KlofoxT1CGf/gkTvdWYA==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Data": "4.0.0-preview-19227",
+          "OrchardCore.Data.YesSql.Abstractions": "4.0.0-preview-19227",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Data.YesSql.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "88Ug6+GL0pnhv+30yyTIhhqKe6maRc+bTOyU68jl/OSRmJ96MmmuvnlY+1QYt84CV/FRm/3+jQnfhuDAKc1N3g==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Data.Abstractions": "4.0.0-preview-19227",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Deployment.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "pqoJ2U+425iwItpD/AZ8YMH7luIEYoKppppMYkyNgEXOVAyAXKAWBD5ZM27RzSh3OVI1Yi5iLi/o2xvapefzPg==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.DisplayManagement": "4.0.0-preview-19227",
+          "OrchardCore.Recipes.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.DisplayManagement": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "7fRlAtvoanNCqJUTJ1zOII7kD3D09b4KNYX0XP6ZuH5WLdspe81zuGN+/vve3OwkKPtajO7lDEc5wiKlzaHlZg==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.DisplayManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Liquid.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Localization.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Mvc.Core": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.DisplayManagement.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "Y7q4vbkFY39ccW3ZfYP2zc5/oQ6VHlx1kB7Dk9zCWhVgSpLH1JXME1lpWx+wJK10xOY3w//Bdj97CthYTVi2GA=="
+      },
+      "OrchardCore.DisplayManagement.Liquid": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "oBE7hSGhFBF5+PZajAKy3QlpHGxBdntyso8RnQPqdgtfff4snDL1Jtp+X2+MOSNJTbaBIn5rKmdt1WGIehkkRA==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.DisplayManagement": "4.0.0-preview-19227",
+          "OrchardCore.DynamicCache.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Liquid.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ResourceManagement.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.DynamicCache.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "8fiMiFMMJXTdL0x1U76GOLuJiv3sE/aeRKqFNQvAVVM/u0rYJzuuAYJMWItMJ5chZQdbKfAvrl+o+8RQ/F8SzQ==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Feeds.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "8vvtlAvUs05lBfv/41+fBfzmeWU32VlCwU1XkEdzXRaZ40XZuJhI9lNmqtSobhWNrTsn4ueO6rEfUpeUXc1HFw==",
+        "dependencies": {
+          "OrchardCore.DisplayManagement.Abstractions": "4.0.0-preview-19227"
+        }
+      },
+      "OrchardCore.FileStorage.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "rqBJIPhgGUFsSwGBFwd0BcjbPYQBplZ9UGfF8I53O4sP5flN1lABhTQKhEw+qsbY5ASQ1eqiihvhKIAuHpfrZQ==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Html.Core": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "aPGJZhkrZg1T9tHeBYg9KkeucfF3E+jCKhwsJR0YXe70FJk2OJnMeD2vpuJGuc4GDltBSxg3zyKupe5QL/TWJg==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Shortcodes.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "Shortcodes": "1.4.0",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Indexing": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "Hvq/YdtIpZyQFLm9u/afH0jYUGBXank1JcsSAJjBGcEXi3yfh2ZknvYT23DwzfP2gewPbYzIgTyu7CT75W8vcA==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.Admin.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentPreview.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentTypes.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Data.YesSql": "4.0.0-preview-19227",
+          "OrchardCore.Deployment.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement": "4.0.0-preview-19227",
+          "OrchardCore.Indexing.Core": "4.0.0-preview-19227",
+          "OrchardCore.Module.Targets": "4.0.0-preview-19227",
+          "OrchardCore.Navigation.Core": "4.0.0-preview-19227",
+          "OrchardCore.Recipes.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ResourceManagement": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "System.IO.Hashing": "11.0.0",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Indexing.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "SGKunGdR3HPKtvosFd9fxjj6dhq6kPfOqNSHv3Vd4jzolItMzJE0tZWEZqXTGAV1A+wDkkplsMGcJ5KyYgkKUw==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Indexing.Core": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "cxd9RH1qP0jdDwglm61fu6gm8kNtEYrDnaOT3842JykMWu+5ng4iSusNoqJZrN/6PxWgGKYJirg2XJ7ryl7/mA==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.ContentLocalization.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ContentManagement": "4.0.0-preview-19227",
+          "OrchardCore.ContentPreview.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Deployment.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Indexing.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Search.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Liquid.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "Vjnd8zxxfjypno71KY3WKSz41o+CplE2WSfhG1Sf/wjkv2HtnUjRf3+o9I8UEfZadyFxT46JsOmdvLRhAAnfsA==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Localization.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "PvNQkSprroF2XyOT4KCn9t1eY+8gHIwY99at3D4rXKFlXag3p5jUBREwJws3Ga88Cw+y9iGDzXAmqZ2S/DuFnA==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Media.Core": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "r9fbjattszRlWYr/kyfJyR8NLRBYXJJKv63xeh0Wa28p/Ak/PcyoOPXY8pHoqoE0xdoJ5OuYGcKcBZ/WHH2n7A==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.FileStorage.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Media.Abstractions": "4.0.0-preview-19227",
+          "System.IO.Hashing": "11.0.0",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.MetaWeblog.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "xj/SO0ynbunCOr7W381X2/ws5XbH/FMmrFU1ecNL3jDvs+9Qv638CWFXOKBD87yn52+MQV17/ewmBODpFPm7Yw==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.XmlRpc.Abstractions": "4.0.0-preview-19227",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Mvc.Core": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "f9hPAqvlJOBPvPbg2C/wFD1MfM+TZk97Cxp6WRd+6wKMJ8QXhPuVKvealIdCGA8NZ/cEe9ZJfeLIcD1Rv7tN9w==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Navigation.Core": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "Mnc7/tZXsgMjRGpi81JP+IVLzUBPK1F1P7Cqm1xkIgRFwbM0eEfc69mAfnOLf2eujmaN+Y5ng550iq8VKe4gDg==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Admin.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "System.IO.Hashing": "11.0.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Recipes.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "S0+ohWFnWf/uXbZVnaMGISEXEHDiUDwkTpeICm8l42e8IHB+Ab/TE6Qf/uJcuZhmBKpm59kwYqMpeay5XhnU1g==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Data.YesSql.Abstractions": "4.0.0-preview-19227",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.ResourceManagement": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "Y3qxnmW4XejCJde2NmgiOLfh1Xh+ORw8sEU1R8Fn66Xxsk9h/0DsHeLSgx2O7H+0pA9Zt4cXAKmaE3w9Zepc8w==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.ResourceManagement.Core": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.ResourceManagement.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "PqlnhpMEMpmYpW/ODUCHiocCdWfBxI6EryHUKVRvbSoKg0obSR4butpG2YbCkuSq+rG+3Z5e+ZBlLuNQUMq6gQ=="
+      },
+      "OrchardCore.ResourceManagement.Core": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "LZ/np7sqth6oTEz9Kqs8TanaQF658R0SsBZNzgW4hkurZdDYKTut3LDQt0jX30Rw4+rEaStAlVC+inavpfh6zg==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.ResourceManagement.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Roles.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "MhyjrTkEMkXb5rBaKt9jNPFsNHXkYTyPnzr4XPmZSe7qvDALVvd3ZIYm0Q5bS11D7Y7piiLWgf30S2jh8dH5Qw==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Roles.Core": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "Gk3nVmfjsxju58QEfVuZBcH4yePGxBDqUklt4j6jowCsci3DVDnUQ/8F/uibM39NCrWF2v9jkw0j0dgpCNU8+A==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Roles.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Search.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "9L4o9C/pRI4avULvbngECuqXVtWsvIN2WndQUznFznzilst4G8G6LhK9ajZj8v5MT4w0TDp4D9GMZHbs+JUu7g==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.ContentManagement": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement": "4.0.0-preview-19227",
+          "OrchardCore.Indexing.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Seo.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "6o8EcZz97qk8F5KenO7BbcP3n6bf2JKdLz0QBnYPf+rejWhv1ffjOJ1FqimQkqOQ44Ntg4hflnEpibt92NYi+g==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Shortcodes.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "uD4l5sVTVQLUozrqVJu4Ks3Fcyf6nwqGdlEKub2zTNZwxUPFQxXuiHEhBvjI/sjTQbHXDdQZMYtrdEJXwypizw==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "Shortcodes": "1.4.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Sitemaps.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "c3B4WrQOyy6OBETZHhgX6DPACr0wP4xrnxlZ0ba96TTlNob5er72UHQB60YNUkoRwvmUR7SKFJwEmGzetpkoVw==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.ContentManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "YesSql.Abstractions": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Users.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "2s0OiNtanrjZGuYrZJ83oL/9BwSLsLIlWGbzzXXvZpm69bG+UyvgNILlQ8eR8FFUIysGaeOmGIuDeVw74fnI9A==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "OrchardCore.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.Users.Core": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "Ad932sIGcx/BYue2a+1SvIXjrrG8J/0rAk0HAaB9xRu5dLIs+3q/hX97NMIcxF5NCpR1T2vxHN6Le7f1GcOnaw==",
+        "dependencies": {
+          "AnyAscii": "0.3.3",
+          "Castle.Core": "5.2.1",
+          "Fluid.Core": "3.0.0-beta.9",
+          "GraphQL": "8.8.5",
+          "GraphQL.DataLoader": "8.8.5",
+          "JsonPath.Net": "2.2.0",
+          "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "11.0.0",
+          "Microsoft.CodeAnalysis.Analyzers": "5.9.0",
+          "Microsoft.CodeAnalysis.CSharp": "5.9.0",
+          "Microsoft.CodeAnalysis.Common": "5.9.0",
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "OrchardCore.ContentManagement.GraphQL": "4.0.0-preview-19227",
+          "OrchardCore.Data.YesSql": "4.0.0-preview-19227",
+          "OrchardCore.DisplayManagement.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Infrastructure.Abstractions": "4.0.0-preview-19227",
+          "OrchardCore.Roles.Core": "4.0.0-preview-19227",
+          "OrchardCore.Users.Abstractions": "4.0.0-preview-19227",
+          "Parlot": "2.2.1",
+          "YesSql": "6.3.0",
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "YesSql.Filters.Abstractions": "6.3.0",
+          "YesSql.Filters.Query": "6.3.0",
+          "ZString": "2.6.0"
+        }
+      },
+      "OrchardCore.XmlRpc.Abstractions": {
+        "type": "Transitive",
+        "resolved": "4.0.0-preview-19227",
+        "contentHash": "R7/BwztpGfqhf586SLJ/ot4D4eiexlqs8svhBDZq+l0OtNGBVAP4q+aatTw78trZtODbBOBwu5M5ydh98PSM0w=="
+      },
+      "Parlot": {
+        "type": "Transitive",
+        "resolved": "2.2.1",
+        "contentHash": "IRWhboZhmYEZB1GFCMKlXsoSdJI/Uz5tqy71Ld7DKS3gZsm1FgQhSPhMTzHUGp+Zr1IZ/eyb+M4aiWw4HnB+vg=="
+      },
+      "Shortcodes": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "yBKD/Xp934kiteJcIy6lUdyYYnO5a6j1RLqG9VYfnhFf3aZWgUNibS4wl8oXRC8QOKfSGWTfzF1w8dQM5sD02g==",
+        "dependencies": {
+          "Parlot": "2.2.1"
+        }
+      },
+      "SQLite": {
+        "type": "Transitive",
+        "resolved": "3.53.4",
+        "contentHash": "KN7jeWqgUPeBRe1FlcpZURzxomuKKEKHmBBQfg+Nx7NkY1LjKhzHvH+3ASkNvhayESE34nMBinL9CV21JfPRJw=="
+      },
+      "SQLitePCLRaw.bundle_e_sqlite3": {
+        "type": "Transitive",
+        "resolved": "3.0.5",
+        "contentHash": "SW8iASIyWMrLzqabUHYQRvALhvD4ylSBsj4PgEVGwc36kQjc9xT5kSV/XQ9rU7nIpBWD+LPyX3Hlw5FzyUzGeQ==",
+        "dependencies": {
+          "SQLite": "3.53.4",
+          "SQLitePCLRaw.config.e_sqlite3": "3.0.5"
+        }
+      },
+      "SQLitePCLRaw.config.e_sqlite3": {
+        "type": "Transitive",
+        "resolved": "3.0.5",
+        "contentHash": "aSk8WE5tF2MybESMgtZAEyMVCAWA0nBqOMc48HFoa9UoSdtm3goDXVzNRnefeKIwE6bV9NaNXptn1F9ReMQI0Q==",
+        "dependencies": {
+          "SQLitePCLRaw.provider.e_sqlite3": "3.0.5"
+        }
+      },
+      "SQLitePCLRaw.core": {
+        "type": "Transitive",
+        "resolved": "3.0.5",
+        "contentHash": "k81AYXXRCw3Zj8rOhyBoCsx/U97KYDFI2CSKr/ijl5BwpsW/hX/4kBiDmerFaoust8nxBwa0IHQFw8MmSHRtnQ=="
+      },
+      "SQLitePCLRaw.provider.e_sqlite3": {
+        "type": "Transitive",
+        "resolved": "3.0.5",
+        "contentHash": "um8YSWduhhuskTG2bHfZrBqMNQOydfU8pcseT+cu5RivOGyoUbCrGXxgoRNTmRYw2VbMWnEZVVFcneZT/5dsBg==",
+        "dependencies": {
+          "SQLitePCLRaw.core": "3.0.5"
+        }
+      },
+      "System.Configuration.ConfigurationManager": {
+        "type": "Transitive",
+        "resolved": "9.0.18",
+        "contentHash": "/1q0MHB2xKyTFRC5tk+oL3Ahi+QK0UPI6Qk6Xc5z5BW6otR2T9wwWmEW/LZX98cq7UOmu+7sZ5HNwuq61zrNtg==",
+        "dependencies": {
+          "System.Security.Cryptography.ProtectedData": "9.0.18"
+        }
+      },
+      "System.IdentityModel.Tokens.Jwt": {
+        "type": "Transitive",
+        "resolved": "8.23.0",
+        "contentHash": "mUuRjk0KKvF3dlF7CKcnjHn/4TFaWRDGjDRtn1rACitoIflv96apfLD9KPDisyCEuc/0ierocnHCvIXBvCL4Sw==",
+        "dependencies": {
+          "Microsoft.IdentityModel.JsonWebTokens": "8.23.0",
+          "Microsoft.IdentityModel.Tokens": "8.23.0"
+        }
+      },
+      "System.IO.Hashing": {
+        "type": "Transitive",
+        "resolved": "11.0.0",
+        "contentHash": "U+Bv2qCYt6eONi+arSP0QIp4uTO6os6uceBsqiAwruZ+Wo2HrRhO/0tj38M9URJtS+4DhAtT3ka2TGNFYsnhyQ=="
+      },
+      "System.Security.Cryptography.ProtectedData": {
+        "type": "Transitive",
+        "resolved": "9.0.18",
+        "contentHash": "1/iz9Eex1TBMYdAk+m3igaMvL+nk+rY1EqL6u93an/j1ghxmB24vGOKXkVFy3NSPA39s1H/+SNoK257tHoXoLA=="
+      },
+      "YesSql": {
+        "type": "Transitive",
+        "resolved": "6.3.0",
+        "contentHash": "QR5Dq8JDpVmrsbRFbY339p4BIqxmxA08eown8+wVu/pC5fRko80JenhWESmtuk3+F4XUp4KAmRI0VV7F9kAX/w==",
+        "dependencies": {
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Core": "6.3.0",
+          "YesSql.Provider.MySql": "6.3.0",
+          "YesSql.Provider.PostgreSql": "6.3.0",
+          "YesSql.Provider.SqlServer": "6.3.0",
+          "YesSql.Provider.Sqlite": "6.3.0"
+        }
+      },
+      "YesSql.Abstractions": {
+        "type": "Transitive",
+        "resolved": "6.3.0",
+        "contentHash": "aO7Jsm+r2kX2lRc8gqEKYqfQlOKcY4fbVsaBlxczDrUVGi92+HPHLFbL971ibfZ+NGrI7pNjeY+4409OBmZi5g=="
+      },
+      "YesSql.Core": {
+        "type": "Transitive",
+        "resolved": "6.3.0",
+        "contentHash": "axRcDMUAlvT0nr1cTPiKpEaTbkOJFaUixmUlJfcQyWSBwsRRoY/YCLsanA8JJeTO0tfT1p8JdtOYaO0lDbpSIQ==",
+        "dependencies": {
+          "Dapper.StrongName": "2.1.89",
+          "YesSql.Abstractions": "6.3.0"
+        }
+      },
+      "YesSql.Filters.Abstractions": {
+        "type": "Transitive",
+        "resolved": "6.3.0",
+        "contentHash": "eiWi7uXGMBPay+wA1c+NDvtnXoNLGQftrA4nMNK/rzB2J4CXMNhNuLJmV+EaGe8Ceay9XyeuQfspnWv0vI593A==",
+        "dependencies": {
+          "Parlot": "2.2.1"
+        }
+      },
+      "YesSql.Filters.Query": {
+        "type": "Transitive",
+        "resolved": "6.3.0",
+        "contentHash": "ZRUdTwW7r1Lk9ZZceUPYwiJ/fiHa5FGOyBQozoAI655vhqxDzdnL/S9UxVGM9N6lLb5JvjRQBWhHhUBv2GiNcQ==",
+        "dependencies": {
+          "YesSql.Abstractions": "6.3.0",
+          "YesSql.Filters.Abstractions": "6.3.0"
+        }
+      },
+      "YesSql.Provider.MySql": {
+        "type": "Transitive",
+        "resolved": "6.3.0",
+        "contentHash": "zYyVeeX7ZA4sJ6s8mg/xi5x9xc4A9I+g3ZhXmHPGrmGi9nkcQW3X3BAyGS8gao3ILVea4DFsbR5XVTWX9po5kg==",
+        "dependencies": {
+          "MySqlConnector": "2.6.2",
+          "YesSql.Core": "6.3.0"
+        }
+      },
+      "YesSql.Provider.PostgreSql": {
+        "type": "Transitive",
+        "resolved": "6.3.0",
+        "contentHash": "pUHUaGX4LsyD9X8OF5uXcmc1p1oZd3vYkPe2owzlolfEi3k9s49q1lX3QwV3t5K9sTvcRToXImOtI4KeBw5fow==",
+        "dependencies": {
+          "Npgsql": "10.0.3",
+          "YesSql.Core": "6.3.0"
+        }
+      },
+      "YesSql.Provider.Sqlite": {
+        "type": "Transitive",
+        "resolved": "6.3.0",
+        "contentHash": "jgYEx+nsO3OnZIgSvQW6RBDybViN2YT6ocr+szdkBevtCjKP4VH5zCe8kdt5m+eynkc0lvKcRbisi1kuE0dFvA==",
+        "dependencies": {
+          "Microsoft.Data.Sqlite.Core": "10.0.14",
+          "SQLitePCLRaw.bundle_e_sqlite3": "3.0.5",
+          "YesSql.Core": "6.3.0"
+        }
+      },
+      "YesSql.Provider.SqlServer": {
+        "type": "Transitive",
+        "resolved": "6.3.0",
+        "contentHash": "7CSbiLipFe8s8dV9sCOmnnObYFNwaXhW+Y+XEiG4/tLxQD2UYPDAfqxoRYqvGc9mbCD7QQKR5lh3/l+1dP70sw==",
+        "dependencies": {
+          "Microsoft.Data.SqlClient": "7.1.1",
+          "YesSql.Core": "6.3.0"
+        }
+      },
+      "ZString": {
+        "type": "Transitive",
+        "resolved": "2.6.0",
+        "contentHash": "XE8a+11nZg0LRaf+RGABEWaHIf8yGd5w8v/Ra1iWxMBmAVzwuKbW7G21mS0U7w7sh1lYcgckInWGgnz4qyET8A=="
+      }
+    }
+  }
+}
