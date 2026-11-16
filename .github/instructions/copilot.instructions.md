@@ -1,1 +1,1 @@
-Publish workflow reads constants.cs and updates this version elsewhere whenever necessary. Do not flag if it does not match other version strings.
+The module version lives only in `Constants.Version`. `Manifest.cs` reads that constant, and the release workflow refuses to run unless its input matches it. Do not add a second version string elsewhere.

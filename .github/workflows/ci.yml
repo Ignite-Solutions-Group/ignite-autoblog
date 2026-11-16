@@ -2,7 +2,7 @@ name: Build
 
 on:
   pull_request:
-    branches: [main, 'codex/**']
+    branches: [main, 'release/**', 'codex/**']
 
 permissions:
   contents: read
@@ -10,33 +10,32 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # A build agent starts the fixture site in seconds; this only bounds a hung start.
+      AUTOBLOG_FIXTURE_STARTUP_MINUTES: 15
 
     steps:
       - uses: actions/checkout@v7
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v6
-        with:
-          global-json-file: global.json
+      - name: Build and verify
+        uses: ./.github/actions/verify
 
-      - name: Restore
-        run: dotnet restore src/IgniteSG.OrchardCore.sln
+      - name: Read version from Constants.cs
+        id: constants
+        run: |
+          CONST_VERSION=$(grep -oP 'Version\s*=\s*"\K[^"]+' src/IgniteSG.OrchardCore.MspMarketingEdge/Constants.cs)
+          echo "VERSION=$CONST_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Build
-        run: dotnet build src/IgniteSG.OrchardCore.sln --configuration Release --no-restore
-
-      - name: Publish
+      - name: Pack
         run: >
-          dotnet publish
+          dotnet pack
           src/IgniteSG.OrchardCore.MspMarketingEdge/IgniteSG.OrchardCore.MspMarketingEdge.csproj
           --configuration Release
           --no-build
           --output ./artifacts
+          /p:PackageVersion=${{ steps.constants.outputs.VERSION }}-ci.${{ github.run_number }}
 
-      - name: Verify preserved editorial content
-        run: dotnet run --project tests/VerifyEditorial -c Release
-
-      - name: Upload artifact
+      - name: Upload package
         uses: actions/upload-artifact@v7
         with:
           name: IgniteSG.OrchardCore.MspMarketingEdge
