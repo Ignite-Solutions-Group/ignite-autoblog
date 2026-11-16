@@ -55,7 +55,7 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
             ? TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(settings.LastSyncUtc.Value, DateTimeKind.Utc), timeZone)
             : (DateTime?)null;
 
-        var nextSyncUtc = CalculateNextSync(settings.LastSyncUtc);
+        var nextSyncUtc = CalculateNextSync(settings.LastSyncUtc, timeZone);
         var nextSyncLocal = nextSyncUtc.HasValue
             ? TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(nextSyncUtc.Value, DateTimeKind.Utc), timeZone)
             : (DateTime?)null;
@@ -164,7 +164,7 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
         return options;
     }
 
-    private static DateTime? CalculateNextSync(DateTime? lastSyncUtc)
+    private static DateTime? CalculateNextSync(DateTime? lastSyncUtc, TimeZoneInfo timeZone)
     {
         try
         {
@@ -177,7 +177,9 @@ public class AutoBlogSettingsDisplayDriver : SiteDisplayDriver<AutoBlogSettings>
                 baseTime = DateTime.UtcNow;
             }
 
-            return cron.GetNextOccurrence(baseTime, TimeZoneInfo.Utc);
+            // Orchard evaluates a background task's schedule in the site's time zone, so the prediction
+            // has to as well; in UTC it is wrong by the zone offset on any site that is not on UTC.
+            return cron.GetNextOccurrence(DateTime.SpecifyKind(baseTime, DateTimeKind.Utc), timeZone);
         }
         catch (CronFormatException)
         {
