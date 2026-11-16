@@ -36,10 +36,10 @@ An Orchard Core module that automatically imports weekly blog posts from [MSP Ma
 
 | Module version | Orchard Core | .NET runtime |
 |---|---|---|
-| 1.7.0 | 3.0.1 | .NET 10 |
+| 1.7.3 | 3.0.1 | .NET 10 |
 | 1.6.6 | 2.2.1 | .NET 8 |
 
-Upgrade the host application's Orchard Core packages and .NET target before installing module 1.7.0. Applications remaining on Orchard Core 2 and .NET 8 should keep module 1.6.6. Earlier module binaries reference email APIs removed in Orchard Core 3.
+Upgrade the host application's Orchard Core packages and .NET target before installing module 1.7.x. Applications remaining on Orchard Core 2 and .NET 8 should keep module 1.6.6. Earlier module binaries reference email APIs removed in Orchard Core 3.
 
 Building from source requires .NET SDK **10.0.200** or a later stable .NET 10 feature band, as selected by `global.json`.
 
@@ -47,16 +47,16 @@ Building from source requires .NET SDK **10.0.200** or a later stable .NET 10 fe
 
 ### NuGet (recommended)
 
-For Orchard Core 3.0.1 / .NET 10, install module 1.7.0 once that release is available on NuGet:
+For Orchard Core 3.0.1 / .NET 10, install module 1.7.3:
 
 ```shell
-dotnet add package IgniteSG.OrchardCore.MspMarketingEdge --version 1.7.0
+dotnet add package IgniteSG.OrchardCore.MspMarketingEdge --version 1.7.3
 ```
 
 Or via the Package Manager Console:
 
 ```powershell
-Install-Package IgniteSG.OrchardCore.MspMarketingEdge -Version 1.7.0
+Install-Package IgniteSG.OrchardCore.MspMarketingEdge -Version 1.7.3
 ```
 
 For an Orchard Core 2.2.1 / .NET 8 host, use `--version 1.6.6` or `-Version 1.6.6` instead.
@@ -153,6 +153,21 @@ Alternatively, create a **List** content item in the Orchard admin that queries 
 If your site already has a blog page that lists `BlogPost` items and you want imported `AutoBlogPost` items to appear alongside them, update your blog list template to query both content types.
 
 ## Changelog
+
+### v1.7.3
+- Fixes the default detail template so video-feed posts no longer show the featured image
+- Fixes the settings link in notification emails, which pointed at a page that does not exist
+- Fixes the slug fallback for posts inside a blog container, so a matching hand-made post is adopted instead of duplicated, and keeps it from taking over a post that belongs to a different article
+- Stores downloaded images under the same file name on Windows and Linux hosts
+- Shows **Next sync** on the settings page in the site's time zone, which is the clock Orchard runs the schedule on
+
+### v1.7.2
+- Generates valid `Article` structured data (`@context`, `@type`, publisher type), encoded so it cannot close its own script element
+- Keeps the original publication date and uses the absolute public image URL in structured data
+- Updates Cronos and patches a transitive cryptography dependency
+
+### v1.7.1
+- Adds **Preserve local editorial content**, which holds vendor updates back from an article an editor has taken over
 
 ### v1.7.0
 - Targets Orchard Core 3.0.1 and .NET 10

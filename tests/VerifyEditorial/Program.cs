@@ -5,15 +5,21 @@ using IgniteSG.OrchardCore.MspMarketingEdge.Drivers;
 using IgniteSG.OrchardCore.MspMarketingEdge.Models;
 using IgniteSG.OrchardCore.MspMarketingEdge.Services;
 using Microsoft.Extensions.Logging.Abstractions;
+using OrchardCore.Autoroute.Models;
 using OrchardCore.ContentManagement;
+using OrchardCore.ContentManagement.Metadata;
+using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.ContentManagement.Records;
 using OrchardCore.Email;
+using OrchardCore.Entities;
 using OrchardCore.Environment.Shell;
 using OrchardCore.Html.Models;
 using OrchardCore.Infrastructure.Html;
+using OrchardCore.Lists.Models;
 using OrchardCore.Seo.Models;
 using OrchardCore.Media;
 using OrchardCore.Settings;
+using OrchardCore.Title.Models;
 using YesSql;
 using ISession = YesSql.ISession;
 
@@ -41,7 +47,9 @@ app.UseOrchardCore();
 await app.StartAsync();
 try
 {
-    using var http = new HttpClient { Timeout = TimeSpan.FromMinutes(5) };
+    // The first request after a build can take many minutes on a workstation whose security policy inspects
+    // each assembly as it loads; that is a startup window, not an import failure.
+    using var http = new HttpClient { Timeout = TimeSpan.FromMinutes(30) };
     using var setup = await http.GetAsync("http://127.0.0.1:5278/");
     var host = app.Services.GetRequiredService<IShellHost>();
     var settings = new AutoBlogSettings { FeedId = 8, DirectlyPublish = false, EnableGoogleStructuredData = true, PublisherName = "Fixture Publisher" };
@@ -68,7 +76,10 @@ try
         (new DateTime(futureYear, 5, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(futureYear, 5, 1, 6, 0, 0, DateTimeKind.Utc)),
         (new DateTime(futureYear, 12, 31, 23, 59, 59, DateTimeKind.Utc), new DateTime(futureYear + 1, 1, 1, 0, 0, 0, DateTimeKind.Utc))
     })
-        Check((DateTime?)nextSync.Invoke(null, [from]) == expected, "Six-hour UTC schedule retains boundary behavior");
+        Check((DateTime?)nextSync.Invoke(null, [from, TimeZoneInfo.Utc]) == expected, "On a UTC site the next sync falls on six-hour UTC boundaries");
+    // Orchard runs the schedule on the site's clock. Honolulu is UTC-10 all year, so 6 PM there is 04:00 UTC.
+    Check((DateTime?)nextSync.Invoke(null, [new DateTime(futureYear, 4, 30, 23, 59, 59, DateTimeKind.Utc), TimeZoneInfo.FindSystemTimeZoneById("Pacific/Honolulu")])
+        == new DateTime(futureYear, 5, 1, 4, 0, 0, DateTimeKind.Utc), "On a Honolulu site the next sync falls on six-hour local boundaries");
     async Task Scope(Func<IServiceProvider, Task> action)
     {
         var scope = await host.GetScopeAsync("Default");
@@ -161,6 +172,98 @@ try
             "Updates retain the original publication date");
     });
     await Scope(async sp => Check((await Process(sp)).SkippedCount == 1, "Already applied version skips"));
+    // Image file names: one fixed set of replaced characters, so a path is the same on Windows and Linux.
+    var sanitize = typeof(ImageService).GetMethod("SanitizeFileName", BindingFlags.Static | BindingFlags.NonPublic)!;
+    foreach (var (name, expected) in new[]
+    {
+        ("what? now: yes*", "what- now- yes"), ("quoted \"name\" <tag> |pipe|", "quoted -name- -tag- -pipe"),
+        ("blog/nested\\route", "blog-nested-route"), ("it's a test & more", "it's a test & more")
+    })
+        Check((string)sanitize.Invoke(null, [name])! == expected, "Image file names are sanitized identically on every host OS");
+
+    // Notification email: the settings route is Admin/Settings/{groupId}.
+    var emailBody = typeof(AutoBlogImportService).GetMethod("BuildEmailBody", BindingFlags.Static | BindingFlags.NonPublic)!;
+    var mail = (string)emailBody.Invoke(null, [new ImportResult(), true, "https://www.fixture.invalid"])!;
+    Check(mail.Contains("href=\"https://www.fixture.invalid/Admin/Settings/AutoBlog\"", StringComparison.Ordinal), "Notification links to the settings route");
+
+    // Slug fallback inside a blog container: a hand-made post on the article's route is adopted, not duplicated.
+    var blogId = string.Empty;
+    await Scope(async sp => await sp.GetRequiredService<IContentDefinitionManager>().AlterTypeDefinitionAsync("Blog", type => type
+        .Creatable().Listable().Draftable()
+        .WithPart("TitlePart")
+        .WithPart("AutoroutePart", part => part.WithSettings(new AutoroutePartSettings { AllowCustomPath = true, Pattern = "{{ Model.ContentItem | display_text | slugify }}" }))
+        .WithPart("ListPart", part => part.WithSettings(new ListPartSettings { PageSize = 20, ContainedContentTypes = [Constants.ContentType] }))));
+    await Scope(async sp =>
+    {
+        var content = sp.GetRequiredService<IContentManager>();
+        var blog = await content.NewAsync("Blog");
+        blog.DisplayText = "Blog";
+        blog.Alter<TitlePart>(p => p.Title = "Blog");
+        blog.Alter<AutoroutePart>(p => p.Path = "blog");
+        await content.CreateAsync(blog, VersionOptions.Published);
+        blogId = blog.ContentItemId;
+    });
+    settings.BlogContainerContentItemId = blogId;
+    await Scope(async sp =>
+    {
+        var sites = sp.GetRequiredService<ISiteService>();
+        var site = await sites.LoadSiteSettingsAsync();
+        site.Put(settings);
+        await sites.UpdateSiteSettingsAsync(site);
+    });
+    var manualId = string.Empty;
+    await Scope(async sp =>
+    {
+        var content = sp.GetRequiredService<IContentManager>();
+        var item = await content.NewAsync(Constants.ContentType);
+        item.DisplayText = "Manual entry";
+        item.Alter<TitlePart>(p => p.Title = "Manual entry");
+        item.Alter<HtmlBodyPart>(p => p.Html = "<p>Written by hand</p>");
+        item.Weld<ContainedPart>();
+        item.Alter<ContainedPart>(p => p.ListContentItemId = blogId);
+        await content.CreateAsync(item, VersionOptions.Draft);
+        manualId = item.ContentItemId;
+    });
+    EdgeFeedArticle Article(int id, string slug, string title) => new()
+    {
+        Id = id, Slug = slug, Date = "2026-10-02T08:30:00Z", Guid = new() { Rendered = "https://example.invalid/?p=" + id },
+        Link = "https://example.invalid/" + slug, Title = new() { Rendered = title },
+        Content = new() { Rendered = "<p>Vendor body for " + slug + "</p>" }, Excerpt = new() { Rendered = "Vendor excerpt" },
+        Acf = new() { SendUpdate = true, UpdateVersion = 1 }
+    };
+    async Task<List<ContentItem>> Posts(IServiceProvider sp) => (await sp.GetRequiredService<ISession>()
+        .Query<ContentItem, ContentItemIndex>(i => i.ContentType == Constants.ContentType && i.Latest).ListAsync()).ToList();
+    article = Article(201, "manual-entry", "Manual entry");
+    await Scope(async sp => Check((await Process(sp)).CreatedPosts.Count == 0, "A hand-made post on the article's route is not duplicated"));
+    await Scope(async sp =>
+    {
+        var posts = await Posts(sp);
+        Check(posts.Count == 2, "Adopting a hand-made post adds no content item");
+        Check(posts.Single(p => p.ContentItemId == manualId).Get<AutoBlogPart>(nameof(AutoBlogPart)).EdgeGuid == article.Guid.Rendered, "The vendor GUID is backfilled onto the hand-made post");
+    });
+
+    // A different vendor article whose slug equals an existing post's route must not take that post over.
+    article = Article(204, "manual-entry", "A later article on the same slug");
+    await Scope(async sp => Check((await Process(sp)).CreatedPosts.Count == 1, "An article that only shares a route with another article is imported as its own post"));
+    await Scope(async sp =>
+    {
+        var posts = await Posts(sp);
+        Check(posts.Count == 3, "The route collision adds exactly one content item");
+        var owner = posts.Single(p => p.ContentItemId == manualId);
+        Check(owner.Get<AutoBlogPart>(nameof(AutoBlogPart)).EdgeGuid == "https://example.invalid/?p=201" && owner.DisplayText == "Manual entry", "The post that owns the route keeps its GUID and title");
+    });
+
+    // Default detail template: a video-feed post leaves its featured image to the embedded video.
+    settings.DirectlyPublish = true;
+    article = Article(202, "plain-briefing", "Plain briefing");
+    await Scope(async sp => Check((await Process(sp)).CreatedPosts.Count == 1, "A blog-only article publishes"));
+    settings.FeedId = 6;
+    article = Article(203, "video-briefing", "Video briefing");
+    await Scope(async sp => Check((await Process(sp)).CreatedPosts.Count == 1, "A video-feed article publishes"));
+    var plainPage = await http.GetStringAsync("http://127.0.0.1:5278/blog/plain-briefing");
+    Check(plainPage.Contains("Vendor body for plain-briefing", StringComparison.Ordinal) && plainPage.Contains("autoblog-featured-image", StringComparison.Ordinal), "A blog-only article shows its featured image");
+    var videoPage = await http.GetStringAsync("http://127.0.0.1:5278/blog/video-briefing");
+    Check(videoPage.Contains("Vendor body for video-briefing", StringComparison.Ordinal) && !videoPage.Contains("autoblog-featured-image", StringComparison.Ordinal), "A video-feed article hides its featured image");
     Check(errors.Count == 0, "Native content handlers logged an error");
     Console.WriteLine($"Editorial import verification passed: {assertions} assertions (native SQLite, no external calls).");
 }

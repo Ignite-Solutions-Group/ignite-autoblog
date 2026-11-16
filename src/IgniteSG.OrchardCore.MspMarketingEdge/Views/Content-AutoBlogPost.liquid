@@ -16,7 +16,7 @@
         </div>
     </header>
 
-    {% if autoblogPart.EdgeHasVideo.Value != true %}
+    {% if autoblogPart.EdgeHasVideo != true %}
         {% assign ogImage = seoMetaPart.OpenGraphImage %}
         {% if ogImage.Paths.size > 0 %}
             <div class="autoblog-featured-image mb-4">

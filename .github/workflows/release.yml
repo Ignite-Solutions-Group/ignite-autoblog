@@ -13,9 +13,14 @@ jobs:
     permissions:
       contents: write
     steps:
+      # Each Orchard Core line releases from its own branch: main, or release/* for an older line.
+      - name: Only release from main or a release branch
+        if: github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/release/')
+        run: |
+          echo "::error::Releases run from main or a release/* branch, not ${{ github.ref }}."
+          exit 1
+
       - uses: actions/checkout@v7
-        with:
-          ref: main
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v6
@@ -49,6 +54,10 @@ jobs:
 
       - name: Build
         run: dotnet build src/IgniteSG.OrchardCore.sln --configuration Release --no-restore
+
+      # A release is validated by running the module, not only by compiling it.
+      - name: Verify editorial behavior
+        run: dotnet run --project tests/VerifyEditorial -c Release
 
       - name: Pack NuGet
         run: >
