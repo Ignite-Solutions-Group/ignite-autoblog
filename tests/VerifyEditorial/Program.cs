@@ -76,7 +76,10 @@ try
         (new DateTime(futureYear, 5, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(futureYear, 5, 1, 6, 0, 0, DateTimeKind.Utc)),
         (new DateTime(futureYear, 12, 31, 23, 59, 59, DateTimeKind.Utc), new DateTime(futureYear + 1, 1, 1, 0, 0, 0, DateTimeKind.Utc))
     })
-        Check((DateTime?)nextSync.Invoke(null, [from]) == expected, "Six-hour UTC schedule retains boundary behavior");
+        Check((DateTime?)nextSync.Invoke(null, [from, TimeZoneInfo.Utc]) == expected, "On a UTC site the next sync falls on six-hour UTC boundaries");
+    // Orchard runs the schedule on the site's clock. Honolulu is UTC-10 all year, so 6 PM there is 04:00 UTC.
+    Check((DateTime?)nextSync.Invoke(null, [new DateTime(futureYear, 4, 30, 23, 59, 59, DateTimeKind.Utc), TimeZoneInfo.FindSystemTimeZoneById("Pacific/Honolulu")])
+        == new DateTime(futureYear, 5, 1, 4, 0, 0, DateTimeKind.Utc), "On a Honolulu site the next sync falls on six-hour local boundaries");
     async Task Scope(Func<IServiceProvider, Task> action)
     {
         var scope = await host.GetScopeAsync("Default");
@@ -237,6 +240,17 @@ try
         var posts = await Posts(sp);
         Check(posts.Count == 2, "Adopting a hand-made post adds no content item");
         Check(posts.Single(p => p.ContentItemId == manualId).Get<AutoBlogPart>(nameof(AutoBlogPart)).EdgeGuid == article.Guid.Rendered, "The vendor GUID is backfilled onto the hand-made post");
+    });
+
+    // A different vendor article whose slug equals an existing post's route must not take that post over.
+    article = Article(204, "manual-entry", "A later article on the same slug");
+    await Scope(async sp => Check((await Process(sp)).CreatedPosts.Count == 1, "An article that only shares a route with another article is imported as its own post"));
+    await Scope(async sp =>
+    {
+        var posts = await Posts(sp);
+        Check(posts.Count == 3, "The route collision adds exactly one content item");
+        var owner = posts.Single(p => p.ContentItemId == manualId);
+        Check(owner.Get<AutoBlogPart>(nameof(AutoBlogPart)).EdgeGuid == "https://example.invalid/?p=201" && owner.DisplayText == "Manual entry", "The post that owns the route keeps its GUID and title");
     });
 
     // Default detail template: a video-feed post leaves its featured image to the embedded video.

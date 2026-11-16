@@ -157,8 +157,9 @@ If your site already has a blog page that lists `BlogPost` items and you want im
 ### v1.7.3
 - Fixes the default detail template so video-feed posts no longer show the featured image
 - Fixes the settings link in notification emails, which pointed at a page that does not exist
-- Fixes the slug fallback for posts inside a blog container, so a matching hand-made post is adopted instead of duplicated
+- Fixes the slug fallback for posts inside a blog container, so a matching hand-made post is adopted instead of duplicated, and keeps it from taking over a post that belongs to a different article
 - Stores downloaded images under the same file name on Windows and Linux hosts
+- Shows **Next sync** on the settings page in the site's time zone, which is the clock Orchard runs the schedule on
 
 ### v1.7.2
 - Generates valid `Article` structured data (`@context`, `@type`, publisher type), encoded so it cannot close its own script element
