@@ -213,6 +213,15 @@ public partial class AutoBlogImportService : IAutoBlogImportService
         if (existingItem == null && !string.IsNullOrWhiteSpace(article.Slug))
         {
             existingItem = await FindExistingPostBySlugAsync(article.Slug);
+
+            // The route match is only for a post that has lost, or never had, its GUID. A post that already
+            // belongs to a different vendor article must not be taken over by this one.
+            var routeOwner = existingItem?.Get<AutoBlogPart>(nameof(AutoBlogPart))?.EdgeGuid;
+            if (!string.IsNullOrWhiteSpace(routeOwner) && !string.Equals(routeOwner, guid, StringComparison.OrdinalIgnoreCase))
+            {
+                existingItem = null;
+            }
+
             if (existingItem != null)
             {
                 _logger.LogInformation(
