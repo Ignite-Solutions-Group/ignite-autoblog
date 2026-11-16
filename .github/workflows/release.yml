@@ -54,20 +54,8 @@ jobs:
           --output ./artifacts
           /p:PackageVersion=${{ steps.constants.outputs.VERSION }}
 
-      - name: Tag release
-        run: |
-          git tag "v${{ steps.constants.outputs.VERSION }}"
-          git push origin "v${{ steps.constants.outputs.VERSION }}"
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: v${{ steps.constants.outputs.VERSION }}
-          files: ./artifacts/*.nupkg
-          generate_release_notes: true
-          # A version with a suffix (2.0.0-preview.1) is a prerelease and must not become "Latest".
-          prerelease: ${{ contains(inputs.version, '-') }}
-
+      # Publish first: if nuget.org refuses, nothing has been tagged or released and the run can simply be
+      # started again.
       # Trusted Publishing: nuget.org checks this workflow's identity against the policy registered for the
       # IgniteSolutionsGroup owner and returns a key that lasts one hour, so no API key is stored anywhere.
       # "user" is the nuget.org profile name of the policy's creator, not an email address.
@@ -84,3 +72,17 @@ jobs:
           --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
           --source https://api.nuget.org/v3/index.json
           --skip-duplicate
+
+      - name: Tag release
+        run: |
+          git tag "v${{ steps.constants.outputs.VERSION }}"
+          git push origin "v${{ steps.constants.outputs.VERSION }}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: v${{ steps.constants.outputs.VERSION }}
+          files: ./artifacts/*.nupkg
+          generate_release_notes: true
+          # A version with a suffix (2.0.0-preview.1) is a prerelease and must not become "Latest".
+          prerelease: ${{ contains(inputs.version, '-') }}
