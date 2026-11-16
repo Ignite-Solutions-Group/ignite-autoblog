@@ -301,6 +301,8 @@ try
             .FirstOrDefault(m => m.DataMigrationClass == "IgniteSG.OrchardCore.MspMarketingEdge.Migrations.AutoBlogMigrations")?.Version ?? 0;
     });
     manifest.Observations["HandMadePostId"] = manualId;
+    if (edge.UnexpectedRequests.Count > 0)
+        throw new InvalidOperationException("The released module made requests the vendor stand-in did not expect: " + string.Join(" | ", edge.UnexpectedRequests));
 }
 finally
 {

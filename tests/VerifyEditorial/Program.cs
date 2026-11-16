@@ -95,6 +95,8 @@ return 0;
 void SiteLog(FixtureHost site)
 {
     checks.Section("Site log");
+    checks.That(site.Edge.UnexpectedRequests.Count == 0, "The module made no request the vendor stand-in did not expect",
+        string.Join(" | ", site.Edge.UnexpectedRequests));
     checks.That(site.Errors.Count == site.ExpectedErrors, "The site logged no unexpected errors",
         string.Join(" | ", site.Errors.Entries.Select(e => e.Length > 300 ? e[..300] : e)));
 }

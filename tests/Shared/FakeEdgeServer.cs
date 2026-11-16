@@ -21,6 +21,7 @@ public sealed class FakeEdgeServer
 
     private readonly object _gate = new();
     private readonly List<Uri> _requests = [];
+    private readonly List<string> _unexpected = [];
 
     /// <summary>The value of license_activated; the real service returns the strings "true" and "false".</summary>
     public string LicenseActivated { get; set; } = "true";
@@ -43,6 +44,18 @@ public sealed class FakeEdgeServer
     public int FeedRequests => Requests.Count(r => r.Host == FeedHost && r.AbsolutePath == "/wp-json/tech/videos/");
     public void ClearRequests() { lock (_gate) _requests.Clear(); }
 
+    /// <summary>
+    /// Requests this server refused. The module catches the exception a refusal throws and only logs a
+    /// warning, so the refusal is also kept here, never cleared, for the host to assert on before it passes.
+    /// </summary>
+    public IReadOnlyList<string> UnexpectedRequests { get { lock (_gate) return _unexpected.ToArray(); } }
+
+    private InvalidOperationException Refuse(string what)
+    {
+        lock (_gate) _unexpected.Add(what);
+        return new InvalidOperationException("Unexpected " + what);
+    }
+
     public static string ImageUrl(string name) => $"https://{ImageHost}/{name}";
 
     /// <summary>
@@ -57,7 +70,7 @@ public sealed class FakeEdgeServer
         lock (_gate) _requests.Add(uri);
 
         if (request.Method != HttpMethod.Get)
-            throw new InvalidOperationException($"Unexpected {request.Method} request to {uri.Host}");
+            throw Refuse($"{request.Method} request to {uri.Host}{uri.AbsolutePath}");
 
         if (uri.Host == LicenseHost && uri.AbsolutePath == "/wp-content/keap/msp_edge_license.php")
         {
@@ -90,7 +103,7 @@ public sealed class FakeEdgeServer
             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = image });
         }
 
-        throw new InvalidOperationException($"Unexpected external request to {uri.Host}{uri.AbsolutePath}");
+        throw Refuse($"external request to {uri.Host}{uri.AbsolutePath}");
     }
 
     private static Task<HttpResponseMessage> Json(HttpStatusCode status, string body) =>
