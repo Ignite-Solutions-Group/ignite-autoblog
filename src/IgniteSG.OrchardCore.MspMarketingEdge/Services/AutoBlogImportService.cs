@@ -638,9 +638,13 @@ public partial class AutoBlogImportService : IAutoBlogImportService
             ? containerSlug + "/" + slug
             : null;
 
-        var item = await _session
-            .Query<ContentItem, AutoroutePartIndex>(x =>
-                x.Path == slug || (containerPath != null && x.Path == containerPath))
+        // The null test stays in C#. Written inside the predicate it becomes a SQL comparison with NULL,
+        // which is never true, so the container-prefixed path was silently never matched.
+        var byPath = containerPath != null
+            ? _session.Query<ContentItem, AutoroutePartIndex>(x => x.Path == slug || x.Path == containerPath)
+            : _session.Query<ContentItem, AutoroutePartIndex>(x => x.Path == slug);
+
+        var item = await byPath
             .With<ContentItemIndex>(x => x.ContentType == Constants.ContentType && x.Latest)
             .FirstOrDefaultAsync();
 
@@ -737,7 +741,7 @@ public partial class AutoBlogImportService : IAutoBlogImportService
 
         if (!string.IsNullOrWhiteSpace(siteBaseUrl))
         {
-            var settingsPath = $"/Admin/Settings/Index?groupId={Drivers.AutoBlogSettingsDisplayDriver.GroupId}";
+            var settingsPath = $"/Admin/Settings/{Drivers.AutoBlogSettingsDisplayDriver.GroupId}";
             var settingsUrl = string.Concat(siteBaseUrl.TrimEnd('/'), settingsPath);
             var encodedSettingsUrl = WebUtility.HtmlEncode(settingsUrl);
             body.Append($"<p>You can manage your AutoBlog <a href=\"{encodedSettingsUrl}\">settings</a>.</p>");
