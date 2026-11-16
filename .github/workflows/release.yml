@@ -69,18 +69,8 @@ jobs:
           --output ./artifacts
           /p:PackageVersion=${{ steps.version.outputs.VERSION }}
 
-      - name: Tag release
-        run: |
-          git tag v${{ steps.version.outputs.VERSION }}
-          git push origin v${{ steps.version.outputs.VERSION }}
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: v${{ steps.version.outputs.VERSION }}
-          files: ./artifacts/*.nupkg
-          generate_release_notes: true
-
+      # Publish first: if nuget.org refuses, nothing has been tagged or released and the run can simply be
+      # started again.
       # Trusted Publishing: nuget.org checks this workflow's identity against the policy registered for the
       # IgniteSolutionsGroup owner and returns a key that lasts one hour, so no API key is stored anywhere.
       # "user" is the nuget.org profile name of the policy's creator, not an email address.
@@ -97,3 +87,15 @@ jobs:
           --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
           --source https://api.nuget.org/v3/index.json
           --skip-duplicate
+
+      - name: Tag release
+        run: |
+          git tag v${{ steps.version.outputs.VERSION }}
+          git push origin v${{ steps.version.outputs.VERSION }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: v${{ steps.version.outputs.VERSION }}
+          files: ./artifacts/*.nupkg
+          generate_release_notes: true
