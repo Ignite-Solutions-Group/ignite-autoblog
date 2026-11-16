@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="3.0.1" />
+    <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="[$(OrchardCoreVersion)]" />
     <ProjectReference Include="../../src/IgniteSG.OrchardCore.MspMarketingEdge/IgniteSG.OrchardCore.MspMarketingEdge.csproj" />
+    <Compile Include="../Shared/**/*.cs" LinkBase="Shared" />
     <Content Update="Recipes/**/*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

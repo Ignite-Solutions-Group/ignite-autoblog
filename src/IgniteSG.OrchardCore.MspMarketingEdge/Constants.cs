@@ -2,7 +2,9 @@ namespace IgniteSG.OrchardCore.MspMarketingEdge;
 
 public static class Constants
 {
-    public const string Version = "1.7.2";
+    // The single source of the module version: the manifest reads it and the release workflow requires its
+    // input to match it. 2.x targets Orchard Core 4 / .NET 11; the 1.7.x line stays on Orchard Core 3 / .NET 10.
+    public const string Version = "2.0.0-preview.1";
     public const string RepositoryUrl = "https://github.com/Ignite-Solutions-Group/ignite-autoblog";
 
     public const string ModuleId = "IgniteSG.OrchardCore.MspMarketingEdge";

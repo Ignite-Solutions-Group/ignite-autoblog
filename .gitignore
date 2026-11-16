@@ -55,4 +55,5 @@ nunit-*.xml
 ref/
 docs/
 .vs/
-/tests/VerifyEditorial/Localization/
+# Orchard copies its translation files into each host project when it builds.
+/tests/*/Localization/

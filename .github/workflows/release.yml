@@ -4,27 +4,28 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to release (e.g. 1.6.2)"
+        description: "Version to release (e.g. 2.0.0-preview.1). Must equal Constants.Version on the branch you run this from."
         required: true
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: write
+    env:
+      AUTOBLOG_FIXTURE_STARTUP_MINUTES: 15
+      # Read through the environment, never pasted into a script, so the input cannot be run as shell.
+      VERSION: ${{ inputs.version }}
     steps:
+      # Each Orchard Core line releases from its own branch: main, or release/* for an older line.
+      - name: Only release from main or a release branch
+        if: github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/release/')
+        run: |
+          echo "::error::Releases run from main or a release/* branch, not $GITHUB_REF."
+          exit 1
+
       - uses: actions/checkout@v7
-        with:
-          ref: main
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v6
-        with:
-          global-json-file: global.json
-
-      - name: Set version from input
-        id: version
-        run: echo "VERSION=${{ inputs.version }}" >> $GITHUB_OUTPUT
 
       - name: Read version from Constants.cs
         id: constants
@@ -34,21 +35,14 @@ jobs:
 
       - name: Validate input matches Constants.Version
         run: |
-          if [ "${{ steps.version.outputs.VERSION }}" != "${{ steps.constants.outputs.VERSION }}" ]; then
-            echo "::error::Input version (${{ steps.version.outputs.VERSION }}) does not match Constants.Version (${{ steps.constants.outputs.VERSION }}). Update Constants.Version before releasing."
+          if [ "$VERSION" != "${{ steps.constants.outputs.VERSION }}" ]; then
+            echo "::error::Input version ($VERSION) does not match Constants.Version (${{ steps.constants.outputs.VERSION }}). Update Constants.Version before releasing."
             exit 1
           fi
 
-      - name: Stamp Manifest.cs with version from Constants
-        run: |
-          sed -i "s/Version = \"[^\"]*\"/Version = \"${{ steps.constants.outputs.VERSION }}\"/" \
-            src/IgniteSG.OrchardCore.MspMarketingEdge/Manifest.cs
-
-      - name: Restore dependencies
-        run: dotnet restore src/IgniteSG.OrchardCore.sln
-
-      - name: Build
-        run: dotnet build src/IgniteSG.OrchardCore.sln --configuration Release --no-restore
+      # A release is validated by running the module, not only by compiling it.
+      - name: Build and verify
+        uses: ./.github/actions/verify
 
       - name: Pack NuGet
         run: >
@@ -56,19 +50,21 @@ jobs:
           --configuration Release
           --no-build
           --output ./artifacts
-          /p:PackageVersion=${{ steps.version.outputs.VERSION }}
+          /p:PackageVersion=${{ steps.constants.outputs.VERSION }}
 
       - name: Tag release
         run: |
-          git tag v${{ steps.version.outputs.VERSION }}
-          git push origin v${{ steps.version.outputs.VERSION }}
+          git tag "v${{ steps.constants.outputs.VERSION }}"
+          git push origin "v${{ steps.constants.outputs.VERSION }}"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: v${{ steps.version.outputs.VERSION }}
+          tag_name: v${{ steps.constants.outputs.VERSION }}
           files: ./artifacts/*.nupkg
           generate_release_notes: true
+          # A version with a suffix (2.0.0-preview.1) is a prerelease and must not become "Latest".
+          prerelease: ${{ contains(inputs.version, '-') }}
 
       - name: Push to NuGet
         run: >

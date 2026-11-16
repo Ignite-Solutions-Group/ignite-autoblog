@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <!-- The single place to change the Orchard Core build. Keep it one exact version, never a range. -->
+    <OrchardCoreVersion>4.0.0-preview-19227</OrchardCoreVersion>
+    <!--
+      Lock files record every resolved package and its content hash, so CI restores exactly what was
+      verified locally. Refresh them with "dotnet restore -p:RestoreForceEvaluate=true" (or the
+      "force-evaluate" switch) for each project after changing a package reference.
+    -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+</Project>

@@ -27,16 +27,18 @@ public class Startup : StartupBase
         services.AddContentPart<AutoBlogPart>().UseDisplayDriver<AutoBlogPartDisplayDriver>();
 
         // Data migration
-        services.AddScoped<IDataMigration, AutoBlogMigrations>();
+        services.AddDataMigration<AutoBlogMigrations>();
 
-        // Site settings
-        services.AddScoped<IDisplayDriver<ISite>, AutoBlogSettingsDisplayDriver>();
+        // Site settings. Registering the group permission lets the shared settings controller admit a
+        // role that holds only ManageAutoBlogSettings; the driver still checks the permission itself.
+        services.AddSiteDisplayDriver<AutoBlogSettingsDisplayDriver>()
+            .AddSiteSettingsPermission(AutoBlogSettingsDisplayDriver.GroupId, Permissions.ManageAutoBlogSettings);
 
         // Navigation
-        services.AddScoped<INavigationProvider, AdminMenu>();
+        services.AddNavigationProvider<AdminMenu>();
 
         // Permissions
-        services.AddScoped<IPermissionProvider, Permissions>();
+        services.AddPermissionProvider<Permissions>();
 
         // Services
         services.AddScoped<IEdgeApiService, EdgeApiService>();
