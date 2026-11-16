@@ -69,13 +69,17 @@ public class ImageService : IImageService
         }
     }
 
+    // A fixed set rather than Path.GetInvalidFileNameChars(), which differs by host OS: it lists these
+    // characters on Windows but only '/' and NUL on Linux, so the same article was stored under different
+    // media paths per platform, and a '?' kept on Linux is read as a query string by asset_url.
+    private static readonly HashSet<char> s_invalidFileNameChars = ['"', '<', '>', '|', ':', '*', '?', '\\', '/'];
+
     private static string SanitizeFileName(string fileName)
     {
-        var invalid = Path.GetInvalidFileNameChars();
         // Also strip directory separators and dot-dot sequences to prevent path traversal
         var sanitized = string.Join("", fileName
             .Replace("..", "")
-            .Select(c => invalid.Contains(c) || c == '/' || c == '\\' ? '-' : c));
+            .Select(c => c < ' ' || s_invalidFileNameChars.Contains(c) ? '-' : c));
         return sanitized.Trim('-');
     }
 }
